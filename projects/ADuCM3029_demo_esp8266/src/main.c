@@ -86,8 +86,6 @@ int main(int argc, char *argv[])
 	char buf[200] = "";
 	int buflen = sizeof(buf);
 	MQTTString topicString = MQTTString_initializer;
-	char* payload = "mypayload";
-	int payloadlen = strlen(payload);
 	int len = 0;
 	int msgid = 1;
 	int req_qos = 0;
@@ -99,12 +97,10 @@ int main(int argc, char *argv[])
 
 	ESP8266_ConnectAccessPoint(SSID, PASS);
 	ESP8266_ConnectTCP(MQTT_SERVER, PORT);
-	//printf("Connecting to TCP...\n");
 	timer_sleep(1000);
 
 	len = MQTTSerialize_connect((unsigned char *)buf, buflen, &data);
 	ESP8266_SendTCPData(buf, len); // send connect to the server
-	//printf("Sending msg to server...\n");
 	timer_sleep(1000);
 
 	/* subscribe */
