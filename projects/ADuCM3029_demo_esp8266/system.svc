@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root>
 	<installedComponents>
-		<component id="com.analog.crosscore.ssldd.pinmux.component" name="Pin Multiplexing" version="1.0.0" visible="true">
-			<component-description><![CDATA[Since some processors have more peripherals than physical pins on the chip, the user needs to configure which peripherals they want enabled and onto which set of pins.  Peripheral configuration requires an in-depth understanding of the hardware.  This component makes it easier to program the peripherals without worrying about the internal details.  The user simply selects the peripherals to enable and this component will generate the C code necessary to configure the peripherals.]]></component-description>
-			<product name="SSL DD Product" version="1.0.0"/>
-		</component>
-		<component id="com.analog.crosscore.addins.cmsis.cortexm.startup" name="CMSIS Device Startup" version="1.0.1" visible="false">
-			<component-description><![CDATA[This add-in adds include paths, linker scripts, and links to the device system and startup files.]]></component-description>
-			<product name="Analog Devices CMSIS Support" version="1.0.1"/>
-		</component>
-		<component id="com.analog.crosscore.addins.cmsis.core.cortexm" name="CMSIS Core" version="1.0.1" visible="true">
-			<component-description><![CDATA[This add-in provides access to the ARM Cortex Microcontroller Software Interface Standard (CMSIS) Core v4.5.0 header files.]]></component-description>
-			<product name="Analog Devices CMSIS Support" version="1.0.1"/>
-		</component>
-		<component id="com.analog.crosscore.addins.cmsis.cortexm.startup.aducm3029" name="CMSIS Device Startup for ADuCM3029" version="1.0.1" visible="true">
-			<component-description><![CDATA[This add-in adds include paths, linker scripts, and links to the device system and startup files.]]></component-description>
-			<product name="Analog Devices CMSIS Support" version="1.0.1"/>
-		</component>
 	</installedComponents>
+	<configurations/>
 </root>

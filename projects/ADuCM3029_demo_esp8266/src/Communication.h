@@ -48,7 +48,7 @@
 #include <drivers/uart/adi_uart.h>
 
 #include <drivers/spi/adi_spi.h>
-#include <services/gpio/adi_gpio.h>
+#include <drivers/gpio/adi_gpio.h>
 
 /* UART pins connection */
 #define UART_DEVICE_NUM 0u

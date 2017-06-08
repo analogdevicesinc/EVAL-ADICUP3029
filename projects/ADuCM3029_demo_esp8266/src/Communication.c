@@ -104,24 +104,6 @@ void UART_Init()
     {
     	DEBUG_MESSAGE("UART device baud rate configuration failed");
     }
-
-    /* Enable the DMA associated with UART */
-    if((eUartResult = adi_uart_EnableDMAMode(hUartDevice,false)) != ADI_UART_SUCCESS)
-    {
-    	DEBUG_MESSAGE("Failed to enable the DMA mode");
-    }
-
-    /* Enable the Data flow for Rx */
-    if((eUartResult = adi_uart_EnableRx(hUartDevice,true)) != ADI_UART_SUCCESS)
-    {
-    	DEBUG_MESSAGE("Failed to enable the Rx");
-    }
-
-    /* Enable the Data flow for Tx */
-    if((eUartResult = adi_uart_EnableTx(hUartDevice,true)) != ADI_UART_SUCCESS)
-    {
-    	DEBUG_MESSAGE("Failed to enable the Tx");
-    }
 }
 
 /**
@@ -164,7 +146,8 @@ void SPI_Init(void)
 //		DEBUG_MESSAGE("Failed to enable the DMA mode");
 //	}
 	//ToDo DMA is disabled for sensor configuration -> can be enabled after configuration
-	adi_spi_SetContinousMode (hMSpiDevice, true);
+	adi_spi_SetContinuousMode(hMSpiDevice, true);
+	adi_spi_SetIrqmode(hMSpiDevice, true);
 	adi_spi_SetClockPolarity(hMSpiDevice, false); // set Clock polarity low
 	adi_spi_SetClockPhase(hMSpiDevice, false);    // set Clock phase leading
 }
@@ -182,7 +165,7 @@ void SPI_Init(void)
 void SPI_Write(uint8_t ui8address, uint8_t ui8Data, enWriteData enMode)
 {
 	ADI_SPI_RESULT eSpiResult;
-	bool_t bMasterComplete= false;
+	bool bMasterComplete= false;
 	uint8_t aui8Tx_Buf[3];
 
 	/*enMode = SPI_WRITE_REG - ToDo for other modes (LCD)*/
@@ -199,15 +182,14 @@ void SPI_Write(uint8_t ui8address, uint8_t ui8Data, enWriteData enMode)
 	MSpitransceive.nRxIncrement = 0;
 
 	/* Submit the buffer to Master */
-	if ((eSpiResult = adi_spi_MasterTransfer(hMSpiDevice,&MSpitransceive)) != ADI_SPI_SUCCESS)
+	if ((eSpiResult = adi_spi_MasterSubmitBuffer(hMSpiDevice,&MSpitransceive)) != ADI_SPI_SUCCESS)
 	{
 		DEBUG_MESSAGE("Master - Data failure");
 	}
 
 	/* Wait till the data transmission is over */
-	while( (bMasterComplete == false) ){
-		adi_spi_MasterComplete(hMSpiDevice,&bMasterComplete);
-	}
+	adi_spi_MasterReadWrite(hMSpiDevice,&MSpitransceive);
+
 }
 
 /**
@@ -225,7 +207,7 @@ uint16_t SPI_Read(uint8_t ui8address, enRegsNum enRegs)
 	uint8_t aui8Tx_Buf[4] = {0x00, 0x00, 0x00, 0x00};
 
 	ADI_SPI_RESULT eSpiResult;
-	bool_t bMasterComplete= false;
+	bool bMasterComplete= false;
 
 	aui8Tx_Buf[0] = COMM_READ;
 	aui8Tx_Buf[1] = ui8address;
@@ -242,15 +224,13 @@ uint16_t SPI_Read(uint8_t ui8address, enRegsNum enRegs)
 
 
 	/* Submit the buffer to Master */
-	if ((eSpiResult = adi_spi_MasterTransfer(hMSpiDevice,&MSpitransceive)) != ADI_SPI_SUCCESS)
+	if ((eSpiResult = adi_spi_MasterSubmitBuffer(hMSpiDevice,&MSpitransceive)) != ADI_SPI_SUCCESS)
 	{
 		DEBUG_MESSAGE("Master - Data failure");
 	}
 
 	/* Wait till the data transmission is over */
-	while( (bMasterComplete == false) ){
-		adi_spi_MasterComplete(hMSpiDevice,&bMasterComplete);
-	}
+	adi_spi_MasterReadWrite(hMSpiDevice,&MSpitransceive);
 
 	if (enRegs == SPI_READ_ONE_REG) {
 

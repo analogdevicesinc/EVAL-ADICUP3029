@@ -33,27 +33,7 @@
    ---------------------------------------------------------------------------*/
 
 #include <stdint.h>
-
-
-/*----------------------------------------------------------------------------
-  Handler names that can be overridden for a user-specified RTOS
- *----------------------------------------------------------------------------*/
-
-#ifdef USER_SPECIFIED_RTOS
-#include <user_rtos_support.h>
-#endif
-
-#ifndef SVC_HANDLER
-#define SVC_HANDLER SVC_Handler
-#endif
-
-#ifndef PENDSV_HANDLER
-#define PENDSV_HANDLER PendSV_Handler
-#endif
-
-#ifndef SYSTICK_HANDLER
-#define SYSTICK_HANDLER SysTick_Handler
-#endif
+#include <rtos_map/adi_rtos_map.h>
 
 /*----------------------------------------------------------------------------
   Linker generated Symbols

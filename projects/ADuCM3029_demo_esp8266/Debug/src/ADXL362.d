@@ -1,108 +1,99 @@
-src/ADXL362.d: ../src/ADXL362.c \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/gpio/adi_gpio.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/adi_processor.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029_cdef.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029_def.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/adi_cio_macros.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x_cdef.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029_device.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029_typedefs.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x_typedefs.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x_device.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x_typedefs.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/ARM/CMSIS/4.5.0/CMSIS/Include/core_cm3.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/ARM/CMSIS/4.5.0/CMSIS/Include/core_cmInstr.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/ARM/CMSIS/4.5.0/CMSIS/Include/cmsis_gcc.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/ARM/CMSIS/4.5.0/CMSIS/Include/core_cmFunc.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/system_ADuCM3029.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/adi_types.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/gpio/adi_gpio_v1.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/int/adi_int.h \
- C:/Users/spopa/cces/2.5.0/ADuCM3029_demo_esp8266/system/ssldd_config/adi_global_config.h \
+src/ADXL362.o: ../src/ADXL362.c \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/gpio/adi_gpio.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/adi_processor.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029_cdef.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029_def.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/adi_cio_macros.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x_cdef.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029_device.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029_typedefs.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x_typedefs.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x_device.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x_typedefs.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/ARM/CMSIS/5.0.1/CMSIS/Include/core_cm3.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/ARM/CMSIS/5.0.1/CMSIS/Include/cmsis_compiler.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/ARM/CMSIS/5.0.1/CMSIS/Include/cmsis_gcc.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/system_ADuCM3029.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/adi_callback.h \
  ../src/ADXL362.h ../src/Communication.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/drivers/uart/adi_uart.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/drivers/uart/adi_uart_v1.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/dma/adi_dma.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/dma/adi_dma_pl230_v2.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/pwr/adi_pwr.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/pwr/adi_pwr_v1.h \
- C:\Users\spopa\cces\2.5.0\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_uart_config.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/drivers/spi/adi_spi.h \
- C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/drivers/spi/adi_spi_v1.h \
- C:\Users\spopa\cces\2.5.0\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_spi_config.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/uart/adi_uart.h \
+ C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_uart_config.h \
+ C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_global_config.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/rtos_map/adi_rtos_map.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/rtos_map/adi_rtos_map_noos.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/pwr/adi_pwr.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/adi_cyclecount.h \
+ C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_cycle_counting_config.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/dma/adi_dma.h \
+ C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/spi/adi_spi.h \
+ C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_spi_config.h \
  ../src/Timer.h
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/gpio/adi_gpio.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/gpio/adi_gpio.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/adi_processor.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/adi_processor.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029_cdef.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029_cdef.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029_def.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029_def.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/adi_cio_macros.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/adi_cio_macros.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x_cdef.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x_cdef.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029_device.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029_device.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/ADuCM3029_typedefs.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/ADuCM3029_typedefs.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x_typedefs.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x_typedefs.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x_device.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x_device.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/sys/ADuCM302x_typedefs.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/sys/ADuCM302x_typedefs.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/ARM/CMSIS/4.5.0/CMSIS/Include/core_cm3.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/ARM/CMSIS/5.0.1/CMSIS/Include/core_cm3.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/ARM/CMSIS/4.5.0/CMSIS/Include/core_cmInstr.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/ARM/CMSIS/5.0.1/CMSIS/Include/cmsis_compiler.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/ARM/CMSIS/4.5.0/CMSIS/Include/cmsis_gcc.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/ARM/CMSIS/5.0.1/CMSIS/Include/cmsis_gcc.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/ARM/CMSIS/4.5.0/CMSIS/Include/core_cmFunc.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/system_ADuCM3029.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/system_ADuCM3029.h:
-
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/adi_types.h:
-
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/gpio/adi_gpio_v1.h:
-
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/int/adi_int.h:
-
-C:/Users/spopa/cces/2.5.0/ADuCM3029_demo_esp8266/system/ssldd_config/adi_global_config.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/adi_callback.h:
 
 ../src/ADXL362.h:
 
 ../src/Communication.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/drivers/uart/adi_uart.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/uart/adi_uart.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/drivers/uart/adi_uart_v1.h:
+C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_uart_config.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/dma/adi_dma.h:
+C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_global_config.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/dma/adi_dma_pl230_v2.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/rtos_map/adi_rtos_map.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/pwr/adi_pwr.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/rtos_map/adi_rtos_map_noos.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/services/pwr/adi_pwr_v1.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/pwr/adi_pwr.h:
 
-C:\Users\spopa\cces\2.5.0\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_uart_config.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/adi_cyclecount.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/drivers/spi/adi_spi.h:
+C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_cycle_counting_config.h:
 
-C:\Analog\ Devices\CrossCore\ Embedded\ Studio\ 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Include/drivers/spi/adi_spi_v1.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/dma/adi_dma.h:
 
-C:\Users\spopa\cces\2.5.0\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_spi_config.h:
+C:/Analog\ Devices/CrossCore\ Embedded\ Studio\ 2.6.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/2.0.0/Include/drivers/spi/adi_spi.h:
+
+C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/adi_spi_config.h:
 
 ../src/Timer.h:

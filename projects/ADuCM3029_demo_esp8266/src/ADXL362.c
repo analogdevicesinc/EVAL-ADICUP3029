@@ -49,7 +49,8 @@
 
 /***************************** Include Files **********************************/
 #include <stdio.h>
-#include <services/gpio/adi_gpio.h>
+//#include <services/gpio/adi_gpio.h>
+#include <drivers/gpio/adi_gpio.h>
 
 #include "ADXL362.h"
 #include "Communication.h"

@@ -52,8 +52,7 @@
 #include "Timer.h"
 #include "string.h"
 #include "ESP8266.h"
-
-#include <services/gpio/adi_gpio.h>
+#include <drivers/gpio/adi_gpio.h>
 
 /************************** Variable Definitions ******************************/
 /* Handle for UART device */
@@ -136,13 +135,14 @@ ESP8266_RESULT ESP8266_GetResponse(ESP8266_CMD CmdPos)
     char msg[250] = "";
     int i = 0;
     uint8_t ui8Char=0x00;
+    uint32_t nHardwareError;
 
-    adi_uart_Read(hUartDevice, &ui8Char, 1);
+    adi_uart_Read(hUartDevice, &ui8Char, 1, 0, &nHardwareError);
     msg[i] = ui8Char;
 
     while(pNULL == strstr(msg, ExpectedReply)) {
 		i++;
-		adi_uart_Read(hUartDevice, &ui8Char, 1);
+		adi_uart_Read(hUartDevice, &ui8Char, 1, 0, &nHardwareError);
 		msg[i] = ui8Char;
 	}
 
@@ -165,11 +165,12 @@ void ESP8266_SendCmd(char *CmdBuf)
 	char 	command[250] = "";
 	char 	rn[2] = "\r\n";
 	uint8_t CmdLen = strlen(CmdBuf);
+	uint32_t nHardwareError;
 
 	strncat(command, CmdBuf, CmdLen);
 	strncat(command, rn, 2);
 
-	adi_uart_Write(hUartDevice, command, CmdLen+2); // Send the command via UART
+	adi_uart_Write(hUartDevice, command, CmdLen+2, 0, &nHardwareError); // Send the command via UART
 }
 
 
@@ -243,13 +244,14 @@ void ESP8266_SendTCPData(char *message, int len)
 	char msg[200] = "";
 	char MsgLen[256] = "";
 	int i = 0;
+	uint32_t nHardwareError;
 
 	sprintf(MsgLen, "%d", len);
 	strncat(connection, "AT+CIPSEND=", 11);
 	strncat(connection, MsgLen, strlen(MsgLen));
 
-	adi_uart_Write(hUartDevice, connection, strlen(connection));
-	adi_uart_Write(hUartDevice, "\r\n", 2);
+	adi_uart_Write(hUartDevice, connection, strlen(connection), 0, &nHardwareError);
+	adi_uart_Write(hUartDevice, "\r\n", 2, 0, &nHardwareError);
 
 	timer_sleep(5000);
 
@@ -258,7 +260,7 @@ void ESP8266_SendTCPData(char *message, int len)
 		message++;
 	}
 
-	adi_uart_Write(hUartDevice, msg, len);
+	adi_uart_Write(hUartDevice, msg, len, 0, &nHardwareError);
 }
 
 /**
@@ -270,7 +272,9 @@ void ESP8266_SendTCPData(char *message, int len)
 **/
 int ESP8266_ReadTCPData(unsigned char* buf, int count)
 {
-	adi_uart_Read(hUartDevice, buf, count);
+	uint32_t nHardwareError;
+
+	adi_uart_Read(hUartDevice, buf, count, 0, &nHardwareError);
 
 	return count;
 }
@@ -278,9 +282,10 @@ int ESP8266_ReadTCPData(unsigned char* buf, int count)
 void ESP8266_WaitForBrokerResponse(uint8_t ui8Response)
 {
 	uint8_t ui8Char=0x00;
+	uint32_t nHardwareError;
 
 	while(ui8Char != ui8Response){
-		adi_uart_Read(hUartDevice, &ui8Char, 1);
+		adi_uart_Read(hUartDevice, &ui8Char, 1, 0, &nHardwareError);
 	}
 }
 
@@ -294,7 +299,7 @@ uint8_t ESP8266_WaitForBrokerResponseNonBlocking(uint8_t ui8Response, uint32_t u
 	start_esp_timer_ms();
 
 	while (ui8Char != ui8Response) {
-			eResult = adi_uart_SubmitRxBuffer(hUartDevice, &ui8Char, 1);
+			eResult = adi_uart_SubmitRxBuffer(hUartDevice, &ui8Char, 1, 0u);
 
 			while(true != bRxBufferComplete)
 			{

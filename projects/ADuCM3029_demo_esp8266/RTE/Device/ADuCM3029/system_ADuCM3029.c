@@ -1,13 +1,15 @@
-/**************************************************************************//**
- * @file     system_ADuCM3029.c
- * @brief    CMSIS Cortex-M3 Device Peripheral Access Layer Source File for
- *           Device ADuCM3029
+/*!
+ *****************************************************************************
+ * @file:    system_ADuCM3029.c
+ * @brief:   CMSIS Cortex-M3 Device Peripheral Access Layer Source File for
+ *           ADuCM3029
  * @version  V3.10
  * @date     23. November 2012
+ *-----------------------------------------------------------------------------
  *
- * @note     Modified 19. September 2016 Analog Devices
+ * @note     Modified October 10 2016 Analog Devices 
  *
- ******************************************************************************/
+******************************************************************************/
 /* Copyright (c) 2012 ARM LIMITED
 
    All rights reserved.
@@ -42,33 +44,53 @@
  */
 
 #include <stdint.h>
-#include "ADuCM3029.h"
+#include "system_ADuCM3029.h"
+#include <adi_callback.h>
+#include <adi_processor.h>
+#include <rtos_map/adi_rtos_map.h>
 
-#include <services/int/adi_int.h>
+#ifdef __ICCARM__
+/*
+* IAR MISRA C 2004 error suppressions.
+*
+* Pm073 (rule 14.7): a function should have a single point of exit.
+* Pm143 (rule 14.7): a function should have a single point of exit at the end of the function.
+*   Multiple returns are used for error handling.
+*
+* Pm140 (rule 11.3): a cast should not be performed between a pointer type and an integral type
+*   The rule makes an exception for memory-mapped register accesses.
+*/
+#pragma diag_suppress=Pm073,Pm143,Pm140
+#endif /* __ICCARM__ */
 
-extern uint32_t __Vectors[];
+
+/*! \cond PRIVATE */
 
 /*----------------------------------------------------------------------------
   DEFINES
  *----------------------------------------------------------------------------*/
 
-/*----------------------------------------------------------------------------
-  Define clocks
- *----------------------------------------------------------------------------*/
+/* ISRAM is enabled by default and can be disabled by below macro */ 
+/*#define ADI_DISABLE_INSTRUCTION_SRAM */
+
+/* To enable the  cache. Please note that linker description  file need to 
+   have appropriate memory mapping.  */
+/* #define ENABLE_CACHE */
+
 
 #ifdef ADI_DEBUG
-/* only needed in debug mode */
-uint32_t lfClock = 0u;    /* "lf_clk" coming out of LF mux             */
+/*! Low frequency clock frequency, not needed unless its debug mode 
+    "lf_clk" coming out of LF mux */
+uint32_t lfClock = 0u;
 #endif
 
-uint32_t hfClock = 0u;    /* "root_clk" output of HF mux               */
-uint32_t gpioClock = 0u;  /* external GPIO clock                       */
+/*! "root_clk" output of HF mux */
+uint32_t hfClock = 0u;  
 
-/*----------------------------------------------------------------------------
-  Clock Variable definitions
- *----------------------------------------------------------------------------*/
+ /*! external GPIO clock */  
+uint32_t gpioClock = 0u;
 
-uint32_t SystemCoreClock = 0u;  /*!< System Clock Frequency (Core Clock)*/
+extern uint32_t __Vectors;
 
 /*----------------------------------------------------------------------------
   Security options
@@ -78,8 +100,11 @@ uint32_t SystemCoreClock = 0u;  /*!< System Clock Frequency (Core Clock)*/
   __attribute__ ((at(0x00000180u)))
 #elif defined (__GNUC__)
   __attribute__ ((section(".security_options")))
-#endif /* __GNUC__ */
-  __attribute__ ((weak))
+#elif defined (__ICCARM__)
+  #pragma location=".security_options"
+  __root
+  __weak
+#endif /* __ICCARM__ */
 const ADI_ADUCM302X_SECURITY_OPTIONS adi_aducm302x_security_options
   = {
         { 0xFFFFFFFFu, 0xFFFFFFFFu, 0xFFFFFFFFu, 0xFFFFFFFFu },
@@ -89,176 +114,118 @@ const ADI_ADUCM302X_SECURITY_OPTIONS adi_aducm302x_security_options
         0xFFFFFFFFu,
 };
 
-#ifdef RELOCATE_IVT
+/*! \endcond  */
 
-/**
-  A relocated IVT is requested.  Provision for IVT relocation
-  to RAM during startup.  This allows for dynamic interrupt
-  vector patching required by RTOS.  Places the relocated IVT
-  at the start of RAM.  Note: the IVT placement is required
-  to be next power-of-two of the vector table size.  So the
-  IVT includes 61 programmable interrupts, 15 system exception
-  vectors and the main stack pointer, therefore we need
-  (61 + 15 + 1)*4 = 308 bytes, which rounds up to a 512 (0x200)
-  address boundary (which address 0x20000000 satisfies).
 
-  Also note use of the "__no_init" attribute to force the
-  relocated IVT into the ".noinit" section.  This prevents
-  the CRTL startup sequence from initializing the relocated
-  IVT after we have activated it during the reset vector.
-  so that the CRTL does not clear it.
-*/
+/*----------------------------------------------------------------------------
+  Clock Variable definitions
+ *----------------------------------------------------------------------------*/
 
-#define RELOCATION_ADDRESS    (0x10000000)
-#define RELOCATION_ALIGNMENT  (0x200)
-#define NUM_VECTORS           (64 + 1 + 16)
-
-#if defined ( __ICCARM__ )
-    #pragma data_alignment=RELOCATION_ALIGNMENT  /* IAR */
-#elif defined (__CC_ARM)
-    __align(RELOCATION_ALIGNMENT)                /* Keil */
-#else
-    #pragma message("WARNING: NO ALIGNMENT DEFINED FOR IVT RELOCATION")
-#endif
-
-/* reserve aligned IVT space at top of RAM */
-void (*__Relocated___Vectors[NUM_VECTORS])(void) __attribute__( ( at( RELOCATION_ADDRESS ) ) ) = { 0 };
-
-#endif /* RELOCATE_IVT */
-
-ADI_CRITICAL_REGION_VAR_DEFINE
+/*! Variable to hold the system core clock value.  */
+uint32_t SystemCoreClock = 0u;
 
 /*----------------------------------------------------------------------------
   Clock functions
  *----------------------------------------------------------------------------*/
 
 /*!
- * Update the clock.
+ * Update the clock. 
  *
- * @param  none
  * @return none
  *
- * @brief  Updates the variable SystemCoreClock and must be called whenever
- *         the core clock is changed during program execution.
+ * @brief  Updates the variable SystemCoreClock and must be called whenever 
+           the core clock is changed during program execution.
  */
-void SystemCoreClockUpdate (void)            /* Get Core Clock Frequency      */
+ void SystemCoreClockUpdate(void)
 {
-    uint32_t    val;
-    uint16_t    div2;
-    float32_t   mul2, nDivisor, nMulfactor;
+    uint32_t val, nDivisor, nMulfactor, div2, mul2;
 
 #ifdef ADI_DEBUG
     /* "lfclock" is only used during debug checks... */
     /* LF clock is always 32k, whether osc or xtal */
     lfClock = __LFCLK;  /* for beep, wdt and lcd */
-    if( lfClock == 0 )
+    if (lfClock == 0u)
     {
-      while( 1 );
+      while (1) {}
     }
 #endif
-
     /* Update Core Clock sources */
     /* update the HF clock */
-    switch( pADI_CLKG0_CLK->CTL0 & BITM_CLKG_CLK_CTL0_CLKMUX ) {
+    switch (pADI_CLKG0_CLK->CTL0 & BITM_CLKG_CLK_CTL0_CLKMUX ) {
 
         case HFMUX_INTERNAL_OSC_VAL:
-          hfClock = __HFOSC;
-          break;
+            hfClock = __HFOSC;
+            break;
 
         case HFMUX_EXTERNAL_XTAL_VAL:
-          hfClock = __HFXTAL;
-          break;
+            hfClock = __HFXTAL;
+            break;
 
         case HFMUX_SYSTEM_SPLL_VAL:
             /* Calculate System PLL output frequency */
-            if( pADI_CLKG0_CLK->CTL0 & BITM_CLKG_CLK_CTL0_SPLLIPSEL )
-            {
+            if ((pADI_CLKG0_CLK->CTL0 & BITM_CLKG_CLK_CTL0_SPLLIPSEL) != 0u) {
                 /* PLL input from HFXTAL */
                 val = __HFXTAL;
-            }
-            else
-            {
+            } else {
                 /* PLL input from HFOSC */
                 val = __HFOSC;
             }
 
             /* PLL NSEL multiplier */
-            nMulfactor = ( ( pADI_CLKG0_CLK->CTL3 &BITM_CLKG_CLK_CTL3_SPLLNSEL ) >> BITP_CLKG_CLK_CTL3_SPLLNSEL );
-
+            nMulfactor = (pADI_CLKG0_CLK->CTL3 & BITM_CLKG_CLK_CTL3_SPLLNSEL) >> BITP_CLKG_CLK_CTL3_SPLLNSEL;
             /* PLL MSEL divider */
-            nDivisor = ( ( pADI_CLKG0_CLK->CTL3 & BITM_CLKG_CLK_CTL3_SPLLMSEL ) >> BITP_CLKG_CLK_CTL3_SPLLMSEL );
+            nDivisor = (pADI_CLKG0_CLK->CTL3 & BITM_CLKG_CLK_CTL3_SPLLMSEL) >> BITP_CLKG_CLK_CTL3_SPLLMSEL;
 
             /* PLL NSEL multiplier */
-            div2 = ( ( pADI_CLKG0_CLK->CTL3 & BITM_CLKG_CLK_CTL3_SPLLDIV2 ) >> BITP_CLKG_CLK_CTL3_SPLLDIV2 );
-
+            mul2 = (pADI_CLKG0_CLK->CTL3 & BITM_CLKG_CLK_CTL3_SPLLMUL2) >> BITP_CLKG_CLK_CTL3_SPLLMUL2;
             /* PLL MSEL divider */
-            mul2 = ( ( pADI_CLKG0_CLK->CTL3 & BITM_CLKG_CLK_CTL3_SPLLMUL2 ) >> BITP_CLKG_CLK_CTL3_SPLLMUL2 );
-
-            val = ( ( (uint32_t)( ( nMulfactor * ( mul2 + 1.0 ) * (float32_t) val ) / nDivisor ) ) >> div2 );
+            div2 = (pADI_CLKG0_CLK->CTL3 & BITM_CLKG_CLK_CTL3_SPLLDIV2) >> BITP_CLKG_CLK_CTL3_SPLLDIV2;
+            
+            val = ((val << mul2) * nMulfactor / nDivisor) >> div2;
 
             hfClock = val;
             break;
 
         case HFMUX_GPIO_VAL:
-          hfClock = gpioClock;
-          break;
+            hfClock = gpioClock;
+            break;
 
-        default:
-          return;
+        default:         
+            return;
     } /* end switch */
-
+ 
     SystemCoreClock = hfClock;
-}
+ }
 
-/**
- * Initialize the system
- *
- * @param  none
+#ifdef __ARMCC_VERSION
+/* We want a warning if semi-hosting libraries are used. */
+#pragma import(__use_no_semihosting_swi)
+#endif
+
+/*!
+ * @brief  Sets up the microcontroller system.
+ *         Initializes the System and updates the relocate vector table.
  * @return none
  *
- * @brief  Setup the microcontroller system.
- *         Initialize the System.
- *         Initialize the Embedded Flash Interface, the PLL and update the
- *         SystemCoreClock variable.
- *
- * @note   This function should be used only after reset.
+ * @note This function is called by the start-up code and does not need to be
+ *       called directly by applications
  */
 void SystemInit (void)
 {
-#ifdef RELOCATE_IVT
-    int i;
-    uint8_t *pSrc, *pDst;
-#endif
     uint32_t IntStatus;
-
-    /* Unlock the PWRMOD register by writing the two keys to the PWRKEY register */
-    pADI_PMG0->PWRKEY = PWRKEY_VALUE_KEY;
-    pADI_PMG0->SRAMRET &= (uint32_t)( ~( BITM_PMG_SRAMRET_BNK2EN | BITM_PMG_SRAMRET_BNK1EN ) );
     
-    /* Set the RAM0_RET bit so the entire 8K of SRAM Bank0 is hibernate-preserved */
-    adi_system_EnableRetention( ADI_SRAM_BANK_1, true );
-
+    /* Enable Bank0 and 1 SRAM retention. */
+    adi_system_EnableRetention(ADI_SRAM_BANK_1 | ADI_SRAM_BANK_2, true);
+                               
+/* To disable the instruction SRAM and entire 64K of SRAM is used as DSRAM. */    
 #ifdef  ADI_DISABLE_INSTRUCTION_SRAM
-    /* To disable the instruction SRAM and entire 64K of SRAM is used as DSRAM */
-    adi_system_EnableISRAM( false );
-#endif
-
+    adi_system_EnableISRAM(false);
+#endif 
+    
+    /* To enable the instruction cache.  */    
 #ifdef  ENABLE_CACHE
-    /* To enable the instruction cache  */
-    adi_system_EnableCache( true );
-#endif
-
-#ifdef RELOCATE_IVT
-    /* Copy the IVT from Flash to SRAM (avoid use of memcpy here so it does not become locked into flash) */
-    for( i = 0, pSrc = (uint8_t*) __Vectors, pDst = (uint8_t*) __Relocated___Vectors; i < ( NUM_VECTORS * 4 ); i++ )
-    {
-      *pDst++ = *pSrc++;
-    }
-#endif
-
-    /* Switch the Interrupt Vector Table Offset Register
-     * (VTOR) to point to the relocated IVT in SRAM
-     */
+    adi_system_EnableCache(true);    
+#endif    
 
     /* Because SystemInit must not use global variables, the following
      * interrupt disabling code should not be replaced with critical region
@@ -267,107 +234,104 @@ void SystemInit (void)
     IntStatus = __get_PRIMASK();
     __disable_irq();
 
-    /* Switch from boot ROM IVT to application's IVT
-     * set the System Control Block, Vector Table Offset Register
-     */
-#ifdef RELOCATE_IVT
-    SCB->VTOR = (uint32_t) &__Relocated___Vectors;
-#else
+    /* Set the vector table address  */
     SCB->VTOR = (uint32_t) &__Vectors;
-#endif
 
     /* Set all three (USGFAULTENA, BUSFAULTENA, and MEMFAULTENA) fault enable bits
-     * in the System Handler Control and State Register otherwise these faults are
-     * handled as hard faults
+     * in the System Control Block, System Handler Control and State Register
+     * otherwise these faults are handled as hard faults.
      */
     SCB->SHCSR = SCB_SHCSR_USGFAULTENA_Msk |
                  SCB_SHCSR_BUSFAULTENA_Msk |
                  SCB_SHCSR_MEMFAULTENA_Msk ;
 
-    /* Flush instruction and data pipelines to ensure assertion of new settings */
+    /* Flush instruction and data pipelines to insure assertion of new settings. */
     __ISB();
     __DSB();
 
     __set_PRIMASK(IntStatus);
 }
-
+ 
 /*!
- * @brief  Enables or disables the cache.
- * \n @param  bEnable : To specify whether to enable/disable cache.
+ * @brief  This enables or disables  the cache.
+ * @param  bEnable : To specify whether to enable/disable cache.
  * \n              true : To enable cache.
+ * \n
  * \n              false : To disable cache.
  * \n
  * @return none
  *
  */
-void adi_system_EnableCache (bool_t bEnable)
+void adi_system_EnableCache(bool bEnable)
 {
-  pADI_FLCC0_CACHE->KEY = CACHE_CONTROLLER_KEY;
-  if( bEnable == true )
-  {
-    pADI_FLCC0_CACHE->SETUP |=BITM_FLCC_CACHE_SETUP_ICEN;
-  }
-  else
-  {
-    pADI_FLCC0_CACHE->SETUP &=(uint32_t)(~(BITM_FLCC_CACHE_SETUP_ICEN));
-  }
+    pADI_FLCC0_CACHE->KEY = CACHE_CONTROLLER_KEY;
+    
+    if(bEnable == true)
+    {
+        pADI_FLCC0_CACHE->SETUP |= BITM_FLCC_CACHE_SETUP_ICEN;
+    }
+    else
+    {
+        pADI_FLCC0_CACHE->SETUP &= ~BITM_FLCC_CACHE_SETUP_ICEN;
+    }
 }
 
 /*!
- * @brief  Enables or disables instruction SRAM
+ * @brief  This enables or disables instruction SRAM
  *
  * @param bEnable: To enable/disable the instruction SRAM.
  * \n              true : To enable cache.
+ * \n
  * \n              false : To disable cache.
  * \n
  * @return none
  * @note:  Please note that respective linker file need to support the configuration.
  */
-void adi_system_EnableISRAM (bool_t bEnable)
+void adi_system_EnableISRAM(bool bEnable)
 {
-  if( bEnable == true )
-  {
-    pADI_PMG0_TST->SRAM_CTL |=BITM_PMG_TST_SRAM_CTL_INSTREN;
-  }
-  else
-  {
-    pADI_PMG0_TST->SRAM_CTL &=(uint32_t)(~(BITM_PMG_TST_SRAM_CTL_INSTREN));
-  }
+    if(bEnable == true)
+    {
+        pADI_PMG0_TST->SRAM_CTL |= BITM_PMG_TST_SRAM_CTL_INSTREN;
+    }
+    else
+    {
+        pADI_PMG0_TST->SRAM_CTL &= ~BITM_PMG_TST_SRAM_CTL_INSTREN;
+    }
 }
 
 /*!
- * @brief  Enables/disable SRAM retention during the hibernation.
+ * @brief  This enables/disable SRAM retention during the hibernation.
  * @param eBank:   Specify which SRAM bank. Only BANK1 and BANK2 are valid.
  * @param bEnable: To enable/disable the  retention for specified  SRAM bank.
  * \n              true : To enable retention during the hibernation.
- * \n              false :To disable retention during the hibernation.
  * \n
- * @return : SUCCESS : Configured successfully.
- *           FAILURE :  For invalid bank.
- *
- * @note: Please note that respective linker file need to support the configuration. Only BANK-1 and
- *        BANK-2 of SRAM is valid.
+ * \n              false : To disable retention during the hibernation.
+ * \n
+ * @return : 0u : Configured successfully.
+ *           1u :  For invalid bank.  
+ * @note: Please note that respective linker file need to support the configuration. Only BANK-1 and 
+          BANK-2 of SRAM is valid.
  */
-uint32_t adi_system_EnableRetention (ADI_SRAM_BANK eBank, bool_t bEnable)
+uint32_t adi_system_EnableRetention(ADI_SRAM_BANK eBank, bool bEnable)
 {
 #ifdef ADI_DEBUG
-  if( ( eBank != ADI_SRAM_BANK_1 ) && ( eBank != ADI_SRAM_BANK_2 ) )
-  {
-    return( FAILURE );
-  }
+    if((eBank != ADI_SRAM_BANK_1) && (eBank != ADI_SRAM_BANK_2))
+    {
+        return 1u;
+    }
+
 #endif
+    pADI_PMG0->PWRKEY = PWRKEY_VALUE_KEY;
+    if(bEnable == true)
+    {
+        pADI_PMG0->SRAMRET |= (uint32_t)eBank>>1;
+    }
+    else
+    {
+        pADI_PMG0->SRAMRET &= ~((uint32_t)eBank >> 1);    
+    }
 
-  pADI_PMG0->PWRKEY = PWRKEY_VALUE_KEY;
-
-  if( bEnable == true )
-  {
-    pADI_PMG0->SRAMRET |= ( eBank >> 1 );
-  }
-  else
-  {
-    pADI_PMG0->SRAMRET &= (uint32_t)( ~( ( eBank >> 1 ) ) );
-  }
-  return( SUCCESS );
+    return 0u;
 }
 
-/*! @} */
+/**@}*/

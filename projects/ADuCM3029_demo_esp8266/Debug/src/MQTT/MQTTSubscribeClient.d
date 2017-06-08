@@ -1,8 +1,8 @@
-src/MQTT/MQTTSubscribeClient.d: ../src/MQTT/MQTTSubscribeClient.c \
+src/MQTT/MQTTSubscribeClient.o: ../src/MQTT/MQTTSubscribeClient.c \
  ../src/MQTT/MQTTPacket.h ../src/MQTT/MQTTConnect.h \
  ../src/MQTT/MQTTPublish.h ../src/MQTT/MQTTSubscribe.h \
  ../src/MQTT/MQTTUnsubscribe.h ../src/MQTT/MQTTFormat.h \
- C:\Users\spopa\cces\2.5.0\ADuCM3029_demo_esp8266\src/StackTrace.h
+ C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266\src/StackTrace.h
 
 ../src/MQTT/MQTTPacket.h:
 
@@ -16,4 +16,4 @@ src/MQTT/MQTTSubscribeClient.d: ../src/MQTT/MQTTSubscribeClient.c \
 
 ../src/MQTT/MQTTFormat.h:
 
-C:\Users\spopa\cces\2.5.0\ADuCM3029_demo_esp8266\src/StackTrace.h:
+C:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266\src/StackTrace.h:

@@ -41,7 +41,7 @@ all: ADuCM3029_demo_esp8266
 ADuCM3029_demo_esp8266: $(USER_OBJS) $(SRC_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: CrossCore GCC ARM Embedded C Linker'
-	arm-none-eabi-gcc -TADuCM3029.ld -L"C:\Analog Devices\CrossCore Embedded Studio 2.5.0/ARM/packs/AnalogDevices/ADuCM302x_DFP/1.0.3/Source/GCC" -Wl,--gc-sections -mcpu=cortex-m3 -mthumb -specs=rdimon.specs -o  "ADuCM3029_demo_esp8266" @input-file.txt $(USER_OBJS) -lm
+	arm-none-eabi-gcc -TC:\Users\spopa\cces\demo_esp8266\ADuCM3029_demo_esp8266/RTE/Device/ADuCM3029/ADuCM3029.ld -Wl,--gc-sections -mcpu=cortex-m3 -mthumb -specs=rdimon.specs -o  "ADuCM3029_demo_esp8266" @input-file.txt -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 
