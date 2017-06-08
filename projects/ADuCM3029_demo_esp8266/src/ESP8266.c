@@ -294,18 +294,17 @@ uint8_t ESP8266_WaitForBrokerResponseNonBlocking(uint8_t ui8Response, uint32_t u
 	/* Bool variable for peek function */
 	bool bRxBufferComplete = false;
 	uint8_t ui8Char=0x00;
-	ADI_UART_RESULT eResult;
 
 	start_esp_timer_ms();
 
 	while (ui8Char != ui8Response) {
-			eResult = adi_uart_SubmitRxBuffer(hUartDevice, &ui8Char, 1, 0u);
+		adi_uart_SubmitRxBuffer(hUartDevice, &ui8Char, 1, 0u);
 
 			while(true != bRxBufferComplete)
 			{
 				if (get_esp_timer_ms() >= ui32Timeout)
 					return 0;
-				eResult = adi_uart_IsRxBufferAvailable(hUartDevice, &bRxBufferComplete);
+				adi_uart_IsRxBufferAvailable(hUartDevice, &bRxBufferComplete);
 			}
 	}
 	return 1;

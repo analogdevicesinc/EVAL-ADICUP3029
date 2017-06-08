@@ -165,7 +165,6 @@ void SPI_Init(void)
 void SPI_Write(uint8_t ui8address, uint8_t ui8Data, enWriteData enMode)
 {
 	ADI_SPI_RESULT eSpiResult;
-	bool bMasterComplete= false;
 	uint8_t aui8Tx_Buf[3];
 
 	/*enMode = SPI_WRITE_REG - ToDo for other modes (LCD)*/
@@ -207,7 +206,6 @@ uint16_t SPI_Read(uint8_t ui8address, enRegsNum enRegs)
 	uint8_t aui8Tx_Buf[4] = {0x00, 0x00, 0x00, 0x00};
 
 	ADI_SPI_RESULT eSpiResult;
-	bool bMasterComplete= false;
 
 	aui8Tx_Buf[0] = COMM_READ;
 	aui8Tx_Buf[1] = ui8address;
