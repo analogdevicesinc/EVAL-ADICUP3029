@@ -58,11 +58,15 @@
 /* Handle for UART device */
 extern ADI_UART_HANDLE          hUartDevice __attribute__ ((aligned (4)));
 
+uint8_t gpioMemory[ADI_GPIO_MEMORY_SIZE];
+
 /************************* Functions Definitions ******************************/
 
 void ESP8266_Init(void)
 {
 	UART_Init();
+
+	adi_gpio_Init(gpioMemory, ADI_GPIO_MEMORY_SIZE); //initialize gpio
 	adi_gpio_OutputEnable(ADI_GPIO_PORT2, ADI_GPIO_PIN_10, true);
 	adi_gpio_PullUpEnable(ADI_GPIO_PORT2, ADI_GPIO_PIN_10, true); 	// Enable pull-up resistors
 	adi_gpio_SetHigh(ADI_GPIO_PORT2, ADI_GPIO_PIN_10);
