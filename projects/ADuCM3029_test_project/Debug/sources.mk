@@ -17,19 +17,4 @@ SUBDIRS := \
 RTE/Device/ADuCM3029 \
 src \
 system \
-system/drivers/beep \
-system/drivers/crc \
-system/drivers/crypto \
-system/drivers/flash \
-system/drivers/i2c \
-system/drivers/spi \
-system/drivers/sport \
-system/drivers/uart \
-system/services/dma \
-system/services/gpio \
-system/services/int \
-system/services/pwr \
-system/services/rtc \
-system/services/tmr \
-system/services/wdt \
 

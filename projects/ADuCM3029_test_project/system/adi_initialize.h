@@ -1,7 +1,7 @@
 /*
-** adi_initialize.h header file generated on December 20, 2016 at 16:34:52.
+** adi_initialize.h header file generated on July 26, 2017 at 10:34:11.
 **
-** Copyright (C) 2000-2016 Analog Devices Inc., All Rights Reserved.
+** Copyright (C) 2000-2017 Analog Devices Inc., All Rights Reserved.
 **
 ** This file is generated automatically. You should not modify this source file,
 ** as your changes will be lost if this source file is re-generated.

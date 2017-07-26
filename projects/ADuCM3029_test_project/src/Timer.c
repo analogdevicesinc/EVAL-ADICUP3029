@@ -44,7 +44,7 @@
 **/
 #include <stdint.h>
 #include <stdio.h>
-#include <services/pwr/adi_pwr.h>
+#include <drivers/pwr/adi_pwr.h>
 
 #include "Timer.h"
 #include "common.h"

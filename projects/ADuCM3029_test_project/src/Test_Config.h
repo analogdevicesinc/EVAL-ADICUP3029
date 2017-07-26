@@ -78,7 +78,7 @@
    SPI_BLE 		-> SPI2
 
 */
-#define SPI_CHANNEL  SPI_PMOD
+#define SPI_CHANNEL  SPI_ARDUINO
 
 /* I2C pins connection */
 #define I2C_CHANNEL  0u

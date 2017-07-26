@@ -48,7 +48,6 @@
 #include <stdio.h>
 #include "Communication.h"
 #include "common.h"
-
 #include "Test.h"
 #include "Test_Config.h"
 
@@ -94,21 +93,21 @@ void Port_Init(void)
 
 	switch(GPIO_PINS){
 	case ADI_GPIO_PORT0:
-		adi_gpio_OutputEnable(ADI_GPIO_PORT0, 0xFFFFu, true); 	// Set Port 0 as output
-		adi_gpio_PullUpEnable(ADI_GPIO_PORT0, 0xFFFFu, false); 	// Disable all pull-up resistors
-		adi_gpio_SetLow(ADI_GPIO_PORT0, 0xFFFFu); 				// Set all Port 0 outputs to low
+		adi_gpio_OutputEnable(ADI_GPIO_PORT0, ADI_GPIO_PORT0_PIN_AVL, true); 	// Set Port 0 as output
+		adi_gpio_PullUpEnable(ADI_GPIO_PORT0, ADI_GPIO_PORT0_PIN_AVL, false); 	// Disable all pull-up resistors
+		adi_gpio_SetLow(ADI_GPIO_PORT0, ADI_GPIO_PORT0_PIN_AVL); 				// Set all Port 0 outputs to low
 		break;
 
 	case ADI_GPIO_PORT1:
-		adi_gpio_OutputEnable(ADI_GPIO_PORT1, 0xFFFFu, true); 	// Set Port 1 as output
-		adi_gpio_PullUpEnable(ADI_GPIO_PORT1, 0xFFFFu, false); 	// Disable all pull-up resistors
-		adi_gpio_SetLow(ADI_GPIO_PORT0, 0xFFFFu); 				// Set all Port 1 outputs to low
+		adi_gpio_OutputEnable(ADI_GPIO_PORT1, ADI_GPIO_PORT1_PIN_AVL, true); 	// Set Port 1 as output
+		adi_gpio_PullUpEnable(ADI_GPIO_PORT1, ADI_GPIO_PORT1_PIN_AVL, false); 	// Disable all pull-up resistors
+		adi_gpio_SetLow(ADI_GPIO_PORT1, ADI_GPIO_PORT1_PIN_AVL); 				// Set all Port 1 outputs to low
 		break;
 
 	case ADI_GPIO_PORT2:
-		adi_gpio_OutputEnable(ADI_GPIO_PORT2, 0x0FFFu, true); 	// Set Port 2 as output
-		adi_gpio_PullUpEnable(ADI_GPIO_PORT2, 0x0FFFu, false); 	// Disable all pull-up resistors
-		adi_gpio_SetLow(ADI_GPIO_PORT0, 0x0FFFu); 				// Set all Port 2 outputs to low
+		adi_gpio_OutputEnable(ADI_GPIO_PORT2, ADI_GPIO_PORT2_PIN_AVL, true); 	// Set Port 2 as output
+		adi_gpio_PullUpEnable(ADI_GPIO_PORT2, ADI_GPIO_PORT2_PIN_AVL, false); 	// Disable all pull-up resistors
+		adi_gpio_SetLow(ADI_GPIO_PORT2, ADI_GPIO_PORT2_PIN_AVL); 				// Set all Port 2 outputs to low
 		break;
 
 	default:
@@ -126,15 +125,15 @@ void Test_Port(void)
 {
 	switch(GPIO_PINS){
 	case ADI_GPIO_PORT0:
-		adi_gpio_Toggle(ADI_GPIO_PORT0, 0xFFFFu); // Toggle all Port 0 outputs
+		adi_gpio_Toggle(ADI_GPIO_PORT0, ADI_GPIO_PORT0_PIN_AVL); // Toggle all Port 0 outputs
 		break;
 
 	case ADI_GPIO_PORT1:
-		adi_gpio_Toggle(ADI_GPIO_PORT1, 0xFFFFu); // Toggle all Port 1 outputs
+		adi_gpio_Toggle(ADI_GPIO_PORT1, ADI_GPIO_PORT1_PIN_AVL); // Toggle all Port 1 outputs
 		break;
 
 	case ADI_GPIO_PORT2:
-		adi_gpio_Toggle(ADI_GPIO_PORT2, 0x0FFFu); // Toggle all Port 2 outputs
+		adi_gpio_Toggle(ADI_GPIO_PORT2, ADI_GPIO_PORT2_PIN_AVL); // Toggle all Port 2 outputs
 		break;
 	default:
 		break;
@@ -149,8 +148,10 @@ void Test_Port(void)
 **/
 void Test_UART(void)
 {
-    adi_uart_Read(hUartDevice,&RxBuffer[0],1); 	// Read a character from UART
-    adi_uart_Write(hUartDevice,&RxBuffer[0],1); // Write it back to UART
+	uint32_t nHardwareError;
+
+    adi_uart_Read(hUartDevice,&RxBuffer[0],1, 0, &nHardwareError); 	// Read a character from UART
+    adi_uart_Write(hUartDevice,&RxBuffer[0],1, 0, &nHardwareError); // Write it back to UART
 }
 
 /**
@@ -162,7 +163,6 @@ void Test_UART(void)
 void Test_SPI(void)
 {
 	ADI_SPI_RESULT eSpiResult;
-	bool_t bMasterComplete= false;
 
     /* Prepare the buffer for submitting to Master */
 	MSpitransceive.pTransmitter = TxBuffer; // initialize data attributes
@@ -172,15 +172,16 @@ void Test_SPI(void)
 	MSpitransceive.ReceiverBytes = 0;
 	MSpitransceive.nRxIncrement = 0;
 
-    /* Submit the buffer to Master */
-	if ((eSpiResult = adi_spi_MasterTransfer(hMSpiDevice,&MSpitransceive)) != ADI_SPI_SUCCESS)
+	/* Submit the buffer to Master */
+	if ((eSpiResult = adi_spi_MasterSubmitBuffer(hMSpiDevice,&MSpitransceive)) != ADI_SPI_SUCCESS)
 	{
 		DEBUG_MESSAGE("Master - Data failure");
 	}
 
-    /* Wait till the data transmission is over */
-	while( (bMasterComplete == false) ){
-		   adi_spi_MasterComplete(hMSpiDevice,&bMasterComplete);
+	/* Wait till the data transmission is over */
+	if ((eSpiResult = adi_spi_MasterReadWrite(hMSpiDevice,&MSpitransceive)) != ADI_SPI_SUCCESS)
+	{
+		DEBUG_MESSAGE("Transmission failed");
 	}
 }
 
@@ -192,47 +193,25 @@ void Test_SPI(void)
 **/
 void Test_I2C(void)
 {
-	void* pBuffer;
 	ADI_I2C_RESULT	eI2cResult = ADI_I2C_SUCCESS;
+	bool bBufferComplete = false;
 
-	/* Submit Buffers */
-	if ((eI2cResult = adi_i2c_SubmitRxBuffer(slaveI2cDev, &RxBuffer[0], 1, false)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to Submit Rx buffer to slave");
-	}
-	if ((eI2cResult = adi_i2c_SubmitTxBuffer(masterI2cDev, &TxBuffer[0], 1, false)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to Submit Tx buffer to master");
-	}
+	I2cTrans.nDataSize = 8;
+	I2cTrans.pData = TxBuffer;
+	I2cTrans.bReadNotWrite = false; // write
+	I2cTrans.nPrologueSize = 1;
+	I2cTrans.bRepeatStart = true;
 
-	/* Enable slave and master device */
-	if ((eI2cResult = adi_i2c_Enable(slaveI2cDev, true)) != ADI_I2C_SUCCESS)
+	if ((eI2cResult = adi_i2c_SubmitBuffer(masterI2cDev, &I2cTrans)) != ADI_I2C_SUCCESS)
 	{
-		DEBUG_MESSAGE("Failed to enable slave");
-	}
-	if ((eI2cResult = adi_i2c_Enable(masterI2cDev, true)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to enable master");
+		DEBUG_MESSAGE("Submit buffer failed");
 	}
 
-	 /* Get Tx and Rx Buffers from master and slave */
-	if ((eI2cResult = adi_i2c_GetTxBuffer(masterI2cDev, &pBuffer)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to get buffer from master");
-	}
-	if ((eI2cResult = adi_i2c_GetRxBuffer(slaveI2cDev, &pBuffer)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to get buffer from slave");
-	}
-
-	/* Disable slave and master device */
-	if ((eI2cResult = adi_i2c_Enable(slaveI2cDev, false)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to disable slave");
-	}
-	if ((eI2cResult = adi_i2c_Enable(masterI2cDev, false)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to disable master");
+	while(true != bBufferComplete) {
+		if ((eI2cResult = adi_i2c_IsBufferAvailable(masterI2cDev, &bBufferComplete)) != ADI_I2C_SUCCESS)
+		{
+			DEBUG_MESSAGE("IsBufferAvailable failed");
+		}
 	}
 }
 

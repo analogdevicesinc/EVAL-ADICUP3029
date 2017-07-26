@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
 	Test_Init(); // Init Test project
 
 	while(1) {
-
 	    if(FUNCTION_TO_TEST == GPIO) {
 	    	timer_sleep(500); // Delay 500ms, in order to see the pins toggling
 	    	Test_Port(); // Test ports

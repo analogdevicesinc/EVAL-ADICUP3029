@@ -47,7 +47,7 @@
 #define TEST_H_
 
 #include <stddef.h>
-#include <services/gpio/adi_gpio.h>
+#include <drivers/gpio/adi_gpio.h>
 
 uint8_t gpioMemory[ADI_GPIO_MEMORY_SIZE];
 
@@ -57,6 +57,7 @@ extern ADI_UART_HANDLE          hUartDevice __attribute__ ((aligned (4)));
 /* Master SPI device handle */
 extern ADI_SPI_HANDLE hMSpiDevice;
 ADI_SPI_TRANSCEIVER MSpitransceive;
+ADI_I2C_TRANSACTION I2cTrans;
 
 /* Master I2C device handle */
 extern ADI_I2C_HANDLE masterI2cDev;

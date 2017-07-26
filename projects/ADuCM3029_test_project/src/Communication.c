@@ -99,24 +99,6 @@ void UART_Init()
     {
     	DEBUG_MESSAGE("UART device baud rate configuration failed");
     }
-
-    /* Enable the DMA associated with UART */
-    if((eUartResult = adi_uart_EnableDMAMode(hUartDevice,true)) != ADI_UART_SUCCESS)
-    {
-    	DEBUG_MESSAGE("Failed to enable the DMA mode");
-    }
-
-    /* Enable the Data flow for Rx */
-    if((eUartResult = adi_uart_EnableRx(hUartDevice,true)) != ADI_UART_SUCCESS)
-    {
-    	DEBUG_MESSAGE("Failed to enable the Rx");
-    }
-
-    /* Enable the Data flow for Tx */
-    if((eUartResult = adi_uart_EnableTx(hUartDevice,true)) != ADI_UART_SUCCESS)
-    {
-    	DEBUG_MESSAGE("Failed to enable the Tx");
-    }
 }
 
 
@@ -154,11 +136,10 @@ void SPI_Init(void)
 			DEBUG_MESSAGE("Failed to set the chip select");
 		}
 	}
-	/* Enable the DMA associated with SPI */
-	if ((eSpiResult = adi_spi_EnableDmaMode(hMSpiDevice, true)) != ADI_SPI_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to enable the DMA mode");
-	}
+	adi_spi_SetContinuousMode(hMSpiDevice, true);
+	adi_spi_SetIrqmode(hMSpiDevice, true);
+	adi_spi_SetClockPolarity(hMSpiDevice, false); // set Clock polarity low
+	adi_spi_SetClockPhase(hMSpiDevice, false);    // set Clock phase leading
 }
 
 /**
@@ -175,42 +156,23 @@ void I2C_Init(void)
 	pADI_GPIO0->DS |= (1<<4) | (1<<5);
 
 	/* Open Master Device */
-	if ((eI2cResult = adi_i2c_Open(I2C_CHANNEL, ADI_I2C_MASTER, &masterI2cDeviceMemory[0], ADI_I2C_MEMORY_SIZE, &masterI2cDev)) != ADI_I2C_SUCCESS)
+	if ((eI2cResult = adi_i2c_Open(I2C_CHANNEL, &masterI2cDeviceMemory[0], ADI_I2C_MEMORY_SIZE, &masterI2cDev)) != ADI_I2C_SUCCESS)
 	{
 		DEBUG_MESSAGE("I2C Open Master failed");
 	}
 	/* Open Slave Device */
-	if ((eI2cResult = adi_i2c_Open(I2C_CHANNEL, ADI_I2C_SLAVE, &slaveI2cDeviceMemory[0], ADI_I2C_MEMORY_SIZE, &slaveI2cDev)) != ADI_I2C_SUCCESS)
+	if ((eI2cResult = adi_i2c_Open(I2C_CHANNEL, &slaveI2cDeviceMemory[0], ADI_I2C_MEMORY_SIZE, &slaveI2cDev)) != ADI_I2C_SUCCESS)
 	{
 		DEBUG_MESSAGE("I2C Open Slave failed");
 	}
 
-	if ((eI2cResult = adi_i2c_SetBitRate(masterI2cDev, 100u)) != ADI_I2C_SUCCESS) // 100 kHz
+	if ((eI2cResult = adi_i2c_SetBitRate(masterI2cDev, 100000u)) != ADI_I2C_SUCCESS) // 100 kHz
 	{
 		DEBUG_MESSAGE("adi_i2c_SetBitRate failed");
 	}
 
-	if ((eI2cResult = adi_i2c_SetDutyCycle(masterI2cDev, 50u)) != ADI_I2C_SUCCESS) // 50%
-	{
-		DEBUG_MESSAGE("adi_i2c_SetDutyCycle failed");
-	}
-	/* Enable Internal Loopback */
-	if ((eI2cResult = adi_i2c_EnableInternalLoopback(masterI2cDev, true)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to enable internal loopback");
-	}
-	/* Set hardware address width */
-	if ((eI2cResult = adi_i2c_SetHWAddressWidth(masterI2cDev, ADI_I2C_HWADDR_WIDTH_7_BITS)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to set hardware address width");
-	}
-	/* Set the hardware address for master */
-	if ((eI2cResult = adi_i2c_SetHardwareAddress(masterI2cDev, 0x48)) != ADI_I2C_SUCCESS)
-	{
-		DEBUG_MESSAGE("Failed to set master hardware address");
-	}
 	/* Set the hardware address for slave */
-	if ((eI2cResult = adi_i2c_SetHardwareAddress(slaveI2cDev, 0x48)) != ADI_I2C_SUCCESS)
+	if ((eI2cResult = adi_i2c_SetSlaveAddress(slaveI2cDev, 0x48)) != ADI_I2C_SUCCESS)
 	{
 		DEBUG_MESSAGE("Failed to set slave hardware address");
 	}
