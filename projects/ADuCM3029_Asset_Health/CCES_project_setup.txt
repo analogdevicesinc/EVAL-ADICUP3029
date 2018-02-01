@@ -1,0 +1,18 @@
+This file gives a description of how to import a project into CCES
+
+
+To import an existing project into CCES
+From the menu go to 
+	1. File -> Import -> Genral -> Existing Projects into Workspace
+	2. Select the archive file or the root directory of the unzipped project
+	3. Finish
+The project will be imported to your CCES current workspace.
+
+Once the project is imported, cofigure the Debug settings
+From the menu
+	1. Run -> Debug Configurations
+	2. Select the "Application with GDB and OpenOCD (Emulator)" option
+	3. In the right hand side window select "Target (processor)" and choose the processor from the drop down menu (Analog Devices ADuCM3029)
+	4. Interface should be "ARM CMSIS-DAP compliant adapter"
+	5. Switch to the main tab. To choose the project application, click on "Search Project" below C/C++ Application. Select the project from the list.
+	6. Click Debug to enter debugging.

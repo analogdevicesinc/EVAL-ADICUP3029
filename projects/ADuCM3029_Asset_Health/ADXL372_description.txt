@@ -1,0 +1,299 @@
+/*!
+ * @brief Sets operation mode of ADXL372
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to set the operation mode.
+ *                - #ADXL_DRV_SUCCESS        On successfully setting the operation mode.
+ *
+ * Sets the operation mode by writing to Power Control register.
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_Op_mode(ADXL372_OP_MODE mode)
+
+
+/*!
+ * @brief Sets ODR of ADXL372
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to set the ODR.
+ *                - #ADXL_DRV_SUCCESS        On successfully setting the ODR.
+ *
+ * Sets the ODR by writing to Timing register
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_ODR(ADXL372_ODR odr)
+
+
+/*!
+ * @brief Sets Wakeup Rate of ADXL372
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to set the Wakeup rate.
+ *                - #ADXL_DRV_SUCCESS        On successfully setting the wakeup rate.
+ *
+ * Sets the Wakeup rate by writing to Timing register
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_WakeUp_Rate(ADXL372_WUR wur)
+
+
+/*!
+ * @brief Sets Bandwidth of ADXL372
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to set the bandwidth.
+ *                - #ADXL_DRV_SUCCESS        On successfully setting the bandwidth.
+ *
+ * Sets the bandwidth by writing to Measure register
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_BandWidth(ADXL372_BW bw)
+
+
+/*!
+ * @brief Enable disable Autosleep
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to enable/disable Autosleep.
+ *                - #ADXL_DRV_SUCCESS        On successfully enabling/disabling Autosleep.
+ *
+ * Enable/Disable Autosleep by writing to Power Control register
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_Autosleep(bool enable)
+
+
+/*!
+ * @brief Set Activity Mode
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to set the activity mode.
+ *                - #ADXL_DRV_SUCCESS        On successfully setting activity mode.
+ *
+ * Sets the activity mode by writng to Measure register
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_Act_Proc_Mode(ADXL372_ACT_PROC_MODE mode)
+
+
+/*!
+ * @brief Reads the device registers
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to read the registers.
+ *                - #ADXL_DRV_SUCCESS        On successfully reading the resgisters.
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Get_DevID(uint8_t *DevID)
+
+
+/*!
+ * @brief Reads the status register
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to read the register.
+ *                - #ADXL_DRV_SUCCESS        On successfully reading the resgister.
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Get_Status_Register(uint8_t *adxl_status)
+
+
+/*!
+ * @brief Reads the activity status register
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to read the register.
+ *                - #ADXL_DRV_SUCCESS        On successfully reading the resgister.
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Get_ActivityStatus_Register(uint8_t *adxl_status2)
+
+
+/*!
+ * @brief  Reads peak acceleration data on X,Y & Z axes from ADXL372 sensor
+ *
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to read data from sensor.
+ *                - #ADXL_DRV_SUCCESS        On successfully reading data from sensor.
+ *
+ * Reads acceleration data on X,Y & axes from ADXL372 sensor through SPI
+ * Reads the max peak data registers
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Get_Highest_Peak_Accel_data(int16_t *max_peak)
+
+
+/*!
+ * @brief  Reads acceleration data on X,Y & Z axes from ADXL372 sensor
+ *
+ * @return Status
+ *                - #ADXL_DRV_FAIL           On failure to read data from sensor.
+ *                - #ADXL_DRV_SUCCESS        On successfully reading data from sensor.
+ *
+ * Reads acceleration data on X,Y & axes from ADXL372 sensor through SPI
+ * Reads the data registers
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Get_Accel_data(int16_t *accel_data)
+
+
+/*!
+ * @brief Resets the ADXL372 sensor
+ *
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to reset
+ * 					- #ADXL_DRV_SUCCESS		On successfully resetting the sensor
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Reset(void)
+
+
+/*!
+ * @brief Configure the FIFO
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to configure
+ * 					- #ADXL_DRV_SUCCESS		On successful configuration
+ *
+ * Confiures the FIFO by setting the FIFO mode, number of samples to store and FIFO format
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Configure_FIFO(uint16_t fifo_samples, ADXL372_FIFO_MODE fifo_mode, ADXL372_FIFO_FORMAT fifo_format)
+
+
+/*!
+ * @brief Read FIFO data
+ *
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to read
+ * 					- #ADXL_DRV_SUCCESS		On successful FIFO read
+ *
+ * Read the FIFO data based on the FIFO configurations by reading the FIFO Data register
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Get_FIFO_data(uint8_t *buff)
+
+
+/*!
+ * @brief Sets the Instant On Threshold
+ *
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to set threshold
+ * 					- #ADXL_DRV_SUCCESS		On successfully setting the threshold
+ *
+ * Sets the Instat On Threshold to high range or low range by writing to Power control register
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_InstaOn_Thresh(ADXL_INSTAON_THRESH mode)
+
+
+/*!
+ * @brief Sets Activity Threshold
+ *
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to write to the register
+ * 					- #ADXL_DRV_SUCCESS		On successfully writing to the register
+ *
+ * Set Activity Threshold of all three axes by writing to the Activity Threshold resgister
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_Activity_Threshold(void)
+
+
+/*!
+ * @brief Sets Inactivity Threshold
+ *
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to write to the register
+ * 					- #ADXL_DRV_SUCCESS		On successfully writing to the register
+ *
+ * Set Inactivity Threshold of all 3 axes by writing to the Inactivity Threshold resgister
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_Inactivity_Threshold(void)
+
+
+/*!
+ * @brief Sets Activity Time
+ *
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to write to the register
+ * 					- #ADXL_DRV_SUCCESS		On successfully writing to the register
+ *
+ * Set Activity Time by writing to the Activity Time resgister
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_Activity_Time(void)
+
+
+/*!
+ * @brief Sets Inactivity Time
+ *
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to write to the register
+ * 					- #ADXL_DRV_SUCCESS		On successfully writing to the register
+ *
+ * Set Inactivity Time by writing to the Inactivity Time resgister
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_Inactivity_Time(void)
+
+
+/*!
+ * @brief Map the interrupts
+ *
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to map the interrupt
+ * 					- #ADXL_DRV_SUCCESS		On successfully mapping the interrupt
+ *
+ * Map the interrupts to detect events
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_Interrupts(void)
+
+
+/*!
+ * @brief Set Filter settling time
+ *
+ * @return Status
+ * 					- #ADXL_DRV_FAIL		On failure to set filter settle time
+ * 					- #ADXL_DRV_SUCCESS		On successfully setting the filter settle time
+ *
+ * Set the filer settling time to 16ms or 370ms by writing to power control register
+ */
+ADXL_DRIVER_RESULT_TYPE adxl372_Set_Filter_Settle(ADXL372_Filter_Settle mode)
+
+
+/*!
+ * @brief  Detects the ADXL372 sensor mounted or not
+ *
+ * @return Status
+ *                - #ADI_ADS_API_FAIL           On failure to detect the sensor.
+ *                - #ADI_ADS_API_SUCCESS        On successfully detecting the sensor.
+ *
+ * Reads factory written device ID's from ADXL372 and verifies.
+ */
+ADSENSORAPP_RESULT_TYPE Detect_ADXL372_Sensor()
+
+
+/*!
+ * @brief  Initializes and configures the ADXL372 operation
+ *
+ * @return Status
+ *                - #ADI_ADS_API_FAIL           On failure to configure the sensor.
+ *                - #ADI_ADS_API_SUCCESS        On successfully configuring the sensor.
+ *
+ * Configures the device by programming the rewuired registers.
+ */
+ADSENSORAPP_RESULT_TYPE ADXL372_Init()
+
+
+/*!
+ * @brief  Reads acceleration data on X,Y & Z axes from ADXL372 sensor
+ *
+ * @return Status
+ *                - #ADI_ADS_API_FAIL           On failure to read data from sensor.
+ *                - #ADI_ADS_API_SUCCESS        On successfully reading data from sensor.
+ *
+ * Reads acceleration data on X,Y & axes from ADXL372 sensor through SPI
+ * Fills SensData.ADXL372[] with data.
+ */
+ADSENSORAPP_RESULT_TYPE Get_Data_From_ADXL372()
+
+
+/*!
+ * @brief  Reads FIFO data based on FIFO config from ADXL372 sensor
+ *
+ * @return Status
+ *                - #ADI_ADS_API_FAIL           On failure to read data from sensor.
+ *                - #ADI_ADS_API_SUCCESS        On successfully reading data from sensor.
+ *
+ * Reads acceleration data from FIFO from ADXL372 sensor through SPI
+ * Fills ADXL372_FIFO_Buf[] with data.
+ */
+ADSENSORAPP_RESULT_TYPE ADXL372_Read_FIFO_Data()
+
+
+/*!
+ * @brief  Reads FIFO data based on FIFO config from ADXL372 sensor
+ *
+ * @return Status
+ *                - #ADI_ADS_API_FAIL           On failure to read data from sensor.
+ *                - #ADI_ADS_API_SUCCESS        On successfully reading data from sensor.
+ *
+ * Reads acceleration data from FIFO from ADXL372 sensor through SPI
+ * Fills ADXL372_FIFO_Buf[] with data.
+ */
+ADSENSORAPP_RESULT_TYPE ADXL372_Set_Impact_Detection(void)
+
+
