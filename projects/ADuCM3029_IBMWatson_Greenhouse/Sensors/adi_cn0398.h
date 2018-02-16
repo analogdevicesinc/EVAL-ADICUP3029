@@ -142,9 +142,7 @@ namespace adi_sensor_swpack
 			P4 = 3
 		};
 
-	//	MQTTClient mqttClient;
-
-		CN0398(/*MQTTClient mqttClient*/);
+		CN0398();
 
 		SENSOR_RESULT open();
 		SENSOR_RESULT start();
@@ -154,8 +152,6 @@ namespace adi_sensor_swpack
 		float read_rtd();
 		float read_ph(float temperature = 25.0);
 		float read_moisture();
-
-
 
 		int32_t read_channel(uint8_t ch);
 		float data_to_voltage(uint32_t data, uint8_t gain = 1, float VREF = 2.5);

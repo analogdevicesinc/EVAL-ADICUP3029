@@ -27,8 +27,6 @@ CN0410 *cn0410 = new CN0410(pLight);
 
 sensors_data_t  data;
 
-
-
 /**
    @brief Callback function called when a command is received from the cloud.
 
@@ -123,12 +121,7 @@ int main(int argc, char *argv[])
 					Leds_Controll(strstr((char *)Buffer, (char *)"{"));
 				}
 			}
-
 		}
-
 	}
-
-
-
 }
 

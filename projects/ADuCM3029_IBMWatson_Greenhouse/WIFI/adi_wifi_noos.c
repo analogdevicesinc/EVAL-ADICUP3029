@@ -65,7 +65,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
  /*! \cond PRIVATE */
-//#include <framework/noos/adi_wifi_noos.h>
 #include <adi_wifi_noos.h>
 #include <adi_wifi_config.h>
 #include <drivers/tmr/adi_tmr.h>

@@ -101,10 +101,10 @@ int PrepareMqttPayload(void *v) {
 		sd->red_concentration = 100;
 
 	if (sd->blue_concentration > 100)
-			sd->blue_concentration = 100;
+		sd->blue_concentration = 100;
 
 	if (sd->green_concentration > 100)
-			sd->green_concentration = 100;
+		sd->green_concentration = 100;
 
   return 0;
 }

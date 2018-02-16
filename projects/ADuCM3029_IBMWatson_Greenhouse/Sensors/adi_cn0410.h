@@ -12,7 +12,6 @@
 #include <drivers/spi/adi_spi.h>
 #include "cn0410_bindings.h"
 #include "adi_cn0397.h"
-//#include <framework/noos/adi_wifi_noos.h>
 
 #include <adi_wifi_noos.h>
 
@@ -99,7 +98,5 @@ namespace adi_sensor_swpack
 
 	};
 }
-
-
 
 #endif /* SENSORS_ADI_CN0410_H_ */

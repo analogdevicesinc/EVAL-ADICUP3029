@@ -647,18 +647,8 @@ void UART0_Int_Handler(void)
         */
         case ENUM_UART_IIR_STAT_RFTOI:
 
-//        	        	if (hDevice->pUARTRegs->RFC > 1)
-//        	        	{
-//        	        		printf("%d\n\r", hDevice->pUARTRegs->RFC);
-//        	        	}
-
         	/* Read the UART data into the uart device software buffer. */
         	hDevice->pRxBuffer[hDevice->nUartReadIndex] = hDevice->pUARTRegs->RX;
-
-//        	          if (hDevice->pUARTRegs->RFC > 1)
-//        	          {
-//        	        	  printf(" 2 %d\n\r", hDevice->pUARTRegs->RFC);
-//        	          }
 
         	/* Increment the uart read index for the "circular" uart device internal buffer. */
         	if(hDevice->nUartReadIndex < (ADI_UART_BUFFER_SIZE - 1))

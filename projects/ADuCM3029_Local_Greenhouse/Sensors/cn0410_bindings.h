@@ -8,7 +8,6 @@
 #ifndef CN0410_BINDINGS_H_
 #define CN0410_BINDINGS_H_
 
-
 extern "C"
 {
 	void UART_Init(void);

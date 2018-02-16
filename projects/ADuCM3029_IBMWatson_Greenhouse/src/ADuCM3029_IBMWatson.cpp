@@ -234,74 +234,70 @@ static void MQTTPublish(void)
 
     eResult = adi_wifi_radio_MQTTSubscribe(&gSubscribeConfig);
 
-    /* Start the ping timer to ping the MQTT broker before the keep alive expires */
-//    if(adi_wifi_StartTimer(ADI_WIFI_MQTT_PING_TIMEOUT, 1u) == ADI_WIFI_SUCCESS)
-//    {
-    	DEBUG_MESSAGE("Starting to Publish\n");
+    DEBUG_MESSAGE("Starting to Publish\n");
 
-		gPublishConfig.nPacketId = nPacketId;
+    gPublishConfig.nPacketId = nPacketId;
 
-		/*enable wdt*/
-		adi_wdt_Enable	(	true, NULL	);
+    /*enable wdt*/
+    adi_wdt_Enable	(	true, NULL	);
 
-		while(1)
-		{
-			adi_wdt_Kick();
-			nConnectionFailFlag = 0;
+    while(1)
+    {
+    	adi_wdt_Kick();
+    	nConnectionFailFlag = 0;
 
-            /* If ping timer has expired */
-            if (adi_wifi_IsTimerDone(1u) == 1u)
-            {
-        		/* Send MQTT "PINGREQ" message to broker to keep the connection alive. */
-        		eResult = adi_wifi_radio_MQTTPing(ADI_WIFI_CONNECTION_ID);
+    	/* If ping timer has expired */
+    	if (adi_wifi_IsTimerDone(1u) == 1u)
+    	{
+    		/* Send MQTT "PINGREQ" message to broker to keep the connection alive. */
+    		eResult = adi_wifi_radio_MQTTPing(ADI_WIFI_CONNECTION_ID);
 
-        		/* Restart the ping timer */
-        		if((adi_wifi_StopTimer(1u) == ADI_WIFI_SUCCESS) && (eResult == ADI_WIFI_SUCCESS))
-            	{
-        			if(adi_wifi_StartTimer(ADI_WIFI_MQTT_PING_TIMEOUT, 1u) != ADI_WIFI_SUCCESS)
-                    {
-        		    	DEBUG_MESSAGE("Failed to start ping timer\n");
+    		/* Restart the ping timer */
+    		if((adi_wifi_StopTimer(1u) == ADI_WIFI_SUCCESS) && (eResult == ADI_WIFI_SUCCESS))
+    		{
+    			if(adi_wifi_StartTimer(ADI_WIFI_MQTT_PING_TIMEOUT, 1u) != ADI_WIFI_SUCCESS)
+    			{
+    				DEBUG_MESSAGE("Failed to start ping timer\n");
 
-                    }
-            	}
-            	else
-            	{
-	    	        DEBUG_MESSAGE("Failed to ping broker\n");
-    		    	nConnectionFailFlag = 1;
-    		    }
-            }
+    			}
+    		}
+    		else
+    		{
+    			DEBUG_MESSAGE("Failed to ping broker\n");
+    			nConnectionFailFlag = 1;
+    		}
+    	}
 
-           	/* If we did not fail to ping the broker, publish data */
-            if(nConnectionFailFlag == 0u)
-            {
-            	DEBUG_MESSAGE("Publishing data..\n");
+    	/* If we did not fail to ping the broker, publish data */
+    	if(nConnectionFailFlag == 0u)
+    	{
+    		DEBUG_MESSAGE("Publishing data..\n");
 
-            	PrepareMqttPayload(&data);
+    		PrepareMqttPayload(&data);
 
-            	char *payload = telemetry_serialize(&data);
+    		char *payload = telemetry_serialize(&data);
 
-            	gPublishConfig.pMQTTData = (uint8_t *)payload;
-            	gPublishConfig.nMQTTDataSize = strlen(payload);
+    		gPublishConfig.pMQTTData = (uint8_t *)payload;
+    		gPublishConfig.nMQTTDataSize = strlen(payload);
 
 
-            	if(adi_wifi_radio_MQTTPublish(&gPublishConfig) == ADI_WIFI_FAILURE)
-            	{
-            		nConnectionFailFlag = 1u;
-            	}
-            	free(payload);
-            	adi_wifi_DispatchEvents(6000);
-            }
+    		if(adi_wifi_radio_MQTTPublish(&gPublishConfig) == ADI_WIFI_FAILURE)
+    		{
+    			nConnectionFailFlag = 1u;
+    		}
+    		free(payload);
+    		adi_wifi_DispatchEvents(6000);
+    	}
 
-            /* If we failed to ping the broker or failed to publish data, check the connection */
-			if(nConnectionFailFlag == 1u)
-			{
-				DEBUG_MESSAGE("Troubleshooting failed connection..\n");
-				RepairConnection();
-			}
+    	/* If we failed to ping the broker or failed to publish data, check the connection */
+    	if(nConnectionFailFlag == 1u)
+    	{
+    		DEBUG_MESSAGE("Troubleshooting failed connection..\n");
+    		RepairConnection();
+    	}
 
-			gPublishConfig.nPacketId++;
-		}
-//    }
+    	gPublishConfig.nPacketId++;
+    }
 }
 
 /*!

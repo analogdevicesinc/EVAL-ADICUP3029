@@ -46,7 +46,6 @@
 /***************************** Include Files **********************************/
 #include "Communication.h"
 #include "common.h"
-
 /************************** Variable Definitions ******************************/
 
 /* Master SPI device handle */
@@ -55,54 +54,7 @@ ADI_SPI_HANDLE hMSpiDevice;
 uint8_t MasterSpidevicemem[ADI_SPI_MEMORY_SIZE];
 ADI_SPI_TRANSCEIVER MSpitransceive;
 
-/* Handle for UART device */
-ADI_UART_HANDLE          hUartDevice __attribute__ ((aligned (4)));
-/* Memory for  UART driver */
-uint8_t UartDeviceMem[ADI_UART_MEMORY_SIZE] __attribute__ ((aligned (4)));
-
-
 /************************* Functions Definitions ******************************/
-
-
-/**
-  @brief UART Initialization
-
-  @return none
-
-**/
-//void UART_Init()
-//{
-//  	/* Variable for storing the return code from UART device */
-//	ADI_UART_RESULT  eUartResult;
-//	IRQn_Type eIrq;
-//
-//    /* Open the UART device.Data transfer is bidirectional with NORMAL mode by default.  */
-//    if((eUartResult = adi_uart_Open(UART_DEVICE_NUM, ADI_UART_DIR_BIDIRECTION, UartDeviceMem, ADI_UART_MEMORY_SIZE, &hUartDevice)) != ADI_UART_SUCCESS)
-//    {
-//    	DEBUG_MESSAGE("\n\t UART device open  failed");
-//    }
-//
-//    /* Register a call back to test callback mode */
-//    if((eUartResult = adi_uart_RegisterCallback(hUartDevice,UARTCallback,(void*)&eIrq))!= ADI_UART_SUCCESS)
-//    {
-//        DEBUG_MESSAGE("Call back registration failed");
-//    }
-//
-//    /* Configure  UART device with NO-PARITY, ONE STOP BIT and 8bit word length. */
-//    if((eUartResult = adi_uart_SetConfiguration(hUartDevice, ADI_UART_NO_PARITY, ADI_UART_ONE_STOPBIT, ADI_UART_WORDLEN_8BITS)) != ADI_UART_SUCCESS)
-//    {
-//    	DEBUG_MESSAGE("UART device configuration failed ");
-//    }
-//
-//    /* Baud rate div values are calculated for PCLK 26Mhz */
-//    if((eUartResult = adi_uart_ConfigBaudRate(hUartDevice, UART_DIV_C, UART_DIV_M, UART_DIV_N, UART_OSR)) != ADI_UART_SUCCESS) // 9600 baud rate
-//    {
-//    	DEBUG_MESSAGE("UART device baud rate configuration failed");
-//    }
-//
-//
-//}
-
 /**
   @brief SPI Initialization
 
@@ -137,12 +89,6 @@ void SPI_Init(void)
 			DEBUG_MESSAGE("Failed to set the chip select");
 		}
 	}
-	/* Enable the DMA associated with SPI */
-//	if ((eSpiResult = adi_spi_EnableDmaMode(hMSpiDevice, true)) != ADI_SPI_SUCCESS)
-//	{
-//		DEBUG_MESSAGE("Failed to enable the DMA mode");
-//	}
-	//ToDo DMA is disabled for sensor configuration -> can be enabled after configuration
 	adi_spi_SetContinuousMode(hMSpiDevice, true);
 	adi_spi_SetIrqmode(hMSpiDevice, true);
 	adi_spi_SetClockPolarity(hMSpiDevice, false); // set Clock polarity low
@@ -236,6 +182,3 @@ uint16_t SPI_Read(uint8_t ui8address, enRegsNum enRegs)
 		return (uint16_t)((uint16_t)(aui8Rx_Buf[2] << 8) + aui8Rx_Buf[3]);
 	}
 }
-
-
-

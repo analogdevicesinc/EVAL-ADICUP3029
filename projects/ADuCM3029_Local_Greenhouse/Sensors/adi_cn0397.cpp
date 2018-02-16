@@ -53,11 +53,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 namespace adi_sensor_swpack
 {
-    CN0397::CN0397(/*MQTTClient mqttClient*/)
+    CN0397::CN0397()
     {       
-//        this->setType(ADI_VISIBLELIGHT_TYPE);
-//        this->setID(CN0397_SENSOR_ID_CFG);
-//        this->mqttClient = mqttClient;
     }
     
     SENSOR_RESULT CN0397::open()
@@ -214,45 +211,5 @@ namespace adi_sensor_swpack
 
     void CN0397::displayData()
     {
-//    	uint8_t ui8S[500];
-//    	uint8_t au8NewString[400];
-//
-//    	strcat((char *)ui8S,"\tRED   CHANNEL\t\t\t\t");
-//    	strcat((char *)ui8S,"\tGREEN CHANNEL\t\t\t\t");
-//    	strcat((char *)ui8S,"\tBLUE  CHANNEL\t\t\t\t\n\r");
-//
-////    	PRINTF(("\tRED   CHANNEL\t\t\t\t"));
-////    	PRINTF(("\tGREEN CHANNEL\t\t\t\t"));
-////    	PRINTF(("\tBLUE  CHANNEL\t\t\t\t"));
-////    	PRINTF(("\r\n"));
-//
-//    	sprintf((char *)au8NewString,"\tLight Intensity = %.2f lux\t\t", (float )eIntensity.fData_Red);
-//    	strcat((char *)ui8S,(char *)au8NewString);
-//    	sprintf((char *)au8NewString,"\tLight Intensity = %.2f lux\t\t", (float )eIntensity.fData_Green);
-//    	strcat((char *)ui8S,(char *)au8NewString);
-//    	sprintf((char *)au8NewString,"\tLight Intensity = %.2f lux\t\t\r\n", (float )eIntensity.fData_Blue);
-//    	strcat((char *)ui8S,(char *)au8NewString);
-//
-////    	PRINTF(("\tLight Intensity = %.2f lux\t\t", (float )eIntensity.fData_Red));
-////    	PRINTF(("\tLight Intensity = %.2f lux\t\t", (float )eIntensity.fData_Green));
-////    	PRINTF(("\tLight Intensity = %.2f lux\t\t", (float )eIntensity.fData_Blue));
-////    	PRINTF(("\r\n"));
-//
-//    	sprintf((char *)au8NewString,"\tLight Concentration = %.2f %c\t\t", (float )eConcentration.fData_Red, 37);
-//    	strcat((char *)ui8S,(char *)au8NewString);
-//    	sprintf((char *)au8NewString,"\tLight Concentration = %.2f %c\t\t", (float )eConcentration.fData_Green, 37);
-//    	strcat((char *)ui8S,(char *)au8NewString);
-//    	sprintf((char *)au8NewString,"\tLight Concentration = %.2f %c\t\t\n\r", (float )eConcentration.fData_Blue, 37);
-//    	strcat((char *)ui8S,(char *)au8NewString);
-//
-////    	PRINTF(("\tLight Concentration = %.2f %c\t\t", (float )eConcentration.fData_Red, 37));
-////    	PRINTF(("\tLight Concentration = %.2f %c\t\t", (float )eConcentration.fData_Green, 37));
-////    	PRINTF(("\tLight Concentration = %.2f %c\t\t", (float )eConcentration.fData_Blue, 37));
-////    	PRINTF(("\r\n"));
-////    	PRINTF(("\r\n"));
-//
-//    	uint16_t len = strlen((char *)ui8S);
-//    	mqttClient.WriteMqtt(ui8S, len, u8SendTopic);
-//    	//mqttClient.ReadMqtt();
     }
 }

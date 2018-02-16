@@ -51,9 +51,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ADI_WIFI_CONFIG_H_
 #define ADI_WIFI_CONFIG_H_
 
-
 #include <drivers/tmr/adi_tmr.h>
-//#include <common/adi_error_handling.h>
 
 #include <adi_error_handling.h>
 

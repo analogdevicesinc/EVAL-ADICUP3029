@@ -19,7 +19,7 @@ namespace adi_sensor_swpack
 
 	int32_t adcValue[3];
 
-	CN0398::CN0398(/*MQTTClient mqttClient*/)
+	CN0398::CN0398()
 	{
 		offset_voltage = default_offset_voltage;
 		calibration_ph[0][0] = default_calibration_ph[0][0];
@@ -28,7 +28,6 @@ namespace adi_sensor_swpack
 		calibration_ph[1][1] = default_calibration_ph[1][1];
 		solution0 = 0;
 		solution1 = 0;
-	//	this->mqttClient = mqttClient;
 
 	}
 
@@ -54,13 +53,6 @@ namespace adi_sensor_swpack
 
 		calibration_ph[0][1] =  volt;
 		set_digital_output(P2, false);
-
-//		sprintf((char *)ui8S,"\tCalibration solution1 pH = %.3f with sensor voltage of %fV\n", calibration_ph[0][0], volt);
-//		mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-
-//		printf("\tCalibration solution1 pH = %.3f with sensor voltage of %fV\n", calibration_ph[0][0], volt);
-//		printf("\n");
-
 	}
 	void CN0398::calibrate_ph_pt1(float temperature)
 	{
@@ -83,13 +75,6 @@ namespace adi_sensor_swpack
 
 		calibration_ph[1][1] =  volt;
 		set_digital_output(P2, false);
-
-//		sprintf((char *)ui8S,"\tCalibration solution2 pH = %.3f with sensor voltage of %fV\n\r", calibration_ph[1][0], volt);
-//		mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-
-//		AppPrintf("\tCalibration solution2 pH = %.3f with sensor voltage of %fV\n\r", calibration_ph[1][0], volt);
-//		AppPrintf("\n\r");
-
 	}
 
 	void CN0398::calibrate_ph_offset()
@@ -100,8 +85,6 @@ namespace adi_sensor_swpack
 
 		float volt = data_to_voltage_bipolar(data, 1, 3.3);
 		offset_voltage = volt;
-//		printf("\tOffset voltage is %fV\n", volt);
-//		printf("\n");
 
 		set_digital_output(P2, false);
 	}
@@ -135,13 +118,11 @@ namespace adi_sensor_swpack
 	{
 		enable_channel(ch);
 
-		//convFlag = 1;
 		adi_gpio_SetLow(AD7124_SPI_CS_PORT, AD7124_SPI_CS_PIN);
 		start_single_conversion();
 
 
 		if (ad7124.WaitForConvReady(10000) == -3) {
-//			printf("TIMEOUT\n");
 			return -1;
 		}
 
@@ -315,8 +296,6 @@ namespace adi_sensor_swpack
 	void CN0398::reset()
 	{
 		ad7124.Reset();
-//		printf("Reseted AD7124\r\n");
-
 	}
 
 	void CN0398::setup()
@@ -327,11 +306,7 @@ namespace adi_sensor_swpack
 
 	void CN0398::init()
 	{
-
-		//UART init
-//		UART.Init();
-//
-//		//Configure ADP7118 pin
+		//Configure ADP7118 pin
 		adi_gpio_OutputEnable(ADP7118_PORT, ADP7118_PIN, true);
 		adi_gpio_InputEnable(ADP7118_PORT, ADP7118_PIN, false);    // Set INTACC_PORT as input
 		adi_gpio_PullUpEnable(ADP7118_PORT, ADP7118_PIN, false);
@@ -342,8 +317,6 @@ namespace adi_sensor_swpack
 		adi_gpio_InputEnable(AD7124_SPI_CS_PORT, AD7124_SPI_CS_PIN, false);    // Set INTACC_PORT as input
 		adi_gpio_PullUpEnable(AD7124_SPI_CS_PORT, AD7124_SPI_CS_PIN, false);
 		adi_gpio_SetHigh(AD7124_SPI_CS_PORT, AD7124_SPI_CS_PIN);
-
-
 
 		ad7124.init();
 
@@ -466,141 +439,15 @@ namespace adi_sensor_swpack
 
 	void CN0398::display_data(void)
 	{
-		uint8_t ui8S[200];
-
-//		sprintf((char *)ui8S,"Temperature = %f°C\n\r pH = %f\n\r Moisture = %f%c\n\r", temperature, pH, moisture, 37);
-//		mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-		//mqttClient.ReadMqtt();
-
-//		AppPrintf("Temperature = %f°C\n\r",temperature);
-//		AppPrintf("pH = %f\n\r", pH);
-//		AppPrintf("Moisture = %f%c\n\r", moisture, 37);
-//		AppPrintf("\n");
-//		AppPrintf("\n");
-
 	}
 	void CN0398::calibrate_ph(void)
 	{
-		uint8_t ui8S[200];
-
-//		sprintf((char *)ui8S,"Do you want to calibrate offset voltage [y/N]?\n\r");
-//		mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-//		mqttClient.ReadMqtt();
-
-//		if(mqttClient.payload_in[0] == 'y' || mqttClient.payload_in[0] == 'Y')
-//		{
-//			sprintf((char *)ui8S,"Calibration step 0. Short the pH probe and send any message to calibrate.\r\n");
-//			mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-//			mqttClient.ReadMqtt();
-//			calibrate_ph_offset();
-//		}
-//		print_calibration_solutions();
-
-//		bool response_ok = false;
-//		while(response_ok == false){
-//			AppPrintf("Input calibration solution used for first step [1-9][a-e]:\n\r");
-//			sprintf((char *)ui8S,"Input calibration solution used for first step [1-9][a-e]:\n\r");
-//			mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-
-//			adi_uart_Read(hUartDevice, &Value, 1, false, NULL);
-//			mqttClient.ReadMqtt();
-//			charReceived = false;
-//			if(mqttClient.payload_in[0] >= '0' && mqttClient.payload_in[0] <= '9') {
-//				response_ok = true;
-//				solution0 = mqttClient.payload_in[0] - '0';
-//			}
-//			else if(mqttClient.payload_in[0]>='A' && mqttClient.payload_in[0] <= 'E')
-//			{
-//				response_ok = true;
-//				solution0 = mqttClient.payload_in[0] - 'A' + 10;
-//			}
-//			else if(mqttClient.payload_in[0]>='a' && mqttClient.payload_in[0] <= 'e')
-//			{
-//				response_ok = true;
-//				solution0 = mqttClient.payload_in[0] - 'a' + 10;
-//			}
-//			else
-//			{
-//				response_ok = false;
-//			}
-//		}
-//		AppPrintf("\t%s solution selected. Solution pH at 25°C = %.3f \n\r",solutions[solution0],ph_temp_lut[solution0][11]);
-//		AppPrintf("\n");
-//		sprintf((char *)ui8S,"\t%s solution selected. Solution pH at 25°C = %.3f \n\r",solutions[solution0],ph_temp_lut[solution0][11]);
-//		mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-//		float temperature = read_rtd();
-//		AppPrintf("Calibration step 1. Place pH probe in first calibration solution and press any key to start calibration.\r\n");
-//		sprintf((char *)ui8S,"Calibration step 1. Place pH probe in first calibration solution and send any message to start calibration.\r\n");
-//		mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-//		mqttClient.ReadMqtt();
-//		adi_uart_Read(hUartDevice, &Value, 1, false, NULL);
-//		charReceived = false;
-//		calibrate_ph_pt0(temperature);
-
-//		response_ok = false;
-//		while(response_ok == false){
-//			AppPrintf("Input calibration solution used for second step [1-9][a-e]:\n\r");
-//			sprintf((char *)ui8S,"Input calibration solution used for second step [1-9][a-e]:\n\r");
-//			mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-
-//			mqttClient.ReadMqtt();
-//			adi_uart_Read(hUartDevice, &Value, 1, false, NULL);
-//			charReceived = false;
-//			if(mqttClient.payload_in[0] >= '0' && mqttClient.payload_in[0] <= '9') {
-//				response_ok = true;
-//				solution1 = mqttClient.payload_in[0] - '0';
-//			}
-//			else if(mqttClient.payload_in[0]>='A' && mqttClient.payload_in[0] <= 'E')
-//			{
-//				response_ok = true;
-//				solution1 = mqttClient.payload_in[0] - 'A' + 10;
-//			}
-//			else if(mqttClient.payload_in[0]>='a' && mqttClient.payload_in[0] <= 'e')
-//			{
-//				response_ok = true;
-//				solution1 = mqttClient.payload_in[0] - 'a' + 10;
-//			}
-//			else
-//			{
-//				response_ok = false;
-//			}
-//		}
-//		AppPrintf("\t%s solution selected. Solution pH at 25°C = %.3f \n",solutions[solution1],ph_temp_lut[solution1][11]);
-//		AppPrintf("\n");
-//		sprintf((char *)ui8S,"\t%s solution selected. Solution pH at 25°C = %.3f \n",solutions[solution1],ph_temp_lut[solution1][11]);
-//		mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-
-//		AppPrintf("Calibration step 2. Place pH probe in second calibration solution and press any key to start calibration.\r\n");
-//		sprintf((char *)ui8S,"Calibration step 2. Place pH probe in second calibration solution and send any message to start calibration.\r\n");
-//		mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-
-//		adi_uart_Read(hUartDevice, &Value, 1, false, NULL);
-//		mqttClient.ReadMqtt();
-
-//		charReceived = false;
-//		calibrate_ph_pt1(temperature);
-//		AppPrintf("\n\r");
-//		AppPrintf("\n\r");
-
 	}
 	/**
 	 * @brief: Prints calibration solutions
 	 */
 	void CN0398::print_calibration_solutions()
 	{
-//		uint8_t ui8S[400];
-//		uint8_t ui8Temp[40];
-//
-//		AppPrintf("Calibration solutions available for two point calibration:\n\r");
-//		int i;
-//		for(i = 0; i < NUMBER_OF_SOLUTIONS; i++){
-//
-//			//AppPrintf("%x. %s\n\r", i, solutions[i]);
-//			sprintf((char *)ui8Temp,"%x. %s\n\r", i, solutions[i]);
-//			strcat((char * )ui8S, (const char *)ui8Temp);
-//		}
-//		mqttClient.WriteMqtt(ui8S, strlen((char *)ui8S), u8SendTopic);
-//		AppPrintf("\n\r");
 	}
 
 	SENSOR_RESULT CN0398::open()

@@ -10,7 +10,6 @@
 
 #include "adi_soil_moisture.h"
 #include "adi_ad7124.h"
-//#include "MQTTClient.h"
 
 #define RTD_CHANNEL        0
 #define PH_CHANNEL         1
@@ -142,9 +141,7 @@ namespace adi_sensor_swpack
 			P4 = 3
 		};
 
-	//	MQTTClient mqttClient;
-
-		CN0398(/*MQTTClient mqttClient*/);
+		CN0398();
 
 		SENSOR_RESULT open();
 		SENSOR_RESULT start();

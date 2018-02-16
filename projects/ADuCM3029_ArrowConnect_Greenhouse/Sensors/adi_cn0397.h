@@ -99,9 +99,7 @@ namespace adi_sensor_swpack
             *
             * @return none
             */
-//	  	    MQTTClient mqttClient;
-
-            CN0397(/*MQTTClient mqttClient*/);
+            CN0397();
 
             SENSOR_RESULT open();
             SENSOR_RESULT start();

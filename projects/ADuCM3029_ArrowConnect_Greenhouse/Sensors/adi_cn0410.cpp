@@ -92,7 +92,6 @@ uint8_t gpioMemory[ADI_GPIO_MEMORY_SIZE];
 		this->SendCommand(AD5686_WRITE_UPDATE, AD5686_DAC_B, 0x00);
 		this->SendCommand(AD5686_WRITE_UPDATE, AD5686_DAC_C, 0x00);
 		this->SendCommand(AD5686_WRITE_UPDATE, AD5686_DAC_D, 0x00);
-		//this->UpdateDAC(); //update the DAC values for all channels
 	}
 
 	void CN0410::SetChannelLuxValue(float fpValue)
@@ -111,8 +110,6 @@ uint8_t gpioMemory[ADI_GPIO_MEMORY_SIZE];
 		//Update the DAC register by pulsing the LDAC pin
 		adi_gpio_SetHigh(LDAC_PORT, LDAC_PIN);
 		adi_gpio_SetLow(LDAC_PORT, LDAC_PIN);
-		//adi_gpio_SetHigh(LDAC_PORT, LDAC_PIN);
-
 	}
 
 	int8_t CN0410::SendCommand(uint8_t u8Command, uint8_t u8Channel, uint16_t u16Value)
@@ -220,91 +217,87 @@ uint8_t gpioMemory[ADI_GPIO_MEMORY_SIZE];
 
 
 		/*PI controller*/
+		while(valid)
+		{
+			u32Timeout++;
 
-//		if(adi_wifi_StartTimer(u32Timeout, 0u) == ADI_WIFI_SUCCESS)
-//		{
-			while(valid)
+			pLight->getLightIntensity((float *)&eIntensity.fData_Red);
+
+			fpRedError = red - eIntensity.fData_Red;
+			fpBlueError = blue - eIntensity.fData_Blue;
+			fpGreenError = green - eIntensity.fData_Green;
+
+			if ( (abs(fpRedError) < 100) && (abs(fpBlueError) < 100) && (abs(fpGreenError) < 100))
 			{
-				u32Timeout++;
-
-				pLight->getLightIntensity((float *)&eIntensity.fData_Red);
-
-				fpRedError = red - eIntensity.fData_Red;
-				fpBlueError = blue - eIntensity.fData_Blue;
-				fpGreenError = green - eIntensity.fData_Green;
-
-				if ( (abs(fpRedError) < 100) && (abs(fpBlueError) < 100) && (abs(fpGreenError) < 100))
-				{
-					break;
-				}
-
-				fpRedI += fpRedError;
-				fpBlueI += fpBlueError;
-				fpGreenI += fpGreenError;
-
-				commandRed = (kp *  fpRedError) + (ki * fpRedI);
-				commandBlue = (kp *  fpBlueError) + (ki * fpBlueI);
-				commandGreen = (kp *  fpGreenError) + (ki * fpGreenI);
-
-				if (commandRed > 65535)
-				{
-					LedCommand.u16RedCommand = 65535;
-				}
-				else
-				{
-					if (commandRed < 0)
-					{
-						LedCommand.u16RedCommand = 0;
-					}
-					else
-					{
-						LedCommand.u16RedCommand = (uint16_t)commandRed;
-					}
-				}
-
-				if (commandBlue > 65535)
-				{
-					LedCommand.u16BlueCommand = 65535;
-				}
-				else
-				{
-					if (commandBlue < 0)
-					{
-						LedCommand.u16BlueCommand = 0;
-					}
-					else
-					{
-						LedCommand.u16BlueCommand = (uint16_t)commandBlue;
-					}
-				}
-
-				if (commandGreen > 65535)
-				{
-					LedCommand.u16GreenCommand = 65535;
-				}
-				else
-				{
-					if (commandGreen < 0)
-					{
-						LedCommand.u16GreenCommand = 0;
-					}
-					else
-					{
-						LedCommand.u16GreenCommand = (uint16_t)commandGreen;
-					}
-				}
-
-				SendCommand(AD5686_WRITE_UPDATE, AD5686_DAC_B, LedCommand.u16BlueCommand);
-				SendCommand(AD5686_WRITE_UPDATE, AD5686_DAC_C, LedCommand.u16RedCommand);
-				SendCommand(AD5686_WRITE_UPDATE, AD5686_DAC_A, LedCommand.u16GreenCommand);
-
-				if (u32Timeout == 100)
-				{
-					break;
-				}
-
+				break;
 			}
-//		}
+
+			fpRedI += fpRedError;
+			fpBlueI += fpBlueError;
+			fpGreenI += fpGreenError;
+
+			commandRed = (kp *  fpRedError) + (ki * fpRedI);
+			commandBlue = (kp *  fpBlueError) + (ki * fpBlueI);
+			commandGreen = (kp *  fpGreenError) + (ki * fpGreenI);
+
+			if (commandRed > 65535)
+			{
+				LedCommand.u16RedCommand = 65535;
+			}
+			else
+			{
+				if (commandRed < 0)
+				{
+					LedCommand.u16RedCommand = 0;
+				}
+				else
+				{
+					LedCommand.u16RedCommand = (uint16_t)commandRed;
+				}
+			}
+
+			if (commandBlue > 65535)
+			{
+				LedCommand.u16BlueCommand = 65535;
+			}
+			else
+			{
+				if (commandBlue < 0)
+				{
+					LedCommand.u16BlueCommand = 0;
+				}
+				else
+				{
+					LedCommand.u16BlueCommand = (uint16_t)commandBlue;
+				}
+			}
+
+			if (commandGreen > 65535)
+			{
+				LedCommand.u16GreenCommand = 65535;
+			}
+			else
+			{
+				if (commandGreen < 0)
+				{
+					LedCommand.u16GreenCommand = 0;
+				}
+				else
+				{
+					LedCommand.u16GreenCommand = (uint16_t)commandGreen;
+				}
+			}
+
+			SendCommand(AD5686_WRITE_UPDATE, AD5686_DAC_B, LedCommand.u16BlueCommand);
+			SendCommand(AD5686_WRITE_UPDATE, AD5686_DAC_C, LedCommand.u16RedCommand);
+			SendCommand(AD5686_WRITE_UPDATE, AD5686_DAC_A, LedCommand.u16GreenCommand);
+
+			if (u32Timeout == 100)
+			{
+				break;
+			}
+
+		}
 	}
 }
 

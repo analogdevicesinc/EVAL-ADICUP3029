@@ -56,7 +56,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ADI_WIFI_INTERNAL_H
 #define ADI_WIFI_INTERNAL_H
 
-//#include <wifi/radio/adi_wifi.h>
 #include <adi_wifi.h>
 
 /*! Maximum number of bytes in a single read/write operation. This is an estimated number. The

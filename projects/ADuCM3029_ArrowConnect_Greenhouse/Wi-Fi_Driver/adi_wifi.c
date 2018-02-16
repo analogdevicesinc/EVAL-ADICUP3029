@@ -568,8 +568,6 @@ ADI_WIFI_RESULT adi_wifi_radio_EstablishTCPConnection(ADI_WIFI_TCP_CONNECT_CONFI
 	ASSERT(pTCPConnect->pIP != NULL);
 	ASSERT(pTCPConnect->pPort != NULL);
 	ASSERT(strlen((char*)pTCPConnect->pType) == strlen("TCP"));
-	//ASSERT(strlen((char*)pTCPConnect->pIP) <= ADI_WIFI_MAX_IP_ADDR_SIZE);
-	//ASSERT(strlen((char*)pTCPConnect->pPort) <= ADI_WIFI_MAX_PORT_SIZE);
 	ASSERT(pTCPConnect->nTCPKeepAlive <= ADI_WIFI_RADIO_MAX_KEEPALIVE);
 
 	ADI_WIFI_LOGEVENT(LOGID_CMD_AT_CIPSTART);
@@ -702,9 +700,7 @@ ADI_WIFI_RESULT adi_wifi_radio_SendData(ADI_WIFI_SEND_DATA_CONFIG  * const pSend
 	if(eWifiResult == ADI_WIFI_SUCCESS)
 	{
 		/* Wait for the wrap to indicate the packet was received */
-//		eWifiResult = ADI_WIFI_WAIT_FOR_COMPLETION(ADI_WIFI_RADIO_CMD_TIMEOUT);
 		eWifiResult = adi_wifi_GetEvent(CMD_AT_CIPSEND);
-//		adi_wifi_tal_FlushRxChannel();
 		adi_wifi_ClearEventPending();
 
 		/* Once the wrap command "<" has been received, send the data packet */
@@ -718,7 +714,6 @@ ADI_WIFI_RESULT adi_wifi_radio_SendData(ADI_WIFI_SEND_DATA_CONFIG  * const pSend
 
 			/* Part 2: Send the data payload */
 			eWifiResult = adi_wifi_ProcessCmd(pSendDataConfig->nDataLength);
-//			adi_wifi_tal_FlushRxChannel();
 
 			if(eWifiResult == ADI_WIFI_SUCCESS)
 			{
@@ -1379,15 +1374,6 @@ ADI_WIFI_RESULT adi_wifi_GetEvent(ADI_WIFI_AT_CMDCODE eCommandType)
     			break;
     		}
 
-//    		if (eCommandType == CMD_AT_CIPSEND){
-//    			if(strstr((char *)pWiFiDevice->pDataPkt, (char *)"SEND OK"))
-//    			{
-//    				adi_wifi_tal_FlushRxChannel();
-//    				break;
-//    			}
-//
-//    		}
-
     		nIndex++;
     	}
     	else
@@ -1603,16 +1589,6 @@ ADI_WIFI_RESULT adi_wifi_ParseSubscriberData(uint32_t nEvent)
 			break;
 		}
 	}
-
-//	/*Save size of buffer*/
-//	nValidBytes += pWiFiDevice->nResponseSize;
-//
-//	/*  Read the rest of the (MQTT Event/ HTTP response)data and parse the
-//	 *  MQTT packet header to validate the response was as expected */
-//	if(eWifiResult == ADI_WIFI_SUCCESS)
-//	{
-//		eWifiResult = adi_wifi_ValidateHeader(nEvent);
-//	}
 
 	return eWifiResult;
 }

@@ -58,8 +58,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <adi_global_config.h>
-//#include <common/adi_timestamp.h>
-//#include <common/adi_error_handling.h>
 
 #include <adi_timestamp.h>
 #include <adi_error_handling.h>

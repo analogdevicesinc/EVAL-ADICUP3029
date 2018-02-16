@@ -57,29 +57,29 @@ volatile uint32_t ui32timer_counter;
 void timer_start (void)
 {
 
-    if(adi_pwr_Init()!= ADI_PWR_SUCCESS)
-    {
-        printf("\n Failed to initialize the power service \n");
-    }
+	if(adi_pwr_Init()!= ADI_PWR_SUCCESS)
+	{
+		printf("\n Failed to initialize the power service \n");
+	}
 
-    if(ADI_PWR_SUCCESS !=(adi_pwr_SetLFClockMux(ADI_CLOCK_MUX_LFCLK_LFXTAL)))
-    {
-    	 printf("Failed to set LF Clock Mux\n");
-    }
+	if(ADI_PWR_SUCCESS !=(adi_pwr_SetLFClockMux(ADI_CLOCK_MUX_LFCLK_LFXTAL)))
+	{
+		printf("Failed to set LF Clock Mux\n");
+	}
 
-    if(ADI_PWR_SUCCESS !=(adi_pwr_EnableClockSource(ADI_CLOCK_SOURCE_LFXTAL,true)))
-    {
-    	 printf("Failed to set LFXTAL source\n");
-    }
+	if(ADI_PWR_SUCCESS !=(adi_pwr_EnableClockSource(ADI_CLOCK_SOURCE_LFXTAL,true)))
+	{
+		printf("Failed to set LFXTAL source\n");
+	}
 
-    if(ADI_PWR_SUCCESS != adi_pwr_SetClockDivider(ADI_CLOCK_HCLK,1))
-    {
-        printf("Failed to set clock divider for HCLK\n");
-    }
-    if(ADI_PWR_SUCCESS != adi_pwr_SetClockDivider(ADI_CLOCK_PCLK,1))
-    {
-        printf("Failed to set clock divider for PCLK\n");
-    }
+	if(ADI_PWR_SUCCESS != adi_pwr_SetClockDivider(ADI_CLOCK_HCLK,1))
+	{
+		printf("Failed to set clock divider for HCLK\n");
+	}
+	if(ADI_PWR_SUCCESS != adi_pwr_SetClockDivider(ADI_CLOCK_PCLK,1))
+	{
+		printf("Failed to set clock divider for PCLK\n");
+	}
 
     /*
      * SysTick initialization

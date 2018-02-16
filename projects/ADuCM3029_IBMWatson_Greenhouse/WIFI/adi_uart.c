@@ -49,7 +49,6 @@ POSSIBILITY OF SUCH DAMAGE.
  */
 
 /*!  \cond PRIVATE */
-//#include <transport/adi_uart.h>
 #include <adi_uart.h>
 
 #include "adi_uart_def.h"

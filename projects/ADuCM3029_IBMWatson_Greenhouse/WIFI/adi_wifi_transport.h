@@ -105,13 +105,13 @@ typedef struct
  */
 typedef enum 
 { 
-    ADI_WIFI_TAL_SUCCESS,						         /*!< Function call completed successfully.					         */
-    ADI_WIFI_TAL_FAILED_OPEN,    				     /*!< Transport layer failed on initialization.				       */
-    ADI_WIFI_TAL_FAILED_CLOSE,    			     /*!< Transport layer failed on uninitialization.			       */
-    ADI_WIFI_TAL_FAILED_TRANSACTION,   		   /*!< Transport layer failed on a data transaction.			     */
-    ADI_WIFI_TAL_FAILED_CONFIGURE_BAUDRATE,  /*!< Transport layer failed to configure the baudrate.		   */
-	  ADI_WIFI_TAL_FAILED_CONFIGURE_DATA, 		 /*!< Transport layer failed to configure the data format.   */
-	  ADI_WIFI_TAL_FAILED_FLUSH_CHANNEL,       /*!< Transport layer failed to flush rx channel.	           */
+	ADI_WIFI_TAL_SUCCESS,						         /*!< Function call completed successfully.					         */
+	ADI_WIFI_TAL_FAILED_OPEN,    				     /*!< Transport layer failed on initialization.				       */
+	ADI_WIFI_TAL_FAILED_CLOSE,    			     /*!< Transport layer failed on uninitialization.			       */
+	ADI_WIFI_TAL_FAILED_TRANSACTION,   		   /*!< Transport layer failed on a data transaction.			     */
+	ADI_WIFI_TAL_FAILED_CONFIGURE_BAUDRATE,  /*!< Transport layer failed to configure the baudrate.		   */
+	ADI_WIFI_TAL_FAILED_CONFIGURE_DATA, 		 /*!< Transport layer failed to configure the data format.   */
+	ADI_WIFI_TAL_FAILED_FLUSH_CHANNEL,       /*!< Transport layer failed to flush rx channel.	           */
 
 } ADI_WIFI_TAL_RESULT;
 

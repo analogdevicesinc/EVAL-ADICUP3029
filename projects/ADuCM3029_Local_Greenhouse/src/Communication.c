@@ -58,8 +58,6 @@ ADI_UART_HANDLE          hUartDevice __attribute__ ((aligned (4)));
 uint8_t UartDeviceMem[ADI_UART_MEMORY_SIZE] __attribute__ ((aligned (4)));
 
 /************************* Functions Definitions ******************************/
-
-
 uint8_t Buffer[200];
 
 uint8_t u8Index;

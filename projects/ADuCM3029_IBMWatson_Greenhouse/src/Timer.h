@@ -46,8 +46,6 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
-//void timer_start (void);
-//void timer_sleep (uint32_t ticks);
 void start_esp_timer_ms(void);
 uint32_t get_esp_timer_ms(void);
 

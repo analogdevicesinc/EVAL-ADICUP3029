@@ -61,8 +61,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string.h>
 #include <adi_callback.h>
 #include <rtos_map/adi_rtos_map.h>
-//#include <wifi/transport/adi_wifi_transport.h>
-//#include <wifi/radio/adi_wifi_logevent.h>
 
 #include <adi_wifi_transport.h>
 #include <adi_wifi_logevent.h>

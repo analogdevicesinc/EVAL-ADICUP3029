@@ -68,8 +68,6 @@ namespace adi_sensor_swpack
 		uint16_t u16GreenCommand;
 	};
 
-
-
 	class CN0410
 	{
 	public:
@@ -97,7 +95,5 @@ namespace adi_sensor_swpack
 
 	};
 }
-
-
 
 #endif /* SENSORS_ADI_CN0410_H_ */
