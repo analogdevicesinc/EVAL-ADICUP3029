@@ -4,7 +4,7 @@
 #include "adi_cn0410_cfg.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <math.h>
 
 namespace adi_sensor_swpack {
 
@@ -227,7 +227,7 @@ uint8_t gpioMemory[ADI_GPIO_MEMORY_SIZE];
 			fpBlueError = blue - eIntensity.fData_Blue;
 			fpGreenError = green - eIntensity.fData_Green;
 
-			if ( (abs(fpRedError) < 100) && (abs(fpBlueError) < 100) && (abs(fpGreenError) < 100))
+			if ( (fabs(fpRedError) < 100) && (fabs(fpBlueError) < 100) && (fabs(fpGreenError) < 100))
 			{
 				break;
 			}
