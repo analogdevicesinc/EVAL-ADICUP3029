@@ -177,7 +177,6 @@ uint32_t AD7793_Scan(enMode mode,  uint8_t ui8channel)
 		AD7793_WriteRegister(AD7793_REG_MODE, ui32reg_value);
 	}
 
-	if(mode == CONTINUOUS_CONV)
 		//DioClr(CS_PORT, CS_PIN);
 
 		while ((AD7793_ReadRegister(AD7793_REG_STAT)& RDY_BIT) != RDY_BIT);
