@@ -248,13 +248,13 @@ void AD7793_Calibrate(uint8_t ui8channel, enMode mode)
 
    @return int32_t - converted voltage
 **/
-int32_t AD7793_ConvertToVolts(uint32_t u32adcValue)
+float AD7793_ConvertToVolts(uint32_t u32adcValue)
 {
-	int32_t i32voltage;
+	float f32voltage;
 
 	/* Vref = 1170 [mV]    */        /* Calculate voltage */
-	i32voltage = ((int64_t)(u32adcValue - 0x800000) * 1170) / (int32_t)0x800000;
+	f32voltage = ((float)(u32adcValue - 0x800000) * 1170) / (float)0x800000;
 
-	return i32voltage;
+	return f32voltage;
 }
 
