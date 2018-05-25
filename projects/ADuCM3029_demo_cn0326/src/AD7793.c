@@ -155,10 +155,7 @@ uint32_t AD7793_Scan(enMode mode,  uint8_t ui8channel)
 {
 	static  uint32_t ui32result, ui32reg_value;
 
-	/* Set value (read command + DATA register address) to write in COMM
-	 * register */
-	uint8_t ui8reg_adrr = (AD7793_COMM_READ
-	                       | AD7793_COMM_ADR(AD7793_REG_DATA));
+	AD7793_Calibrate(ui8channel, CAL_INT_FULL_MODE);
 
 	/* Select channel to scan */
 	AD7793_SelectChannel(ui8channel);
