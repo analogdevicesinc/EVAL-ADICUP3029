@@ -178,9 +178,7 @@ uint32_t AD7793_Scan(enMode mode,  uint8_t ui8channel)
 
 		while ((AD7793_ReadRegister(AD7793_REG_STAT)& RDY_BIT) != RDY_BIT);
 
-	SPI_Write(0xAA, 0xAAAA, 2);
-
-	ui32result =  SPI_Read(ui8reg_adrr,  reg_size[AD7793_REG_DATA]);
+	ui32result = AD7793_ReadRegister(AD7793_REG_DATA);
 
 	//DioSet(CS_PORT, CS_PIN);
 
