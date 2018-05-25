@@ -112,7 +112,7 @@ void CN0326_Init(void)
 #if(USE_IOUT2 == YES)
 	ui32result = AD7793_Scan(SINGLE_CONV, AD7793_CH_AIN3P_AIN3M);
 	i32voltage = AD7793_ConvertToVolts(ui32result);
-	iout2_calibration = u32voltage / (float)5000;
+	iout2_calibration = i32voltage / (float)5000;
 #endif
 }
 
