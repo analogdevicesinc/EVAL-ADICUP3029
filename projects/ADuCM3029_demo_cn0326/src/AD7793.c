@@ -169,18 +169,12 @@ uint32_t AD7793_Scan(enMode mode,  uint8_t ui8channel)
 		/* Set single mode operation */
 		ui32reg_value |= (uint32_t)(mode << 13);
 
-		//DioClr(CS_PORT, CS_PIN);
-
 		AD7793_WriteRegister(AD7793_REG_MODE, ui32reg_value);
 	}
-
-		//DioClr(CS_PORT, CS_PIN);
 
 	while ((AD7793_ReadRegister(AD7793_REG_STAT)& RDY_BIT) == RDY_BIT);
 
 	ui32result = AD7793_ReadRegister(AD7793_REG_DATA);
-
-	//DioSet(CS_PORT, CS_PIN);
 
 	return ui32result;
 }
@@ -229,15 +223,11 @@ void AD7793_Calibrate(uint8_t ui8channel, enMode mode)
 	/* Set mode */
 	ui32reg_value |= (uint32_t)(mode << 13);
 
-	//DioClr(CS_PORT, CS_PIN);
-
 	/* Write MODE register */
 	AD7793_WriteRegister(AD7793_REG_MODE, ui32reg_value);
 
 	/* Wait until RDY bit from STATUS register is high */
 	while ((AD7793_ReadRegister(AD7793_REG_STAT)& RDY_BIT) == RDY_BIT);
-
-	//DioSet(CS_PORT, CS_PIN); todo: asses the importance of the gpio functions
 }
 
 
