@@ -66,22 +66,22 @@ float iout2_calibration;   /* [mA]  */
 /************************** Variable Definitions ******************************/
 /* Available commands */
 char *CmdCommands[] = {
-	"help",
-	"calibrate",
-	"temp",
-	"ph",
-	"reset",
-	""
+    "help",
+    "calibrate",
+    "temp",
+    "ph",
+    "reset",
+    ""
 };
 
 /* Functions for available commands */
 cmdFunc CmdFun[] = {
-	CN0326_CmdHelp,
-	CN0326_CmdCalibration,
-	CN0326_CmdTemp,
-	CN0326_CmdPH,
-	CN0326_CmdReset,
-	NULL
+    CN0326_CmdHelp,
+    CN0326_CmdCalibration,
+    CN0326_CmdTemp,
+    CN0326_CmdPH,
+    CN0326_CmdReset,
+    NULL
 };
 
 /****************************** Global functions ******************************/
@@ -93,26 +93,26 @@ cmdFunc CmdFun[] = {
 **/
 void CN0326_Init(void)
 {
-	uint8_t uart_bits_nr = 8;
+    uint8_t uart_bits_nr = 8;
 #if(USE_IOUT2 == YES)
-	uint32_t ui32result;
-	int32_t i32voltage;
+    uint32_t ui32result;
+    int32_t i32voltage;
 #endif
 
-	/* UART initialization */
-	UART_Init(bd9600, uart_bits_nr);
+    /* UART initialization */
+    UART_Init(bd9600, uart_bits_nr);
 
-	AD7793_Calibrate(AD7793_CH_AIN1P_AIN1M, CAL_INT_ZERO_MODE);
-	AD7793_Calibrate(AD7793_CH_AIN1P_AIN1M, CAL_INT_FULL_MODE);
-	AD7793_Calibrate(AD7793_CH_AIN2P_AIN2M, CAL_INT_ZERO_MODE);
-	AD7793_Calibrate(AD7793_CH_AIN2P_AIN2M, CAL_INT_FULL_MODE);
-	AD7793_Calibrate(AD7793_CH_AIN3P_AIN3M, CAL_INT_ZERO_MODE);
-	AD7793_Calibrate(AD7793_CH_AIN3P_AIN3M, CAL_INT_FULL_MODE);
+    AD7793_Calibrate(AD7793_CH_AIN1P_AIN1M, CAL_INT_ZERO_MODE);
+    AD7793_Calibrate(AD7793_CH_AIN1P_AIN1M, CAL_INT_FULL_MODE);
+    AD7793_Calibrate(AD7793_CH_AIN2P_AIN2M, CAL_INT_ZERO_MODE);
+    AD7793_Calibrate(AD7793_CH_AIN2P_AIN2M, CAL_INT_FULL_MODE);
+    AD7793_Calibrate(AD7793_CH_AIN3P_AIN3M, CAL_INT_ZERO_MODE);
+    AD7793_Calibrate(AD7793_CH_AIN3P_AIN3M, CAL_INT_FULL_MODE);
 
 #if(USE_IOUT2 == YES)
-	ui32result = AD7793_Scan(SINGLE_CONV, AD7793_CH_AIN3P_AIN3M);
-	i32voltage = AD7793_ConvertToVolts(ui32result);
-	iout2_calibration = i32voltage / (float)5000;
+    ui32result = AD7793_Scan(SINGLE_CONV, AD7793_CH_AIN3P_AIN3M);
+    i32voltage = AD7793_ConvertToVolts(ui32result);
+    iout2_calibration = i32voltage / (float)5000;
 #endif
 }
 
@@ -123,28 +123,28 @@ void CN0326_Init(void)
 **/
 float CN0326_CalculateTemp(void)
 {
-	static float temp, res, f32current, f32voltage;
-	uint32_t ui32adcValue;
+    static float temp, res, f32current, f32voltage;
+    uint32_t ui32adcValue;
 
-	/* Check which excitation current to use */
+    /* Check which excitation current to use */
 #if(USE_IOUT2 == YES)
-	f32current = iout2_calibration;
+    f32current = iout2_calibration;
 #else
-	f32current = I_EXC;
+    f32current = I_EXC;
 #endif
-	/* Read ADC output value */
-	ui32adcValue = AD7793_Scan(SINGLE_CONV, AD7793_CH_AIN2P_AIN2M);
+    /* Read ADC output value */
+    ui32adcValue = AD7793_Scan(SINGLE_CONV, AD7793_CH_AIN2P_AIN2M);
 
-	/* Convert ADC output value to voltage */
-	f32voltage = AD7793_ConvertToVolts(ui32adcValue);
+    /* Convert ADC output value to voltage */
+    f32voltage = AD7793_ConvertToVolts(ui32adcValue);
 
-	/* Calculate RTD resistance */
-	res = f32voltage / (float)f32current;
+    /* Calculate RTD resistance */
+    res = f32voltage / (float)f32current;
 
-	/* Calculate temperature value */
-	temp = ((res - RMIN) / (TEMP_COEFF * RMIN));
+    /* Calculate temperature value */
+    temp = ((res - RMIN) / (TEMP_COEFF * RMIN));
 
-	return temp;
+    return temp;
 }
 
 /**
@@ -154,24 +154,24 @@ float CN0326_CalculateTemp(void)
 **/
 float CN0326_CalculatePH(void)
 {
-	float temp, ph;
-	uint32_t ui32adcValue;
-	int32_t i32voltage;
+    float temp, ph;
+    uint32_t ui32adcValue;
+    int32_t i32voltage;
 
-	/* Calculate temperature */
-	temp = CN0326_CalculateTemp();
+    /* Calculate temperature */
+    temp = CN0326_CalculateTemp();
 
-	/* Read ADC output value */
-	ui32adcValue = AD7793_Scan(SINGLE_CONV, AD7793_CH_AIN1P_AIN1M);
+    /* Read ADC output value */
+    ui32adcValue = AD7793_Scan(SINGLE_CONV, AD7793_CH_AIN1P_AIN1M);
 
-	/* Convert ADC output value to voltage */
-	i32voltage = AD7793_ConvertToVolts(ui32adcValue);
+    /* Convert ADC output value to voltage */
+    i32voltage = AD7793_ConvertToVolts(ui32adcValue);
 
-	/* Calculate pH value */
-	ph = PH_ISO - (((double)((i32voltage - TOLERANCE) * FARADAY_CONST)) /
-				  (PH_CONST * AVOGADRO_NUMBER * (temp + K_DEGREES)));
+    /* Calculate pH value */
+    ph = PH_ISO - (((double)((i32voltage - TOLERANCE) * FARADAY_CONST)) /
+                   (PH_CONST * AVOGADRO_NUMBER * (temp + K_DEGREES)));
 
-	return ph;
+    return ph;
 }
 
 #pragma GCC diagnostic push
@@ -186,14 +186,14 @@ float CN0326_CalculatePH(void)
 **/
 void CN0326_CmdHelp(uint8_t *args)
 {
-	printf("\n");
-	printf("Available commands:\n");
-	printf(" help                   - Display available commands\n");
-	printf(" calibrate <ch>         - Calibrate selected channel or all channels. \n");
-	printf("                          <ch> = AIN1, AIN2, AIN3 or all \n");
-	printf(" temp                   - Display temperature value\n");
-	printf(" ph                     - Display pH value\n");
-	printf(" reset                  - Reset ADC converter\n");
+    printf("\n");
+    printf("Available commands:\n");
+    printf(" help                   - Display available commands\n");
+    printf(" calibrate <ch>         - Calibrate selected channel or all channels. \n");
+    printf("                          <ch> = AIN1, AIN2, AIN3 or all \n");
+    printf(" temp                   - Display temperature value\n");
+    printf(" ph                     - Display pH value\n");
+    printf(" reset                  - Reset ADC converter\n");
 }
 
 /**
@@ -205,11 +205,11 @@ void CN0326_CmdHelp(uint8_t *args)
 **/
 void CN0326_CmdTemp(uint8_t *args)
 {
-	float temp;
+    float temp;
 
-	temp = CN0326_CalculateTemp();
+    temp = CN0326_CalculateTemp();
 
-	printf("Temperature = %.2f[˚C]\n", temp);
+    printf("Temperature = %.2f[˚C]\n", temp);
 }
 
 /**
@@ -221,11 +221,11 @@ void CN0326_CmdTemp(uint8_t *args)
 **/
 void CN0326_CmdPH(uint8_t *args)
 {
-	float ph;
+    float ph;
 
-	ph = CN0326_CalculatePH();
+    ph = CN0326_CalculatePH();
 
-	printf("pH = %.2f\n", ph);
+    printf("pH = %.2f\n", ph);
 }
 
 /**
@@ -238,50 +238,50 @@ void CN0326_CmdPH(uint8_t *args)
 void CN0326_CmdCalibration(uint8_t *args)
 {
 
-	uint8_t  *p = args;
-	char     arg[5];
-	uint8_t ui8channel;
+    uint8_t *p = args;
+    char    arg[5];
+    uint8_t ui8channel;
 
-	/* Check if this function gets an argument */
-	while (*(p = CN0326_FindArgv(p)) != '\0') {
-		/* Save channel parameter */
-		CN0326_GetArgv(arg, p);
-	}
+    /* Check if this function gets an argument */
+    while (*(p = CN0326_FindArgv(p)) != '\0') {
+        /* Save channel parameter */
+        CN0326_GetArgv(arg, p);
+    }
 
-	if(strncmp(arg, "AIN1", 5) == 0) {
-		AD7793_Calibrate(AD7793_CH_AIN1P_AIN1M, CAL_INT_ZERO_MODE);
-		AD7793_Calibrate(AD7793_CH_AIN1P_AIN1M, CAL_INT_FULL_MODE);
+    if(strncmp(arg, "AIN1", 5) == 0) {
+        AD7793_Calibrate(AD7793_CH_AIN1P_AIN1M, CAL_INT_ZERO_MODE);
+        AD7793_Calibrate(AD7793_CH_AIN1P_AIN1M, CAL_INT_FULL_MODE);
 
-		timer_sleep(300);
+        timer_sleep(300);
 
-		printf("Calibration completed for %s channel!\n", arg);
-	} else if(strncmp(arg, "AIN2", 5) == 0) {
-		AD7793_Calibrate(AD7793_CH_AIN2P_AIN2M, CAL_INT_ZERO_MODE);
-		AD7793_Calibrate(AD7793_CH_AIN2P_AIN2M, CAL_INT_FULL_MODE);
+        printf("Calibration completed for %s channel!\n", arg);
+    } else if(strncmp(arg, "AIN2", 5) == 0) {
+        AD7793_Calibrate(AD7793_CH_AIN2P_AIN2M, CAL_INT_ZERO_MODE);
+        AD7793_Calibrate(AD7793_CH_AIN2P_AIN2M, CAL_INT_FULL_MODE);
 
-		timer_sleep(300);
+        timer_sleep(300);
 
-		printf("Calibration completed for %s channel!\n", arg);
-	} else if(strncmp(arg, "AIN3", 5) == 0) {
-		AD7793_Calibrate(AD7793_CH_AIN3P_AIN3M, CAL_INT_ZERO_MODE);
-		AD7793_Calibrate(AD7793_CH_AIN3P_AIN3M, CAL_INT_FULL_MODE);
+        printf("Calibration completed for %s channel!\n", arg);
+    } else if(strncmp(arg, "AIN3", 5) == 0) {
+        AD7793_Calibrate(AD7793_CH_AIN3P_AIN3M, CAL_INT_ZERO_MODE);
+        AD7793_Calibrate(AD7793_CH_AIN3P_AIN3M, CAL_INT_FULL_MODE);
 
-		timer_sleep(300);
+        timer_sleep(300);
 
-		printf("Calibration completed for %s channel!\n", arg);
-	} else if(strncmp(arg, "all", 4) == 0) {
-		for(ui8channel = 0; ui8channel <= 2; ui8channel++) {
+        printf("Calibration completed for %s channel!\n", arg);
+    } else if(strncmp(arg, "all", 4) == 0) {
+        for(ui8channel = 0; ui8channel <= 2; ui8channel++) {
 
-			AD7793_Calibrate(ui8channel, CAL_INT_ZERO_MODE);
-			AD7793_Calibrate(ui8channel, CAL_INT_FULL_MODE);
-		}
+            AD7793_Calibrate(ui8channel, CAL_INT_ZERO_MODE);
+            AD7793_Calibrate(ui8channel, CAL_INT_FULL_MODE);
+        }
 
-		timer_sleep(300);
+        timer_sleep(300);
 
-		printf("Calibration completed for %s channels!\n", arg);
-	} else {
-		printf("Incorrect channel!Try again!\n");
-	}
+        printf("Calibration completed for %s channels!\n", arg);
+    } else {
+        printf("Incorrect channel!Try again!\n");
+    }
 }
 
 /**
@@ -294,18 +294,18 @@ void CN0326_CmdCalibration(uint8_t *args)
 **/
 uint8_t *CN0326_FindArgv(uint8_t *args)
 {
-	uint8_t *p = args;
-	int     fl = 0;
+    uint8_t *p = args;
+    int     fl = 0;
 
-	while (*p != 0) {
-		if ((*p == _SPC))
-			fl = 1;
-		else if (fl)
-			break;
-		p++;
-	}
+    while (*p != 0) {
+        if ((*p == _SPC))
+            fl = 1;
+        else if (fl)
+            break;
+        p++;
+    }
 
-	return p;
+    return p;
 }
 
 /**
@@ -319,16 +319,16 @@ uint8_t *CN0326_FindArgv(uint8_t *args)
 **/
 void CN0326_GetArgv(char *dst, uint8_t *args)
 {
-	uint8_t  *s = args;
-	char     *d = dst;
+    uint8_t  *s = args;
+    char     *d = dst;
 
-	while (*s) {
-		if (*s == _SPC)
-			break;
-		*d++ = *s++;
-	}
+    while (*s) {
+        if (*s == _SPC)
+            break;
+        *d++ = *s++;
+    }
 
-	*d = '\0';
+    *d = '\0';
 }
 
 /**
@@ -340,11 +340,11 @@ void CN0326_GetArgv(char *dst, uint8_t *args)
 **/
 void CN0326_CmdReset(uint8_t *args)
 {
-	AD7793_Reset();
+    AD7793_Reset();
 
-	timer_sleep(500);
+    timer_sleep(500);
 
-	printf("AD7793 reset completed!\n");
+    printf("AD7793 reset completed!\n");
 }
 #pragma GCC diagnostic pop
 
@@ -355,32 +355,32 @@ void CN0326_CmdReset(uint8_t *args)
 **/
 void CN0326_CmdProcess(void)
 {
-	cmdFunc   func;
+    cmdFunc   func;
 
-	CN0326_Interrupt();
+    CN0326_Interrupt();
 
-	/* Check if <ENTER> key was pressed */
-	if (uart_cmd == UART_TRUE) {
-		/* Find needed function based on typed command */
-		func = CN0326_FindCommand((char *)uart_rx_buffer);
+    /* Check if <ENTER> key was pressed */
+    if (uart_cmd == UART_TRUE) {
+        /* Find needed function based on typed command */
+        func = CN0326_FindCommand((char *)uart_rx_buffer);
 
-		/* Check if there is a valid command */
-		if (func) {
-			printf("\n");
-			/* Call the desired function */
-			(*func)(&uart_rx_buffer[2]);
+        /* Check if there is a valid command */
+        if (func) {
+            printf("\n");
+            /* Call the desired function */
+            (*func)(&uart_rx_buffer[2]);
 
-			/* Check if there is no match for typed command */
-		} else if (strlen((char *)uart_rx_buffer) != 0) {
-			printf("\n");
-			/* Display a message for unknown command */
-			printf("Unknown command!");
-			printf("\n");
-		}
-		/* Prepare for next <ENTER> */
-		uart_cmd = UART_FALSE;
-		CN0326_CmdPrompt();
-	}
+            /* Check if there is no match for typed command */
+        } else if (strlen((char *)uart_rx_buffer) != 0) {
+            printf("\n");
+            /* Display a message for unknown command */
+            printf("Unknown command!");
+            printf("\n");
+        }
+        /* Prepare for next <ENTER> */
+        uart_cmd = UART_FALSE;
+        CN0326_CmdPrompt();
+    }
 }
 
 /**
@@ -390,30 +390,30 @@ void CN0326_CmdProcess(void)
 **/
 int CN0326_CmdPrompt(void)
 {
-	int res;
-	static uint8_t count = 0;
+    int res;
+    static uint8_t count = 0;
 
-	res = UART_WriteChar(_CR, UART_WRITE_NO_INT);
+    res = UART_WriteChar(_CR, UART_WRITE_NO_INT);
 
-	if (res == UART_SUCCESS) {
-		res = UART_WriteChar(_LF, UART_WRITE_NO_INT);
-	}
+    if (res == UART_SUCCESS) {
+        res = UART_WriteChar(_LF, UART_WRITE_NO_INT);
+    }
 
-	/* Check first <ENTER> is pressed after reset */
-	if(count == 0) {
-		printf("\tWelcome to CN0326 application!\n");
-		printf("Type <help> to see available commands...\n");
-		printf("\n");
-		count++;
-	}
+    /* Check first <ENTER> is pressed after reset */
+    if(count == 0) {
+        printf("\tWelcome to CN0326 application!\n");
+        printf("Type <help> to see available commands...\n");
+        printf("\n");
+        count++;
+    }
 
-	if(res == UART_SUCCESS) {
-		UART_WriteChar(':', UART_WRITE_NO_INT);
-	}
+    if(res == UART_SUCCESS) {
+        UART_WriteChar(':', UART_WRITE_NO_INT);
+    }
 
-	uart_rcnt = 0;
+    uart_rcnt = 0;
 
-	return res;
+    return res;
 }
 
 /**
@@ -426,18 +426,18 @@ int CN0326_CmdPrompt(void)
 **/
 cmdFunc CN0326_FindCommand(char *cmd)
 {
-	cmdFunc func = NULL;
-	int i = 0;
+    cmdFunc func = NULL;
+    int i = 0;
 
-	while (CmdFun[i] != NULL) {
-		if(strncmp(cmd, CmdCommands[i], 6) == 0) {
-			func = CmdFun[i];
-			break;
-		}
-		i++;
-	}
+    while (CmdFun[i] != NULL) {
+        if(strncmp(cmd, CmdCommands[i], 6) == 0) {
+            func = CmdFun[i];
+            break;
+        }
+        i++;
+    }
 
-	return func;
+    return func;
 }
 
 /**
@@ -448,33 +448,33 @@ cmdFunc CN0326_FindCommand(char *cmd)
 **/
 void CN0326_Interrupt(void)
 {
-	uint8_t c;
+    uint8_t c;
 
-	UART_ReadChar(&c);
-	switch(c) {
-	case _CR:
-		uart_cmd = UART_TRUE;
-		break;
-	default:
-		uart_rx_buffer[uart_rcnt++] = c;
+    UART_ReadChar(&c);
+    switch(c) {
+    case _CR:
+        uart_cmd = UART_TRUE;
+        break;
+    default:
+        uart_rx_buffer[uart_rcnt++] = c;
 
-		if(uart_rcnt == UART_RX_BUFFER_SIZE) {
-			uart_rcnt--;
-			UART_WriteChar(_BS, UART_WRITE_NO_INT);
-		}
-		UART_WriteChar(c, UART_WRITE_NO_INT);
-	}
+        if(uart_rcnt == UART_RX_BUFFER_SIZE) {
+            uart_rcnt--;
+            UART_WriteChar(_BS, UART_WRITE_NO_INT);
+        }
+        UART_WriteChar(c, UART_WRITE_NO_INT);
+    }
 
-	uart_rx_buffer[uart_rcnt] = '\0';
-	if (uart_tcnt) {
-		uart_tbusy = UART_TRUE;
-		uart_tcnt--;
-		UART_WriteChar(uart_tx_buffer[uart_tpos++], UART_WRITE_NO_INT);
-		if (uart_tpos == UART_TX_BUFFER_SIZE) {
-			uart_tpos = 0;
-		}
+    uart_rx_buffer[uart_rcnt] = '\0';
+    if (uart_tcnt) {
+        uart_tbusy = UART_TRUE;
+        uart_tcnt--;
+        UART_WriteChar(uart_tx_buffer[uart_tpos++], UART_WRITE_NO_INT);
+        if (uart_tpos == UART_TX_BUFFER_SIZE) {
+            uart_tpos = 0;
+        }
 
-	} else {
-		uart_tbusy = UART_FALSE;
-	}
+    } else {
+        uart_tbusy = UART_FALSE;
+    }
 }

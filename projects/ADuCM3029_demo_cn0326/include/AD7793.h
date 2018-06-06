@@ -52,14 +52,14 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*Operation mode*/
 typedef enum {
-	CONTINUOUS_CONV = 0,
-	SINGLE_CONV,
-	IDLE_MODE,
-	POWER_DOWN_MODE,
-	CAL_INT_ZERO_MODE,
-	CAL_INT_FULL_MODE,
-	CAL_SYS_ZERO_MODE,
-	CAL_SYS_FULL_MODE
+    CONTINUOUS_CONV = 0,
+    SINGLE_CONV,
+    IDLE_MODE,
+    POWER_DOWN_MODE,
+    CAL_INT_ZERO_MODE,
+    CAL_INT_FULL_MODE,
+    CAL_SYS_ZERO_MODE,
+    CAL_SYS_FULL_MODE
 } enMode;
 
 /*************************** Functions prototypes *****************************/

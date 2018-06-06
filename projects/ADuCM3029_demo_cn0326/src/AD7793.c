@@ -43,7 +43,7 @@ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
- 
+
 /***************************** Include Files **********************************/
 #include <ADuCM3029.h>
 #include "drivers/gpio/adi_gpio.h"
@@ -67,25 +67,25 @@ const uint8_t reg_size[8] = {1, 2, 2, 3, 1, 1, 3, 3};
 **/
 void AD7793_Init(void)
 {
-	uint32_t ui32reg_value;
+    uint32_t ui32reg_value;
 
-	/* SPI initialization */
-	SPI_Init();
+    /* SPI initialization */
+    SPI_Init();
 
-	/* Reset ADC converter */
-	AD7793_Reset();
+    /* Reset ADC converter */
+    AD7793_Reset();
 
-	ui32reg_value = (uint32_t)(AD7793_GAIN << 8); /* Set ADC gain */
-	ui32reg_value |= (uint32_t)AD7793_REFSEL; /* Select internal reference
+    ui32reg_value = (uint32_t)(AD7793_GAIN << 8); /* Set ADC gain */
+    ui32reg_value |= (uint32_t)AD7793_REFSEL; /* Select internal reference
 											   * source */
-	ui32reg_value |= (uint32_t)AD7793_BUF; /* Configure buffered mode of
+    ui32reg_value |= (uint32_t)AD7793_BUF; /* Configure buffered mode of
 											* operation */
 
-	/* Set configuration options */
-	AD7793_WriteRegister(AD7793_REG_CONF, ui32reg_value);
+    /* Set configuration options */
+    AD7793_WriteRegister(AD7793_REG_CONF, ui32reg_value);
 
-	/* Set IOUT2 to 210 uA */
-	AD7793_WriteRegister(AD7793_REG_IO, 0x02);
+    /* Set IOUT2 to 210 uA */
+    AD7793_WriteRegister(AD7793_REG_IO, 0x02);
 }
 
 /**
@@ -95,11 +95,11 @@ void AD7793_Init(void)
 **/
 void AD7793_Reset(void)
 {
-	/* Write 4 bytes = 0xFF */
-	SPI_Write(0, 0, 4);
+    /* Write 4 bytes = 0xFF */
+    SPI_Write(0, 0, 4);
 
-	/* Wait time before accessing any registers after reset */
-	timer_sleep(0.05);
+    /* Wait time before accessing any registers after reset */
+    timer_sleep(0.05);
 }
 
 
@@ -110,17 +110,17 @@ void AD7793_Reset(void)
 
    @return uint32_t - register value
 **/
-uint32_t AD7793_ReadRegister( uint8_t ui8address)
+uint32_t AD7793_ReadRegister(uint8_t ui8address)
 {
-	static uint32_t ui32value;
+    static uint32_t ui32value;
 
-	/* Set value (read command + register address) to write in COMM register */
-	uint8_t ui8reg_adrr = (AD7793_COMM_READ | AD7793_COMM_ADR(ui8address));
+    /* Set value (read command + register address) to write in COMM register */
+    uint8_t ui8reg_adrr = (AD7793_COMM_READ | AD7793_COMM_ADR(ui8address));
 
-	/* Read register value */
-	ui32value = SPI_Read(ui8reg_adrr, reg_size[ui8address]);
+    /* Read register value */
+    ui32value = SPI_Read(ui8reg_adrr, reg_size[ui8address]);
 
-	return ui32value;
+    return ui32value;
 }
 
 
@@ -132,14 +132,14 @@ uint32_t AD7793_ReadRegister( uint8_t ui8address)
 
    @return none
 **/
-void AD7793_WriteRegister( uint8_t ui8address, uint32_t ui32data)
+void AD7793_WriteRegister(uint8_t ui8address, uint32_t ui32data)
 {
-	/* Set value (write command + register address) to write in COMM
-	 * register */
-	uint8_t ui8reg_adrr = (AD7793_COMM_WRITE | AD7793_COMM_ADR(ui8address));
+    /* Set value (write command + register address) to write in COMM
+     * register */
+    uint8_t ui8reg_adrr = (AD7793_COMM_WRITE | AD7793_COMM_ADR(ui8address));
 
-	/* Write register value */
-	SPI_Write(ui8reg_adrr, ui32data,  reg_size[ui8address]);
+    /* Write register value */
+    SPI_Write(ui8reg_adrr, ui32data,  reg_size[ui8address]);
 }
 
 
@@ -153,30 +153,30 @@ void AD7793_WriteRegister( uint8_t ui8address, uint32_t ui32data)
 **/
 uint32_t AD7793_Scan(enMode mode,  uint8_t ui8channel)
 {
-	static  uint32_t ui32result, ui32reg_value;
+    static  uint32_t ui32result, ui32reg_value;
 
-	AD7793_Calibrate(ui8channel, CAL_INT_FULL_MODE);
+    AD7793_Calibrate(ui8channel, CAL_INT_FULL_MODE);
 
-	/* Select channel to scan */
-	AD7793_SelectChannel(ui8channel);
+    /* Select channel to scan */
+    AD7793_SelectChannel(ui8channel);
 
-	/* Check if single conversion mode is wanted */
-	if(mode == SINGLE_CONV) {
-		ui32reg_value =  AD7793_ReadRegister(AD7793_REG_MODE);
+    /* Check if single conversion mode is wanted */
+    if(mode == SINGLE_CONV) {
+        ui32reg_value =  AD7793_ReadRegister(AD7793_REG_MODE);
 
-		ui32reg_value &= AD7793_MODE_MSK;
+        ui32reg_value &= AD7793_MODE_MSK;
 
-		/* Set single mode operation */
-		ui32reg_value |= (uint32_t)(mode << 13);
+        /* Set single mode operation */
+        ui32reg_value |= (uint32_t)(mode << 13);
 
-		AD7793_WriteRegister(AD7793_REG_MODE, ui32reg_value);
-	}
+        AD7793_WriteRegister(AD7793_REG_MODE, ui32reg_value);
+    }
 
-	while ((AD7793_ReadRegister(AD7793_REG_STAT)& RDY_BIT) == RDY_BIT);
+    while ((AD7793_ReadRegister(AD7793_REG_STAT) & RDY_BIT) == RDY_BIT);
 
-	ui32result = AD7793_ReadRegister(AD7793_REG_DATA);
+    ui32result = AD7793_ReadRegister(AD7793_REG_DATA);
 
-	return ui32result;
+    return ui32result;
 }
 
 
@@ -189,45 +189,46 @@ uint32_t AD7793_Scan(enMode mode,  uint8_t ui8channel)
 **/
 void AD7793_SelectChannel(uint8_t ui8channel)
 {
-	uint32_t ui32reg_value;
+    uint32_t ui32reg_value;
 
-	/* Read CONF register */
-	ui32reg_value = AD7793_ReadRegister(AD7793_REG_CONF);
-	ui32reg_value &= AD7793_CONF_MSK;
-	/* Set set channel */
-	ui32reg_value |= (uint32_t)ui8channel;
-	/* Write CONF register */
-	AD7793_WriteRegister(AD7793_REG_CONF, ui32reg_value);
+    /* Read CONF register */
+    ui32reg_value = AD7793_ReadRegister(AD7793_REG_CONF);
+    ui32reg_value &= AD7793_CONF_MSK;
+    /* Set set channel */
+    ui32reg_value |= (uint32_t)ui8channel;
+    /* Write CONF register */
+    AD7793_WriteRegister(AD7793_REG_CONF, ui32reg_value);
 }
 
 /**
    @brief Calibrate ADC input channel
 
    @param ui8channel - input channel
-   @param mode - calibration mode: CAL_INT_ZERO_MODE, CAL_INT_FULL_MODE, CAL_SYS_ZERO_MODE, CAL_SYS_FULL_MODE
+   @param mode - calibration mode: CAL_INT_ZERO_MODE, CAL_INT_FULL_MODE,
+   	   	   	   	   	   	   	   	   CAL_SYS_ZERO_MODE, CAL_SYS_FULL_MODE
 
    @return none
 **/
 void AD7793_Calibrate(uint8_t ui8channel, enMode mode)
 {
-	uint32_t ui32reg_value, back_up;
+    uint32_t ui32reg_value, back_up;
 
-	/* Select channel */
-	AD7793_SelectChannel(ui8channel);
+    /* Select channel */
+    AD7793_SelectChannel(ui8channel);
 
-	/* Read MODE register */
-	ui32reg_value = back_up = AD7793_ReadRegister(AD7793_REG_MODE);
+    /* Read MODE register */
+    ui32reg_value = back_up = AD7793_ReadRegister(AD7793_REG_MODE);
 
-	ui32reg_value &= AD7793_MODE_MSK;
+    ui32reg_value &= AD7793_MODE_MSK;
 
-	/* Set mode */
-	ui32reg_value |= (uint32_t)(mode << 13);
+    /* Set mode */
+    ui32reg_value |= (uint32_t)(mode << 13);
 
-	/* Write MODE register */
-	AD7793_WriteRegister(AD7793_REG_MODE, ui32reg_value);
+    /* Write MODE register */
+    AD7793_WriteRegister(AD7793_REG_MODE, ui32reg_value);
 
-	/* Wait until RDY bit from STATUS register is high */
-	while ((AD7793_ReadRegister(AD7793_REG_STAT)& RDY_BIT) == RDY_BIT);
+    /* Wait until RDY bit from STATUS register is high */
+    while ((AD7793_ReadRegister(AD7793_REG_STAT) & RDY_BIT) == RDY_BIT);
 }
 
 
@@ -240,11 +241,11 @@ void AD7793_Calibrate(uint8_t ui8channel, enMode mode)
 **/
 float AD7793_ConvertToVolts(uint32_t u32adcValue)
 {
-	float f32voltage;
+    float f32voltage;
 
-	/* Vref = 1170 [mV]    */        /* Calculate voltage */
-	f32voltage = ((float)(u32adcValue - 0x800000) * 1170) / (float)0x800000;
+    /* Vref = 1170 [mV]    */        /* Calculate voltage */
+    f32voltage = ((float)(u32adcValue - 0x800000) * 1170) / (float)0x800000;
 
-	return f32voltage;
+    return f32voltage;
 }
 

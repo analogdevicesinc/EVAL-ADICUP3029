@@ -56,24 +56,24 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main(int argc, char *argv[])
 {
-	uint16_t test = 0;
-	/**
-	 * Initialize managed drivers and/or services that have been added to
-	 * the project.
-	 * @return zero on success
-	 */
-	adi_initComponents();
+    uint16_t test = 0;
+    /**
+     * Initialize managed drivers and/or services that have been added to
+     * the project.
+     * @return zero on success
+     */
+    adi_initComponents();
 
-	/* Test communication with the board */
-	do {
-		test = AD7793_ReadRegister(AD7793_REG_ID);
-	} while((test & AD7793_REG_ID_MASK) != AD7793_REG_ID_VAL);
+    /* Test communication with the board */
+    do {
+        test = AD7793_ReadRegister(AD7793_REG_ID);
+    } while((test & AD7793_REG_ID_MASK) != AD7793_REG_ID_VAL);
 
-	CN0326_CmdPrompt();
+    CN0326_CmdPrompt();
 
-	while(1)
-		CN0326_CmdProcess();
-	
-	return 0;
+    while(1)
+        CN0326_CmdProcess();
+
+    return 0;
 }
 
