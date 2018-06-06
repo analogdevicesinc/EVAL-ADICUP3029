@@ -112,15 +112,11 @@ void AD7793_Reset(void)
 **/
 uint32_t AD7793_ReadRegister(uint8_t ui8address)
 {
-    static uint32_t ui32value;
-
     /* Set value (read command + register address) to write in COMM register */
     uint8_t ui8reg_adrr = (AD7793_COMM_READ | AD7793_COMM_ADR(ui8address));
 
-    /* Read register value */
-    ui32value = SPI_Read(ui8reg_adrr, reg_size[ui8address]);
-
-    return ui32value;
+    /* Read and return register value */
+    return SPI_Read(ui8reg_adrr, reg_size[ui8address]);
 }
 
 
@@ -153,7 +149,7 @@ void AD7793_WriteRegister(uint8_t ui8address, uint32_t ui32data)
 **/
 uint32_t AD7793_Scan(enMode mode,  uint8_t ui8channel)
 {
-    static  uint32_t ui32result, ui32reg_value;
+    static  uint32_t ui32reg_value;
 
     AD7793_Calibrate(ui8channel, CAL_INT_FULL_MODE);
 
@@ -174,9 +170,7 @@ uint32_t AD7793_Scan(enMode mode,  uint8_t ui8channel)
 
     while ((AD7793_ReadRegister(AD7793_REG_STAT) & RDY_BIT) == RDY_BIT);
 
-    ui32result = AD7793_ReadRegister(AD7793_REG_DATA);
-
-    return ui32result;
+    return AD7793_ReadRegister(AD7793_REG_DATA);
 }
 
 
