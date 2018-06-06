@@ -149,7 +149,7 @@ void AD7793_WriteRegister(uint8_t ui8address, uint32_t ui32data)
 **/
 uint32_t AD7793_Scan(enMode mode,  uint8_t ui8channel)
 {
-    static  uint32_t ui32reg_value;
+    uint32_t ui32reg_value;
 
     AD7793_Calibrate(ui8channel, CAL_INT_FULL_MODE);
 
