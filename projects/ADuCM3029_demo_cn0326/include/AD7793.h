@@ -52,14 +52,14 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*Operation mode*/
 typedef enum {
-	CONTINUOUS_CONV = 0,
-	SINGLE_CONV,
-	IDLE_MODE,
-	POWER_DOWN_MODE,
-	CAL_INT_ZERO_MODE,
-	CAL_INT_FULL_MODE,
-	CAL_SYS_ZERO_MODE,
-	CAL_SYS_FULL_MODE
+    CONTINUOUS_CONV = 0,
+    SINGLE_CONV,
+    IDLE_MODE,
+    POWER_DOWN_MODE,
+    CAL_INT_ZERO_MODE,
+    CAL_INT_FULL_MODE,
+    CAL_SYS_ZERO_MODE,
+    CAL_SYS_FULL_MODE
 } enMode;
 
 /*************************** Functions prototypes *****************************/
@@ -71,7 +71,7 @@ void AD7793_WriteRegister( uint8_t ui8address, uint32_t ui32data);
 void AD7793_SelectChannel(uint8_t ui8channel);
 uint32_t AD7793_Scan(enMode mode,  uint8_t channel);
 void AD7793_Calibrate(uint8_t ui8channel, enMode mode);
-int32_t AD7793_ConvertToVolts(uint32_t u32adcValue);
+float AD7793_ConvertToVolts(uint32_t u32adcValue);
 
 /****************************** Internal defines ******************************/
 

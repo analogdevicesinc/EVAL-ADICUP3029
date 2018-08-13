@@ -66,7 +66,8 @@ uint8_t			uart_tx_buffer[UART_TX_BUFFER_SIZE];
 /* Handle for UART device */
 ADI_UART_HANDLE	p_uart_device_handler __attribute__ ((aligned (4)));
 /* Memory for  UART driver */
-uint8_t			uart_device_memory[ADI_UART_BIDIR_MEMORY_SIZE] __attribute__ ((aligned (4)));
+uint8_t			uart_device_memory[ADI_UART_BIDIR_MEMORY_SIZE]
+								   __attribute__ ((aligned (4)));
 
 uint32_t		uart_rpos, uart_rcnt, uart_tpos, uart_tcnt;
 uint32_t		uart_echo, uart_cmd, uart_ctrlc, uart_tbusy;
@@ -100,66 +101,66 @@ ADI_SPI_TRANSCEIVER spi_telegram;
 **/
 int8_t SPI_Init(void)
 {
-	ADI_SPI_RESULT status;
+    ADI_SPI_RESULT status;
 
-	/* Open SPI module */
-	status = adi_spi_Open(SPI_DEVICE_NR,
-	                      spi_device_memory,
-	                      ADI_SPI_MEMORY_SIZE,
-	                      &p_spi_device_handler);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Open SPI module */
+    status = adi_spi_Open(SPI_DEVICE_NR,
+                          spi_device_memory,
+                          ADI_SPI_MEMORY_SIZE,
+                          &p_spi_device_handler);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	/* Set baud rate */
-	status = adi_spi_SetBitrate(p_spi_device_handler,
-	                            SPI_BAUDRATE);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Set baud rate */
+    status = adi_spi_SetBitrate(p_spi_device_handler,
+                                SPI_BAUDRATE);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	/* Set receive data on leading edge of clock */
-	status = adi_spi_SetClockPhase(p_spi_device_handler,
-	                               SPI_PHASE_TRAILING_EDGE);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Set receive data on leading edge of clock */
+    status = adi_spi_SetClockPhase(p_spi_device_handler,
+                                   SPI_PHASE_TRAILING_EDGE);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	/* Set clock to be idle low */
-	status = adi_spi_SetClockPolarity(p_spi_device_handler,
-	                                  SPI_POLARITY_IDLE_HIGH);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Set clock to be idle low */
+    status = adi_spi_SetClockPolarity(p_spi_device_handler,
+                                      SPI_POLARITY_IDLE_HIGH);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	/* Set SPI to transmit zero on underflow */
-	status = adi_spi_SetTransmitUnderflow(p_spi_device_handler,
-	                                      SPI_SEND_ZERO);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Set SPI to transmit zero on underflow */
+    status = adi_spi_SetTransmitUnderflow(p_spi_device_handler,
+                                          SPI_SEND_ZERO);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	/* Set SPI to overwrite old data with new data on receive overflow */
-	status = adi_spi_SetReceiveOverflow(p_spi_device_handler,
-	                                    SPI_REC_OVERWRITE);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Set SPI to overwrite old data with new data on receive overflow */
+    status = adi_spi_SetReceiveOverflow(p_spi_device_handler,
+                                        SPI_REC_OVERWRITE);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	/* Set SPI in continuous transfer mode */
-	status = adi_spi_SetContinuousMode(p_spi_device_handler,
-	                                   SPI_DISCONT_MODE);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Set SPI in continuous transfer mode */
+    status = adi_spi_SetContinuousMode(p_spi_device_handler,
+                                       SPI_DISCONT_MODE);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	/* Set SPI to interrupt after 2 transmitted bytes and 2 or more received
-	 * bytes */
-	status = adi_spi_SetIrqmode(p_spi_device_handler,
-	                            spi_mode_tx2rx2);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Set SPI to interrupt after 2 transmitted bytes and 2 or more received
+     * bytes */
+    status = adi_spi_SetIrqmode(p_spi_device_handler,
+                                spi_mode_tx2rx2);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	/* Configure SPI for Arduino connectors */
-	status = adi_spi_SetChipSelect(p_spi_device_handler,
-	                               ADI_SPI_CS0);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Configure SPI for Arduino connectors */
+    status = adi_spi_SetChipSelect(p_spi_device_handler,
+                                   ADI_SPI_CS0);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	return SPI_SUCCESS;
+    return SPI_SUCCESS;
 }
 
 /**
@@ -173,39 +174,39 @@ int8_t SPI_Init(void)
 **/
 uint32_t SPI_Read(uint8_t ui8address, uint8_t ui8bytes)
 {
-	uint32_t ui32AdcCodes = 0, status;
-	uint8_t size = ui8bytes + 1;
-	uint8_t ui8counter, rx_buff[size];
-	uint8_t tx_buff[size];
-	static uint8_t ui8read_rx;
+    uint32_t ui32AdcCodes = 0, status;
+    uint8_t size = ui8bytes + 1;
+    uint8_t ui8counter, rx_buff[size];
+    uint8_t tx_buff[size];
+    static uint8_t ui8read_rx;
 
-	tx_buff[0] = ui8address;
-	for(ui8counter = 1; ui8counter <= ui8bytes; ui8counter++)
-		tx_buff[ui8counter] = 0xAA;
+    tx_buff[0] = ui8address;
+    for(ui8counter = 1; ui8counter <= ui8bytes; ui8counter++)
+        tx_buff[ui8counter] = 0xAA;
 
-	/* Configure SPI telegram */
-	spi_telegram.pTransmitter		= tx_buff;
-	spi_telegram.TransmitterBytes	= size; /* Transmit 1 byte of address*/
-	spi_telegram.nTxIncrement		= 1; /* Address not incremented */
-	spi_telegram.pReceiver 			= rx_buff;
-	spi_telegram.ReceiverBytes 		= size;
-	spi_telegram.nRxIncrement 		= 1; /* No data alignment */
-	spi_telegram.bDMA 				= false; /* No DMA */
-	spi_telegram.bRD_CTL 			= false; /* Full-duplex */
+    /* Configure SPI telegram */
+    spi_telegram.pTransmitter		= tx_buff;
+    spi_telegram.TransmitterBytes	= size; /* Transmit 1 byte of address*/
+    spi_telegram.nTxIncrement		= 1; /* Address not incremented */
+    spi_telegram.pReceiver 			= rx_buff;
+    spi_telegram.ReceiverBytes 		= size;
+    spi_telegram.nRxIncrement 		= 1; /* No data alignment */
+    spi_telegram.bDMA 				= false; /* No DMA */
+    spi_telegram.bRD_CTL 			= false; /* Full-duplex */
 
-	/* Transmit register address and receive the read */
-	status = adi_spi_MasterReadWrite(p_spi_device_handler,
-	                                 &spi_telegram);
-	if(status != ADI_SPI_SUCCESS)
-		return SPI_FAILURE;
+    /* Transmit register address and receive the read */
+    status = adi_spi_MasterReadWrite(p_spi_device_handler,
+                                     &spi_telegram);
+    if(status != ADI_SPI_SUCCESS)
+        return SPI_FAILURE;
 
-	/* Compile data in an 32 bit unsigned integer format */
-	for(ui8counter = 1; ui8counter <= ui8bytes; ui8counter++) {
-		ui8read_rx = rx_buff[ui8counter];
-		ui32AdcCodes = (uint32_t)((ui32AdcCodes << 8) | ui8read_rx);
-	}
+    /* Compile data in an 32 bit unsigned integer format */
+    for(ui8counter = 1; ui8counter <= ui8bytes; ui8counter++) {
+        ui8read_rx = rx_buff[ui8counter];
+        ui32AdcCodes = (uint32_t)((ui32AdcCodes << 8) | ui8read_rx);
+    }
 
-	return ui32AdcCodes;
+    return ui32AdcCodes;
 }
 
 /**
@@ -220,45 +221,45 @@ uint32_t SPI_Read(uint8_t ui8address, uint8_t ui8bytes)
 **/
 int8_t SPI_Write(uint8_t ui8address, uint32_t ui32data, uint8_t ui8bytes)
 {
-	uint8_t ui8counter, ui8write[ui8bytes+1];
-	int32_t status;
+    uint8_t ui8counter, ui8write[ui8bytes+1];
+    int32_t status;
 
-	/* Configure SPI telegram */
-	spi_telegram.pTransmitter		= ui8write;
-	spi_telegram.TransmitterBytes	= ui8bytes+1;
-	spi_telegram.nTxIncrement 		= 1; /* No data alignment */
-	spi_telegram.pReceiver 			= NULL; /* No received data */
-	spi_telegram.ReceiverBytes 		= 0;
-	spi_telegram.nRxIncrement 		= 0;
-	spi_telegram.bDMA 				= false; /* No DMA */
-	spi_telegram.bRD_CTL 			= false; /* Full-duplex */
+    /* Configure SPI telegram */
+    spi_telegram.pTransmitter		= ui8write;
+    spi_telegram.TransmitterBytes	= ui8bytes+1;
+    spi_telegram.nTxIncrement 		= 1; /* No data alignment */
+    spi_telegram.pReceiver 			= NULL; /* No received data */
+    spi_telegram.ReceiverBytes 		= 0;
+    spi_telegram.nRxIncrement 		= 0;
+    spi_telegram.bDMA 				= false; /* No DMA */
+    spi_telegram.bRD_CTL 			= false; /* Full-duplex */
 
-	/* Separate data into 8 bits values */
-	if(ui8bytes != 4) {
-		ui8write[0] = ui8address;
-		for(ui8counter = 1; ui8counter <= ui8bytes; ui8counter++) {
-			ui8write[ui8counter] = (ui32data >>
-			                        ((ui8bytes - ui8counter) * 8));
-		}
+    /* Separate data into 8 bits values */
+    if(ui8bytes != 4) {
+        ui8write[0] = ui8address;
+        for(ui8counter = 1; ui8counter <= ui8bytes; ui8counter++) {
+            ui8write[ui8counter] = (ui32data >>
+                                    ((ui8bytes - ui8counter) * 8));
+        }
 
-		/* Transmit data */
-		status = adi_spi_MasterReadWrite(p_spi_device_handler,
-		                                 &spi_telegram);
-		if(status != ADI_SPI_SUCCESS)
-			return SPI_FAILURE;
+        /* Transmit data */
+        status = adi_spi_MasterReadWrite(p_spi_device_handler,
+                                         &spi_telegram);
+        if(status != ADI_SPI_SUCCESS)
+            return SPI_FAILURE;
 
-		/* Transmit 4 0xFF bytes */
-	} else {
-		for(ui8counter = 1; ui8counter <= ui8bytes; ui8counter++)
-			ui8write[ui8counter - 1] = 0xFF;
+        /* Transmit 4 0xFF bytes */
+    } else {
+        for(ui8counter = 1; ui8counter <= ui8bytes; ui8counter++)
+            ui8write[ui8counter - 1] = 0xFF;
 
-		/* Transmit data */
-		status = adi_spi_MasterReadWrite(p_spi_device_handler,
-		                                 &spi_telegram);
-		if(status != ADI_SPI_SUCCESS)
-			return SPI_FAILURE;
-	}
-	return SPI_SUCCESS;
+        /* Transmit data */
+        status = adi_spi_MasterReadWrite(p_spi_device_handler,
+                                         &spi_telegram);
+        if(status != ADI_SPI_SUCCESS)
+            return SPI_FAILURE;
+    }
+    return SPI_SUCCESS;
 }
 
 /**
@@ -273,54 +274,56 @@ int8_t SPI_Write(uint8_t ui8address, uint32_t ui32data, uint8_t ui8bytes)
 int8_t UART_Init(enum uart_baudrate baudrate,
                  uint8_t iBits)
 {
-	uint32_t status;
-	const uint32_t uart_device_number = 0;
-	uint8_t bits_nr;
+    uint32_t status;
+    const uint32_t uart_device_number = 0;
+    uint8_t bits_nr;
 
-	/* Get bits number */
-	switch(iBits) {
-	case 5:
-		bits_nr = ADI_UART_WORDLEN_5BITS;
-		break;
-	case 6:
-		bits_nr = ADI_UART_WORDLEN_6BITS;
-		break;
-	case 7:
-		bits_nr = ADI_UART_WORDLEN_7BITS;
-		break;
-	case 8:
-		bits_nr = ADI_UART_WORDLEN_8BITS;
-		break;
-	default:
-		bits_nr = ADI_UART_WORDLEN_8BITS;
-	}
+    /* Get bits number */
+    switch(iBits) {
+    case 5:
+        bits_nr = ADI_UART_WORDLEN_5BITS;
+        break;
+    case 6:
+        bits_nr = ADI_UART_WORDLEN_6BITS;
+        break;
+    case 7:
+        bits_nr = ADI_UART_WORDLEN_7BITS;
+        break;
+    case 8:
+        bits_nr = ADI_UART_WORDLEN_8BITS;
+        break;
+    default:
+        bits_nr = ADI_UART_WORDLEN_8BITS;
+    }
 
-	/* Configure UART module */
-	/* Open UART module*/
-	status = adi_uart_Open(uart_device_number,
-	                       ADI_UART_DIR_BIDIRECTION,
-	                       (void*)uart_device_memory,
-	                       (const uint32_t)ADI_UART_BIDIR_MEMORY_SIZE,
-	                       (ADI_UART_HANDLE *const)&p_uart_device_handler);
-	if(status != ADI_UART_SUCCESS)
-		return UART_INIT_FAILURE;
-	/* Set baudrate */
-	status = adi_uart_ConfigBaudRate((ADI_UART_HANDLE const)p_uart_device_handler,
-	                                 baudrate_divc_26mhz[baudrate],
-	                                 baudrate_divm_26mhz[baudrate],
-	                                 baudrate_divn_26mhz[baudrate],
-	                                 baudrate_osr_26mhz[baudrate]);
-	if(status != ADI_UART_SUCCESS)
-		return UART_INIT_FAILURE;
-	/* Set configuration of UART transmission */
-	status = adi_uart_SetConfiguration((ADI_UART_HANDLE const)p_uart_device_handler,
-	                                   ADI_UART_NO_PARITY,
-	                                   ADI_UART_ONE_STOPBIT,
-	                                   bits_nr);
-	if(status != ADI_UART_SUCCESS)
-		return UART_INIT_FAILURE;
+    /* Configure UART module */
+    /* Open UART module*/
+    status = adi_uart_Open(uart_device_number,
+                           ADI_UART_DIR_BIDIRECTION,
+                           (void*)uart_device_memory,
+                           (const uint32_t)ADI_UART_BIDIR_MEMORY_SIZE,
+                           (ADI_UART_HANDLE *const)&p_uart_device_handler);
+    if(status != ADI_UART_SUCCESS)
+        return UART_INIT_FAILURE;
+    /* Set baudrate */
+    status = adi_uart_ConfigBaudRate(
+    							(ADI_UART_HANDLE const)p_uart_device_handler,
+                                baudrate_divc_26mhz[baudrate],
+                                baudrate_divm_26mhz[baudrate],
+                                baudrate_divn_26mhz[baudrate],
+                                baudrate_osr_26mhz[baudrate]);
+    if(status != ADI_UART_SUCCESS)
+        return UART_INIT_FAILURE;
+    /* Set configuration of UART transmission */
+    status = adi_uart_SetConfiguration(
+    							(ADI_UART_HANDLE const)p_uart_device_handler,
+                                ADI_UART_NO_PARITY,
+                                ADI_UART_ONE_STOPBIT,
+                                bits_nr);
+    if(status != ADI_UART_SUCCESS)
+        return UART_INIT_FAILURE;
 
-	return UART_SUCCESS;
+    return UART_SUCCESS;
 }
 
 /**
@@ -335,36 +338,37 @@ int8_t UART_Init(enum uart_baudrate baudrate,
 int8_t UART_WriteChar(uint8_t data,
                       enum en_write_data mode)
 {
-	bool tx_available;
-	uint32_t hw_error;
-	const uint32_t buf_size = 1;
+    bool tx_available;
+    uint32_t hw_error;
+    const uint32_t buf_size = 1;
 
-	/* Send character with interrupt */
-	if(mode == UART_WRITE_IN_INT) {
-		/* Check if not busy */
-		adi_uart_IsTxBufferAvailable((ADI_UART_HANDLE const)p_uart_device_handler,
-		                             (bool* const)&tx_available);
-		if (!tx_available) {
-			return UART_NO_TX_SPACE;
-		}
-		/* Start transmission */
-		adi_uart_SubmitTxBuffer((ADI_UART_HANDLE const)p_uart_device_handler,
-		                        (void* const)&data,
-		                        buf_size,
-		                        DMA_NOT_USE);
+    /* Send character with interrupt */
+    if(mode == UART_WRITE_IN_INT) {
+        /* Check if not busy */
+        adi_uart_IsTxBufferAvailable(
+        						(ADI_UART_HANDLE const)p_uart_device_handler,
+                                (bool* const)&tx_available);
+        if (!tx_available) {
+            return UART_NO_TX_SPACE;
+        }
+        /* Start transmission */
+        adi_uart_SubmitTxBuffer((ADI_UART_HANDLE const)p_uart_device_handler,
+                                (void* const)&data,
+                                buf_size,
+                                DMA_NOT_USE);
 
-		return UART_SUCCESS;
+        return UART_SUCCESS;
 
-		/* Send character without interrupt (blocking) */
-	} else {
-		/* Do transmission */
-		adi_uart_Write((ADI_UART_HANDLE const)p_uart_device_handler,
-		               (void* const)&data,
-		               buf_size,
-		               DMA_NOT_USE,
-		               &hw_error);
-	}
-	return UART_SUCCESS;
+        /* Send character without interrupt (blocking) */
+    } else {
+        /* Do transmission */
+        adi_uart_Write((ADI_UART_HANDLE const)p_uart_device_handler,
+                       (void* const)&data,
+                       buf_size,
+                       DMA_NOT_USE,
+                       &hw_error);
+    }
+    return UART_SUCCESS;
 }
 
 
@@ -378,18 +382,18 @@ int8_t UART_WriteChar(uint8_t data,
 **/
 int8_t UART_ReadChar(uint8_t *data)
 {
-	int32_t status;
-	const uint32_t buf_size = 1;
-	uint32_t error;
-	/* Read data from UART */
-	status = adi_uart_Read((ADI_UART_HANDLE const)p_uart_device_handler,
-	                       data,
-	                       buf_size,
-	                       DMA_NOT_USE,
-	                       &error);
-	if(status != ADI_UART_SUCCESS)
-		return UART_FAILURE;
-	return UART_SUCCESS;
+    int32_t status;
+    const uint32_t buf_size = 1;
+    uint32_t error;
+    /* Read data from UART */
+    status = adi_uart_Read((ADI_UART_HANDLE const)p_uart_device_handler,
+                           data,
+                           buf_size,
+                           DMA_NOT_USE,
+                           &error);
+    if(status != ADI_UART_SUCCESS)
+        return UART_FAILURE;
+    return UART_SUCCESS;
 }
 
 /**
@@ -402,28 +406,28 @@ int8_t UART_ReadChar(uint8_t *data)
 **/
 int _write (int fd, char *ptr, int len)
 {
-	char *p = ptr;
+    char *p = ptr;
 
-	int res = UART_SUCCESS;
+    int res = UART_SUCCESS;
 
-	(void)fd;
-	(void)len;
+    (void)fd;
+    (void)len;
 
-	while (*p != '\n') {
-		res = UART_WriteChar(*p++, UART_WRITE_NO_INT);
+    while (*p != '\n') {
+        res = UART_WriteChar(*p++, UART_WRITE_NO_INT);
 
-		if (res != UART_SUCCESS)
-			break;
+        if (res != UART_SUCCESS)
+            break;
 
-		if(*p == '\t')
-			break;
-	}
+        if(*p == '\t')
+            break;
+    }
 
-	if(*p == '\n') {
-		UART_WriteChar('\r', 1);
-		UART_WriteChar('\n', 1);
-	}
+    if(*p == '\n') {
+        UART_WriteChar('\r', 1);
+        UART_WriteChar('\n', 1);
+    }
 
-	return res;
+    return res;
 }
 

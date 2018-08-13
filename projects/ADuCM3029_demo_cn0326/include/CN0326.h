@@ -68,7 +68,7 @@ int CN0326_CmdPrompt(void);
 uint8_t *CN0326_FindArgv(uint8_t *args);
 void CN0326_GetArgv(char *dst, uint8_t *args);
 
-/******************************* Internal defines ******************************/
+/******************************* Internal defines *****************************/
 
 #define YES    1
 #define NO     2
@@ -89,7 +89,7 @@ void CN0326_GetArgv(char *dst, uint8_t *args);
 #define I_EXC                0.21
 
 
-/**************************** Configuration parameters **********************/
+/**************************** Configuration parameters ************************/
 
 #define  RMIN           1000 /* Minimum value for RTD resistance */
 #define  RMAX           1385 /* Maximum value for RTD resistance */

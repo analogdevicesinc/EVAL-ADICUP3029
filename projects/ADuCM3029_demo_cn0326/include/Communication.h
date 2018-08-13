@@ -108,56 +108,56 @@ extern uint8_t          uart_tx_buffer[UART_TX_BUFFER_SIZE];
 
 /* Number of received bytes */
 enum en_read_bytes {
-	ONE_BYTE = 1,                 /* Read one byte */
-	TWO_BYTES                /* Read two bytes */
+    ONE_BYTE = 1,                 /* Read one byte */
+    TWO_BYTES                /* Read two bytes */
 };
 
 
 /* Write data mode */
 enum en_write_data {
-	UART_WRITE_NO_INT = 1, /* Write data when interrupts are disabled */
-	UART_WRITE_IN_INT	   /* Write data while in an interrupt routine */
+    UART_WRITE_NO_INT = 1, /* Write data when interrupts are disabled */
+    UART_WRITE_IN_INT	   /* Write data while in an interrupt routine */
 };
 
 enum uart_baudrate {
-	bd9600,
-	bd19200,
-	bd38400,
-	bd57600,
-	bd115200,
-	bd230400,
-	bd460800,
-	bd921600,
-	bd1000000,
-	bd1500000
+    bd9600,
+    bd19200,
+    bd38400,
+    bd57600,
+    bd115200,
+    bd230400,
+    bd460800,
+    bd921600,
+    bd1000000,
+    bd1500000
 };
 
 /* Write data mode */
 enum en_spi_write {
-	SPI_WRITE_REG = 1,      /* Write data to ADC */
-	SPI_WRITE_RESET        /* Write RESET to ADC */
+    SPI_WRITE_REG = 1,      /* Write data to ADC */
+    SPI_WRITE_RESET        /* Write RESET to ADC */
 };
 
 enum en_spi_read {
-	SPI_READ_REG = 1,            /* Read one ADC register */
-	SPI_READ_DATA               /* Read  ADC registers for three bytes */
+    SPI_READ_REG = 1,            /* Read one ADC register */
+    SPI_READ_DATA               /* Read  ADC registers for three bytes */
 };
 
 enum en_spi_channel {
-	SPI_ARDUINO,	// SPI0 - used for ARDUINO connector on ADICUP3029 board
-	SPI_PMOD,	// SPI1 - used for PMOD connector on ADICUP3029 board
-	SPI_BLE		// SPI2 - used to send BLE commands to EM9304
+    SPI_ARDUINO,	// SPI0 - used for ARDUINO connector on ADICUP3029 board
+    SPI_PMOD,	// SPI1 - used for PMOD connector on ADICUP3029 board
+    SPI_BLE		// SPI2 - used to send BLE commands to EM9304
 };
 
 enum spi_irqmode {
-	spi_mode_tx1rx1 = 0,
-	spi_mode_tx2rx2,
-	spi_mode_tx3rx3,
-	spi_mode_tx4rx4,
-	spi_mode_tx5rx5,
-	spi_mode_tx6rx6,
-	spi_mode_tx7rx7,
-	spi_mode_tx8rx8
+    spi_mode_tx1rx1 = 0,
+    spi_mode_tx2rx2,
+    spi_mode_tx3rx3,
+    spi_mode_tx4rx4,
+    spi_mode_tx5rx5,
+    spi_mode_tx6rx6,
+    spi_mode_tx7rx7,
+    spi_mode_tx8rx8
 };
 
 /*************************** Functions prototypes *****************************/
@@ -171,6 +171,6 @@ int8_t UART_ReadChar(uint8_t *data);
 int8_t UART_WriteChar(uint8_t data,
                       enum en_write_data mode);
 
-/**************************** Configuration parameters **********************/
+/**************************** Configuration parameters ************************/
 
 #endif /* _COMMUNICATION_H_ */
