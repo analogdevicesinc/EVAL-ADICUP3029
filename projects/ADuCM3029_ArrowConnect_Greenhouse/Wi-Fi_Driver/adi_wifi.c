@@ -1613,7 +1613,7 @@ ADI_WIFI_RESULT adi_wifi_ParseHTTPData(uint8_t * const pPacket)
 	uint8_t *pHeadResponse;
 	uint8_t  nNumber[ADI_WIFI_MAX_DATA_SIZE_ASCII] = {0};
 	uint8_t nIndex;
-	uint32_t nGetBodyLength;
+	uint32_t nGetBodyLength = 0;
 
 	uint8_t nConlen = strlen("Content-Length: ");
 
