@@ -171,7 +171,7 @@ ADSENSORAPP_RESULT_TYPE adsAPI_RW_SPI_Sensor_Reg(REG_RW_MODE rw_mode, uint8_t SP
 //    }
 
 #ifdef SPI_NONBLOCKING_MODE
-	bool bComplete;
+	bool bComplete = 0;
 
 	eResult = adi_spi_MasterTransfer(hDevice, &transceive);
 
