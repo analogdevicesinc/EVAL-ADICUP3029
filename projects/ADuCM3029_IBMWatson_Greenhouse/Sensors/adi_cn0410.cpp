@@ -250,7 +250,7 @@ uint8_t gpioMemory[ADI_GPIO_MEMORY_SIZE];
 		ADI_VISUAL_LIGHT_DATA eIntensity;
 		bool valid = true;
 		float fpRedError, fpBlueError, fpGreenError;
-		float fpRedI, fpBlueI, fpGreenI;
+		float fpRedI = 0, fpBlueI = 0, fpGreenI = 0;
 		float kp =0.6, ki = 0.04;
 		float commandRed, commandBlue, commandGreen;
 		uint32_t u32Timeout = 0; //3 sec timeout
