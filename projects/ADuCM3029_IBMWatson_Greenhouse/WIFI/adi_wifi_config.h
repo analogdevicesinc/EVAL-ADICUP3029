@@ -85,7 +85,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
 #define ADI_UART_DEVICE_NUM_CFG			    (0u)
-#elif
+#else
 /*!
  *  @brief   SPI device number.
  *
