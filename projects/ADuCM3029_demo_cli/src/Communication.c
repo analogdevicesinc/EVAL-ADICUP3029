@@ -152,7 +152,7 @@ int16_t UART_Init(enum uart_baudrate baudrate,
 int16_t UART_WriteChar(uint8_t data,
 		enum en_write_data mode)
 {
-	bool tx_available;
+	bool tx_available = 0;
 	uint32_t hw_error;
 	const uint32_t buf_size = 1;
 
