@@ -3,7 +3,7 @@ set -e
 
 brew update
 
-PACKAGES="cppcheck astyle"
+PACKAGES="cppcheck"
 
 brew_install_or_upgrade() {
     brew install $1 || \
