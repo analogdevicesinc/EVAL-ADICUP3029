@@ -85,8 +85,8 @@
 #define UART_DEVICE_NUM 				0u
 /* Memory required by the driver for bidirectional mode of operation. */
 #define ADI_UART_MEMORY_SIZE    (ADI_UART_BIDIR_MEMORY_SIZE)
-                                                  /*
-                    Baudrate divider for PCLK-26000000
+/*
+Baudrate divider for PCLK-26000000
 
 +------------------------------------------------------------------------+
 | CALCULATING UART DIV REGISTER VALUE FOR THE  INPUT CLOCK: 26000000     |
@@ -148,8 +148,7 @@
 //Add water quality command for how many bytes to read from slave
 #define BYTES_TO_READ				0x61
 
-typedef enum
-{
+typedef enum {
 	INIT = 0,
 	COMMAND,
 	STREAM_GAS,
@@ -158,8 +157,7 @@ typedef enum
 } eFSM_State;
 
 /* Generic result enum */
-typedef enum
-{
+typedef enum {
 	Failure = 0,
 	Success = 1
 } GResult;
@@ -167,7 +165,7 @@ typedef enum
 EXTERNC uint8_t			cmdInString[64];
 
 /* Ringbuffer structure */
-struct RingBuf{
+struct RingBuf {
 	char *rb_head;
 	char *rb_tail;
 	char *rb_write;

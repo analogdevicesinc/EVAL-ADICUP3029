@@ -56,185 +56,185 @@ POSSIBILITY OF SUCH DAMAGE.
 namespace adi_sensor_swpack
 {
 
-    /*!
-     * @class Sensor
-     *
-     * @brief Generic interface for all sensors.
-     *
-     **/
-    class Sensor
-    {
-        public:
+/*!
+ * @class Sensor
+ *
+ * @brief Generic interface for all sensors.
+ *
+ **/
+class Sensor
+{
+public:
 
-            /**
-             * @brief    Initalizes the sensor and configures it.
-             *
-             * @return   SENSOR_RESULT
-             *
-             * @details  Initializes the sensor, opens and configures the underlying peripheral.
-             *           See sensor specific open member function for more details.
-             */
-            virtual SENSOR_RESULT   open() = 0;
+	/**
+	 * @brief    Initalizes the sensor and configures it.
+	 *
+	 * @return   SENSOR_RESULT
+	 *
+	 * @details  Initializes the sensor, opens and configures the underlying peripheral.
+	 *           See sensor specific open member function for more details.
+	 */
+	virtual SENSOR_RESULT   open() = 0;
 
-            /**
-             * @brief    Starts sensor and enables the underlying device
-             *
-             * @return   SENSOR_RESULT
-             *
-             * @details  Start function's functionality varies from sensor to sensor. It enables
-             *           the device so that data acquisition could start. See sensor specific
-             *           start member function for more details.
-             */
-            virtual SENSOR_RESULT   start() = 0;
+	/**
+	 * @brief    Starts sensor and enables the underlying device
+	 *
+	 * @return   SENSOR_RESULT
+	 *
+	 * @details  Start function's functionality varies from sensor to sensor. It enables
+	 *           the device so that data acquisition could start. See sensor specific
+	 *           start member function for more details.
+	 */
+	virtual SENSOR_RESULT   start() = 0;
 
-            /**
-             * @brief    Stops the sensor and disables the underlying device
-             *
-             * @return   SENSOR_RESULT
-             *
-             * @details  Stop function's functionality varies from sensor to sensor. It disables
-             *           the device and stops any pending data transfers. See sensor specific
-             *           stop member function for more details.
-             */
-            virtual SENSOR_RESULT   stop() = 0;
+	/**
+	 * @brief    Stops the sensor and disables the underlying device
+	 *
+	 * @return   SENSOR_RESULT
+	 *
+	 * @details  Stop function's functionality varies from sensor to sensor. It disables
+	 *           the device and stops any pending data transfers. See sensor specific
+	 *           stop member function for more details.
+	 */
+	virtual SENSOR_RESULT   stop() = 0;
 
-            /**
-             * @brief    Disables the sensor and closes underlying peripheral
-             *
-             * @return   SENSOR_RESULT
-             *
-             * @details  Close function disables the sensor and closes underlying peripheral.
-             *           See sensor specific close member function for more details.
-             */
-            virtual SENSOR_RESULT   close() = 0;
+	/**
+	 * @brief    Disables the sensor and closes underlying peripheral
+	 *
+	 * @return   SENSOR_RESULT
+	 *
+	 * @details  Close function disables the sensor and closes underlying peripheral.
+	 *           See sensor specific close member function for more details.
+	 */
+	virtual SENSOR_RESULT   close() = 0;
 
-            /**
-             * @brief    Function returns the sensor identifier.
-             *
-             * @return   Returns the sensor ID.
-             *
-             * @details  Sensor ID is used to uniquiely idenfify a sensor in system. This is
-             *           used to pass information to the host application to identify the
-             *           source of the sensor data. Sensor ID could be same across different
-             *           types of the sensors but it should be unique with in a type.
-             */
-            uint32_t getID()
-            {
-                return m_sensor_id;
-            }
+	/**
+	 * @brief    Function returns the sensor identifier.
+	 *
+	 * @return   Returns the sensor ID.
+	 *
+	 * @details  Sensor ID is used to uniquiely idenfify a sensor in system. This is
+	 *           used to pass information to the host application to identify the
+	 *           source of the sensor data. Sensor ID could be same across different
+	 *           types of the sensors but it should be unique with in a type.
+	 */
+	uint32_t getID()
+	{
+		return m_sensor_id;
+	}
 
-            /**
-             * @brief    Function returns the sensor type.
-             *
-             * @return   Sensor type
-             *
-             * @details  Returns the sensor type. See ADI_SENSOR_TYPE enumeration for supported
-             *           sensor types.
-             */
-            ADI_SENSOR_TYPE getType()
-            {
-                return m_ADI_SENSOR_TYPE;
-            }
+	/**
+	 * @brief    Function returns the sensor type.
+	 *
+	 * @return   Sensor type
+	 *
+	 * @details  Returns the sensor type. See ADI_SENSOR_TYPE enumeration for supported
+	 *           sensor types.
+	 */
+	ADI_SENSOR_TYPE getType()
+	{
+		return m_ADI_SENSOR_TYPE;
+	}
 
-            /**
-             * @brief    Function returns the sensor version.
-             *
-             * @return   Sensor version. A value of 0 is returned if sensor has no version
-             *           information.
-             *
-             * @details  Returns the sensor version. Sensor version contains the hardware
-             *           version information. A sensor may or may not have this information.
-             */
-            uint32_t getVersion(void)
-            {
-                return m_sensor_ver;
-            }
-
-
-            /**
-             * @brief    Function used to set the ID for the sensor.
-             *
-             * @param    sensorID : Sensor ID to be set.
-             *
-             * @return   none
-             *
-             * @details  Sensor ID is used to identify a sensor in the system. Host applications
-             *           uniquely identify a sensor based on its type and sensor id. Different
-             *           sensor types can have the same id.
-             */
-            void setID(const uint32_t sensorID)
-            {
-                m_sensor_id = sensorID;
-            }
-
-            /**
-             * @brief    Function used to set the type of the sensor
-             *
-             * @param    sensorType : Sensor type to be used.
-             *
-             * @return   none
-             *
-             * @details  Sensor type is used to identify the type of the sensor.ADI_SENSOR_TYPE
-             *           enumeration lists various supported sensor types. Host applications
-             *           uniquely identify a sensor based on its type and sensor id. This
-             *           function is typically implemented in the derived sensor classes.
-             */
-            void setType(const ADI_SENSOR_TYPE sensorType)
-            {
-                m_ADI_SENSOR_TYPE = sensorType;
-            }
+	/**
+	 * @brief    Function returns the sensor version.
+	 *
+	 * @return   Sensor version. A value of 0 is returned if sensor has no version
+	 *           information.
+	 *
+	 * @details  Returns the sensor version. Sensor version contains the hardware
+	 *           version information. A sensor may or may not have this information.
+	 */
+	uint32_t getVersion(void)
+	{
+		return m_sensor_ver;
+	}
 
 
-            /**
-             * @brief    Function used to set the version of the sensor
-             *
-             * @param    version : Sensor version to be used.
-             *
-             * @return   none
-             *
-             * @details  Sensor version holds the hardware version information of a sensor. This
-             *           function is typically implemented in the derived sensor classes.
-             */
-            void setVersion(const uint32_t version)
-            {
-                m_sensor_ver = version;
-            }
+	/**
+	 * @brief    Function used to set the ID for the sensor.
+	 *
+	 * @param    sensorID : Sensor ID to be set.
+	 *
+	 * @return   none
+	 *
+	 * @details  Sensor ID is used to identify a sensor in the system. Host applications
+	 *           uniquely identify a sensor based on its type and sensor id. Different
+	 *           sensor types can have the same id.
+	 */
+	void setID(const uint32_t sensorID)
+	{
+		m_sensor_id = sensorID;
+	}
 
-            /**
-             * @brief    Returns the last hardware error
-             *
-             * @return   Returns the hardware error.
-             *
-             * @details  If any of the object member functions fails because of an hardware
-             *           error this function has to be used to get the specific error.
-             */
-            uint32_t getLastHwError()
-            {
-                return m_last_hw_error;
-            }
+	/**
+	 * @brief    Function used to set the type of the sensor
+	 *
+	 * @param    sensorType : Sensor type to be used.
+	 *
+	 * @return   none
+	 *
+	 * @details  Sensor type is used to identify the type of the sensor.ADI_SENSOR_TYPE
+	 *           enumeration lists various supported sensor types. Host applications
+	 *           uniquely identify a sensor based on its type and sensor id. This
+	 *           function is typically implemented in the derived sensor classes.
+	 */
+	void setType(const ADI_SENSOR_TYPE sensorType)
+	{
+		m_ADI_SENSOR_TYPE = sensorType;
+	}
 
-        protected:
 
-            /**
-             * @brief    Sets the last hardware error
-             *
-             * @param    lastError : Last hardware error
-             *
-             * @return   none
-             *
-             * @details  Sensor drivers use this function to store the hardware error.
-             */
-            void setLastHwError(const uint32_t lastError)
-            {
-                m_last_hw_error = lastError;
-            }
+	/**
+	 * @brief    Function used to set the version of the sensor
+	 *
+	 * @param    version : Sensor version to be used.
+	 *
+	 * @return   none
+	 *
+	 * @details  Sensor version holds the hardware version information of a sensor. This
+	 *           function is typically implemented in the derived sensor classes.
+	 */
+	void setVersion(const uint32_t version)
+	{
+		m_sensor_ver = version;
+	}
 
-        private:
-            uint32_t    m_sensor_id;                     /*!< Sensor ID       */
-            uint32_t    m_sensor_ver;                    /*!< Sensor Version  */
-            uint32_t    m_last_hw_error;                 /*!< Sensor Last HW error*/
-            ADI_SENSOR_TYPE m_ADI_SENSOR_TYPE;           /*!< Sensor Type     */
-    };
+	/**
+	 * @brief    Returns the last hardware error
+	 *
+	 * @return   Returns the hardware error.
+	 *
+	 * @details  If any of the object member functions fails because of an hardware
+	 *           error this function has to be used to get the specific error.
+	 */
+	uint32_t getLastHwError()
+	{
+		return m_last_hw_error;
+	}
+
+protected:
+
+	/**
+	 * @brief    Sets the last hardware error
+	 *
+	 * @param    lastError : Last hardware error
+	 *
+	 * @return   none
+	 *
+	 * @details  Sensor drivers use this function to store the hardware error.
+	 */
+	void setLastHwError(const uint32_t lastError)
+	{
+		m_last_hw_error = lastError;
+	}
+
+private:
+	uint32_t    m_sensor_id;                     /*!< Sensor ID       */
+	uint32_t    m_sensor_ver;                    /*!< Sensor Version  */
+	uint32_t    m_last_hw_error;                 /*!< Sensor Last HW error*/
+	ADI_SENSOR_TYPE m_ADI_SENSOR_TYPE;           /*!< Sensor Type     */
+};
 }
 
 #endif /* ADI_BASE_SENSOR_H */

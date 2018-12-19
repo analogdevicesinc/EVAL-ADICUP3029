@@ -127,7 +127,8 @@ uint8_t uiPulseAmpl = 0;
 uint8_t uiPulseDur = 0;
 char strCmd[64] = "";
 
-uint8_t		cmdReceived = 0;			// flag indicating user command has been received (ENTER pressed)
+uint8_t		cmdReceived =
+	0;			// flag indicating user command has been received (ENTER pressed)
 
 /****************************** Global functions ******************************/
 
@@ -238,8 +239,7 @@ void GetArgv(char *dst, uint8_t *args)
 void CmdToRB(const char *cmd)
 {
 	uint8_t cmdLen = strlen(cmd);
-	for (int i = 0; i < cmdLen; i++)
-	{
+	for (int i = 0; i < cmdLen; i++) {
 		*RingBuf_Putvalue(&RX) = *cmd++;
 		RingBuf_Write_Increment(&RX);
 	}
@@ -310,8 +310,7 @@ cmdFunc FindCommand(char *cmd)
 	int f1 = 0;
 	int cmdlength = 0;
 
-	while(*p != 0)
-	{
+	while(*p != 0) {
 		if (*p == _SPC)
 			f1 = 1;
 		else if (!f1)
@@ -357,27 +356,19 @@ void SetDefaultSns(uint8_t *args)
 	}
 
 	/*DEFAULT CONFIGURATION*/
-	if (strncmp(arg, "1", 2) == 0)
-	{
+	if (strncmp(arg, "1", 2) == 0) {
 		uiDefaultSite = 1;
 		uiDefaultAddress = ADI_CFG_I2C_SENSOR1_ADDR;
-	}
-	else if (strncmp(arg, "2", 2) == 0)
-	{
+	} else if (strncmp(arg, "2", 2) == 0) {
 		uiDefaultSite = 2;
 		uiDefaultAddress = ADI_CFG_I2C_SENSOR2_ADDR;
-	}
-	else if (strncmp(arg, "3", 2) == 0)
-	{
+	} else if (strncmp(arg, "3", 2) == 0) {
 		uiDefaultSite = 3;
 		uiDefaultAddress = ADI_CFG_I2C_SENSOR3_ADDR;
-	}
-	else if (strncmp(arg, "4", 2) == 0)
-	{
+	} else if (strncmp(arg, "4", 2) == 0) {
 		uiDefaultSite = 4;
 		uiDefaultAddress = ADI_CFG_I2C_SENSOR4_ADDR;
-	}
-	else {
+	} else {
 		UART_TX("Invalid site"_EOS);
 	}
 	sprintf(buff, "Selected site: %d%s", uiDefaultSite, _EOS);
@@ -463,22 +454,20 @@ void CfgMeasTime(uint8_t *args)
 	}
 
 	//Check if arg is numeric
-    for (i=0; arg[i] != '\0'; i++)
-    {
-        // check for decimal digits
-        if (isdigit(arg[i]) != 0)
-            digitcount++;
-    }
-    if(digitcount == i) //All characters are numeric
-    	value = strtol(arg, (char **)NULL, 10); //convert string to number
-    else
-    	UART_TX("Invalid entry!"_EOS);
+	for (i=0; arg[i] != '\0'; i++) {
+		// check for decimal digits
+		if (isdigit(arg[i]) != 0)
+			digitcount++;
+	}
+	if(digitcount == i) //All characters are numeric
+		value = strtol(arg, (char **)NULL, 10); //convert string to number
+	else
+		UART_TX("Invalid entry!"_EOS);
 
-    if (value > 32000 || value < 50)
-    {
-    	value = 500;
-    	UART_TX("Out of range! Set to default = 500 ms"_EOS);
-    }
+	if (value > 32000 || value < 50) {
+		value = 500;
+		UART_TX("Out of range! Set to default = 500 ms"_EOS);
+	}
 
 	memset(strCmd,'\0',sizeof(strCmd));
 	sprintf(strCmd,"CFG_MEASTIME%c%d", uiDefaultAddress, (uint16_t)value);
@@ -536,22 +525,20 @@ void CfgRtia(uint8_t *args)
 	}
 
 	//Check if arg is numeric
-    for (i=0; arg[i] != '\0'; i++)
-    {
-        // check for decimal digits
-        if (isdigit(arg[i]) != 0)
-            digitcount++;
-    }
-    if(digitcount == i) //All characters are numeric
-    	value = (uint8_t) strtol(arg, (char **)NULL, 10); //convert string to number
-    else
-    	UART_TX("Invalid entry!"_EOS);
+	for (i=0; arg[i] != '\0'; i++) {
+		// check for decimal digits
+		if (isdigit(arg[i]) != 0)
+			digitcount++;
+	}
+	if(digitcount == i) //All characters are numeric
+		value = (uint8_t) strtol(arg, (char **)NULL, 10); //convert string to number
+	else
+		UART_TX("Invalid entry!"_EOS);
 
-    if (value > 26 || value < 0)
-    {
-    	value = 1;
-    	UART_TX("Out of range! Set to default = 200 ohm"_EOS);
-    }
+	if (value > 26 || value < 0) {
+		value = 1;
+		UART_TX("Out of range! Set to default = 200 ohm"_EOS);
+	}
 
 	memset(strCmd,'\0',sizeof(strCmd));
 	sprintf(strCmd,"CFG_RTIA%c%d", uiDefaultAddress, (uint16_t)value);
@@ -582,22 +569,20 @@ void CfgVbias(uint8_t *args)
 
 	if (arg[0] == '-') digitcount++;
 	//Check if arg is numeric
-    for (i=0; arg[i] != '\0'; i++)
-    {
-        // check for decimal digits
-        if (isdigit(arg[i]) != 0)
-            digitcount++;
-    }
-    if(digitcount == i) //All characters are numeric
-    	value = (int32_t) strtol(arg, (char **)NULL, 10); //convert string to number
-    else
-    	UART_TX("Invalid entry!"_EOS);
+	for (i=0; arg[i] != '\0'; i++) {
+		// check for decimal digits
+		if (isdigit(arg[i]) != 0)
+			digitcount++;
+	}
+	if(digitcount == i) //All characters are numeric
+		value = (int32_t) strtol(arg, (char **)NULL, 10); //convert string to number
+	else
+		UART_TX("Invalid entry!"_EOS);
 
-    if (value > 2200 || value < -2200)
-    {
-    	value = 0;
-    	UART_TX("Out of range! Set to default = 0 mV"_EOS);
-    }
+	if (value > 2200 || value < -2200) {
+		value = 0;
+		UART_TX("Out of range! Set to default = 0 mV"_EOS);
+	}
 
 	memset(strCmd,'\0',sizeof(strCmd));
 	sprintf(strCmd,"CFG_VBIAS%c%ld", uiDefaultAddress, (int32_t)value);
@@ -628,35 +613,30 @@ void CfgSens(uint8_t *args)
 	}
 
 	//Check if arg is numeric
-	for (i=0; arg[i] != '\0'; i++)
-	{
+	for (i=0; arg[i] != '\0'; i++) {
 		// check for decimal digits
 		if (isdigit(arg[i]) != 0)
 			digitcount++;
 
-		if (arg[i] == '.')
-		{
+		if (arg[i] == '.') {
 			digitcount++;
 			dotcount++;
 		}
 	}
 	if(digitcount == i) //All characters are numeric
 		value = strtof(arg, (char **)NULL); //convert string to number
-	else
-	{
+	else {
 		UART_TX("Invalid entry!"_EOS);
 		return;
 	}
 
 
-	if(dotcount > 1)
-	{
+	if(dotcount > 1) {
 		UART_TX("Invalid entry!"_EOS);
 		return;
 	}
 
-	if (value >= 32768 || value < 0)
-	{
+	if (value >= 32768 || value < 0) {
 		UART_TX("Out of range!"_EOS);
 		return;
 	}
@@ -685,14 +665,12 @@ void CfgTempComp(uint8_t *args)
 		GetArgv(arg, p);
 	}
 
-	if ((arg[0] == '0' || arg[0] == '1') && arg[1] == '\0')
-	{
+	if ((arg[0] == '0' || arg[0] == '1') && arg[1] == '\0') {
 		memset(strCmd,'\0',sizeof(strCmd));
 		sprintf(strCmd,"CFG_TEMPCOMP%c%c", uiDefaultAddress, arg[0]);
 		CmdToRB(strCmd);
 
-	}
-	else
+	} else
 		UART_TX("Invalid entry! 0 or 1 allowed"_EOS);
 }
 
@@ -761,14 +739,11 @@ void RdRcal(uint8_t *args)
 **/
 void RunPulse(uint8_t *args)
 {
-	if (uiPulseAmpl != 0 && uiPulseDur != 0)
-	{
+	if (uiPulseAmpl != 0 && uiPulseDur != 0) {
 		memset(strCmd,'\0',sizeof(strCmd));
 		sprintf(strCmd,"RUN_PULSE%c%c%c", uiDefaultAddress, uiPulseAmpl, uiPulseDur);
 		CmdToRB(strCmd);
-	}
-	else
-	{
+	} else {
 		UART_TX("Pulse and/or Duration not set!"_EOS);
 	}
 }
@@ -809,22 +784,20 @@ void SetPulseAmpl(uint8_t *args)
 	}
 
 	//Check if arg is numeric
-	for (i=0; arg[i] != '\0'; i++)
-	{
+	for (i=0; arg[i] != '\0'; i++) {
 		// check for decimal digits
 		if (isdigit(arg[i]) != 0)
 			digitcount++;
 	}
 	if(digitcount == i) //All characters are numeric
-		uiPulseAmpl = (uint8_t) strtol(arg, (char **)NULL, 10); //convert string to number
-	else
-	{
+		uiPulseAmpl = (uint8_t) strtol(arg, (char **)NULL,
+					       10); //convert string to number
+	else {
 		UART_TX("Invalid entry!"_EOS);
 		return;
 	}
 
-	if (uiPulseAmpl >= 3 || uiPulseAmpl < 1)
-	{
+	if (uiPulseAmpl >= 3 || uiPulseAmpl < 1) {
 		uiPulseAmpl = 1;
 		UART_TX("Out of range! Set to default = 1 mV"_EOS);
 		return;
@@ -857,19 +830,18 @@ void SetPulseDuration(uint8_t *args)
 	}
 
 	//Check if arg is numeric
-	for (i=0; arg[i] != '\0'; i++)
-	{
+	for (i=0; arg[i] != '\0'; i++) {
 		// check for decimal digits
 		if (isdigit(arg[i]) != 0)
 			digitcount++;
 	}
 	if(digitcount == i) //All characters are numeric
-		uiPulseDur = (uint8_t) strtol(arg, (char **)NULL, 10); //convert string to number
+		uiPulseDur = (uint8_t) strtol(arg, (char **)NULL,
+					      10); //convert string to number
 	else
 		UART_TX("Invalid entry!"_EOS);
 
-	if (uiPulseDur > 200 || uiPulseDur < 1)
-	{
+	if (uiPulseDur > 200 || uiPulseDur < 1) {
 		uiPulseDur = 50;
 		UART_TX("Out of range! Set to default = 50 msec"_EOS);
 	}
@@ -902,22 +874,20 @@ void CfgRload(uint8_t *args)
 	}
 
 	//Check if arg is numeric
-    for (i=0; arg[i] != '\0'; i++)
-    {
-        // check for decimal digits
-        if (isdigit(arg[i]) != 0)
-            digitcount++;
-    }
-    if(digitcount == i) //All characters are numeric
-    	value = (uint8_t) strtol(arg, (char **)NULL, 10); //convert string to number
-    else
-    	UART_TX("Invalid entry!"_EOS);
+	for (i=0; arg[i] != '\0'; i++) {
+		// check for decimal digits
+		if (isdigit(arg[i]) != 0)
+			digitcount++;
+	}
+	if(digitcount == i) //All characters are numeric
+		value = (uint8_t) strtol(arg, (char **)NULL, 10); //convert string to number
+	else
+		UART_TX("Invalid entry!"_EOS);
 
-    if (value > 7 || value < 0)
-    {
-    	value = 1;
-    	UART_TX("Out of range! Set to default = 10 ohm"_EOS);
-    }
+	if (value > 7 || value < 0) {
+		value = 1;
+		UART_TX("Out of range! Set to default = 10 ohm"_EOS);
+	}
 
 	memset(strCmd,'\0',sizeof(strCmd));
 	sprintf(strCmd,"CFG_RLOAD%c%d", uiDefaultAddress, (uint16_t)value);
@@ -988,24 +958,22 @@ void CfgUpdateRate(uint8_t *args)
 	}
 
 	//Check if arg is numeric
-    for (i=0; arg[i] != '\0'; i++)
-    {
-        // check for decimal digits
-        if (isdigit(arg[i]) != 0)
-            digitcount++;
-    }
-    if(digitcount == i) //All characters are numeric
-    	value = (uint8_t) strtol(arg, (char **)NULL, 10); //convert string to number
-    else
-    	UART_TX("Invalid entry!"_EOS);
+	for (i=0; arg[i] != '\0'; i++) {
+		// check for decimal digits
+		if (isdigit(arg[i]) != 0)
+			digitcount++;
+	}
+	if(digitcount == i) //All characters are numeric
+		value = (uint8_t) strtol(arg, (char **)NULL, 10); //convert string to number
+	else
+		UART_TX("Invalid entry!"_EOS);
 
-    if (value > 3600 || value < 1)
-    {
-    	value = 1;
-    	UART_TX("Out of range! Set to default = 1 sec"_EOS);
-    }
+	if (value > 3600 || value < 1) {
+		value = 1;
+		UART_TX("Out of range! Set to default = 1 sec"_EOS);
+	}
 
-    streamTickCfg = value;
+	streamTickCfg = value;
 	memset(strCmd,'\0',sizeof(strCmd));
 	sprintf(strCmd,"Stream data update rate set to %d sec %s", streamTickCfg, _EOS);
 	UART_TX(strCmd);

@@ -137,74 +137,77 @@ typedef enum {
 
 namespace adi_sensor_swpack
 {
-    /**
-     * @class ADT7420 Temperature Class
-     *
-     * @brief ADT7420 temperature class interface.
-     *
-     **/
-    class M355_GAS : public Gas_Reading
-    {
-        public:
-            /*!< Pure virtual functions must be implemented by the derived class */
+/**
+ * @class ADT7420 Temperature Class
+ *
+ * @brief ADT7420 temperature class interface.
+ *
+ **/
+class M355_GAS : public Gas_Reading
+{
+public:
+	/*!< Pure virtual functions must be implemented by the derived class */
 
-    		virtual SENSOR_RESULT open();
-            virtual SENSOR_RESULT start();
-            virtual SENSOR_RESULT stop();
-            virtual SENSOR_RESULT close();
+	virtual SENSOR_RESULT open();
+	virtual SENSOR_RESULT start();
+	virtual SENSOR_RESULT stop();
+	virtual SENSOR_RESULT close();
 
-            virtual SENSOR_RESULT openWithAddr(uint8_t sensor_address);
-            virtual SENSOR_RESULT I2CReadWrite(uint8_t RW, uint8_t RegAddr, uint8_t *pData, uint16_t size);
-            virtual SENSOR_RESULT SensorInit(uint8_t sensor_address);
-            virtual SENSOR_RESULT SetI2CAddr(uint8_t new_I2C_address);
-            virtual SENSOR_RESULT ReadTemperature(int16_t *pSensData);
-			virtual SENSOR_RESULT ReadHumidity(int16_t *pSensData);
-			virtual SENSOR_RESULT SetMeasurementTime(uint16_t pCfgData);
-			virtual SENSOR_RESULT ReadMeasurementTime(uint16_t *pCfgData);
-			virtual SENSOR_RESULT StartMeasurements();
-			virtual SENSOR_RESULT StopMeasurements();
-			virtual SENSOR_RESULT SetTIAGain(uint8_t pCfgData);
-			virtual SENSOR_RESULT ReadTIAGain(uint8_t *pCfgData);
-			virtual SENSOR_RESULT SetSensorBias(int16_t pCfgData);
-			virtual SENSOR_RESULT ReadSensorBias(int16_t *pCfgData);
-			virtual SENSOR_RESULT SetSensorSensitivity(uint32_t pCfgData);
-			virtual SENSOR_RESULT ReadSensorSensitivity(uint32_t *pCfgData);
-			virtual SENSOR_RESULT ConfigureTempComp(uint8_t pCfgData);
-			virtual SENSOR_RESULT ReadTempCompCfg(uint8_t *pCfgData);
-			virtual SENSOR_RESULT RunEISMeasurement();
-			virtual SENSOR_RESULT ReadEISResults(uint8_t *pSensData);
-			virtual SENSOR_RESULT ReadEISResultsFull(uint8_t *pSensData);
+	virtual SENSOR_RESULT openWithAddr(uint8_t sensor_address);
+	virtual SENSOR_RESULT I2CReadWrite(uint8_t RW, uint8_t RegAddr, uint8_t *pData,
+					   uint16_t size);
+	virtual SENSOR_RESULT SensorInit(uint8_t sensor_address);
+	virtual SENSOR_RESULT SetI2CAddr(uint8_t new_I2C_address);
+	virtual SENSOR_RESULT ReadTemperature(int16_t *pSensData);
+	virtual SENSOR_RESULT ReadHumidity(int16_t *pSensData);
+	virtual SENSOR_RESULT SetMeasurementTime(uint16_t pCfgData);
+	virtual SENSOR_RESULT ReadMeasurementTime(uint16_t *pCfgData);
+	virtual SENSOR_RESULT StartMeasurements();
+	virtual SENSOR_RESULT StopMeasurements();
+	virtual SENSOR_RESULT SetTIAGain(uint8_t pCfgData);
+	virtual SENSOR_RESULT ReadTIAGain(uint8_t *pCfgData);
+	virtual SENSOR_RESULT SetSensorBias(int16_t pCfgData);
+	virtual SENSOR_RESULT ReadSensorBias(int16_t *pCfgData);
+	virtual SENSOR_RESULT SetSensorSensitivity(uint32_t pCfgData);
+	virtual SENSOR_RESULT ReadSensorSensitivity(uint32_t *pCfgData);
+	virtual SENSOR_RESULT ConfigureTempComp(uint8_t pCfgData);
+	virtual SENSOR_RESULT ReadTempCompCfg(uint8_t *pCfgData);
+	virtual SENSOR_RESULT RunEISMeasurement();
+	virtual SENSOR_RESULT ReadEISResults(uint8_t *pSensData);
+	virtual SENSOR_RESULT ReadEISResultsFull(uint8_t *pSensData);
 
-            virtual SENSOR_RESULT Read200RCal(uint8_t *pSensData);
-            virtual SENSOR_RESULT RunPulseTest(uint8_t pulseAmplitude, uint8_t pulseDuration);
-			virtual SENSOR_RESULT ReadPulseTestResults(uint8_t *pSensData, uint8_t pulseAmplitude, uint8_t pulseDuration);
-            virtual SENSOR_RESULT SetRload(uint8_t pCfgData);
-            virtual SENSOR_RESULT ReadRload(uint8_t *pCfgData);
-			virtual SENSOR_RESULT ReadDataPPB(int32_t *pSensData);
-            virtual SENSOR_RESULT ReadDataBits(uint16_t *pSensData);
+	virtual SENSOR_RESULT Read200RCal(uint8_t *pSensData);
+	virtual SENSOR_RESULT RunPulseTest(uint8_t pulseAmplitude,
+					   uint8_t pulseDuration);
+	virtual SENSOR_RESULT ReadPulseTestResults(uint8_t *pSensData,
+			uint8_t pulseAmplitude, uint8_t pulseDuration);
+	virtual SENSOR_RESULT SetRload(uint8_t pCfgData);
+	virtual SENSOR_RESULT ReadRload(uint8_t *pCfgData);
+	virtual SENSOR_RESULT ReadDataPPB(int32_t *pSensData);
+	virtual SENSOR_RESULT ReadDataBits(uint16_t *pSensData);
 
-            /*! I2C slave address defaults to static configuration but can be overriden at run-time.
-             *  If there are multiple ADT7420 devices on a system (sharing an I2C bus), the addresses
-             *  cannot map to the same static value.
-             */
+	/*! I2C slave address defaults to static configuration but can be overriden at run-time.
+	 *  If there are multiple ADT7420 devices on a system (sharing an I2C bus), the addresses
+	 *  cannot map to the same static value.
+	 */
 
-            uint8_t m_i2c_address;
+	uint8_t m_i2c_address;
 
-        private:
+private:
 
-            /*!
-              * @brief   Initialize I2C.
-              *
-              * @details This method is used to initialize I2C.
-              */
-            SENSOR_RESULT InitI2C();
-
-
-            ADI_I2C_HANDLE m_i2c_handle;
-            uint8_t        m_I2C_memory[ADI_I2C_MEMORY_SIZE];
+	/*!
+	  * @brief   Initialize I2C.
+	  *
+	  * @details This method is used to initialize I2C.
+	  */
+	SENSOR_RESULT InitI2C();
 
 
-    };
+	ADI_I2C_HANDLE m_i2c_handle;
+	uint8_t        m_I2C_memory[ADI_I2C_MEMORY_SIZE];
+
+
+};
 }
 
 

@@ -58,69 +58,68 @@ POSSIBILITY OF SUCH DAMAGE.
 namespace adi_sensor_swpack
 {
 
-    /*!
-     *  @addtogroup common_errors Error Handling
-     *  @ingroup common
-     *  @{
-     *
-     *  @brief    Result codes and error macros.
-     *
-     *  @details  Contains supported sensor errors and macros for packing and
-     *            unpacking these error codes. Also contains macros for printing
-     *            and asserting.
-     */
+/*!
+ *  @addtogroup common_errors Error Handling
+ *  @ingroup common
+ *  @{
+ *
+ *  @brief    Result codes and error macros.
+ *
+ *  @details  Contains supported sensor errors and macros for packing and
+ *            unpacking these error codes. Also contains macros for printing
+ *            and asserting.
+ */
 
-    /*! Given a #SENSOR_ERROR_TYPE type and a corresponding driver error code, format the error value. */
-    #define SET_SENSOR_ERROR(type, error) (uint32_t)((error) | (type << 24ul))
+/*! Given a #SENSOR_ERROR_TYPE type and a corresponding driver error code, format the error value. */
+#define SET_SENSOR_ERROR(type, error) (uint32_t)((error) | (type << 24ul))
 
-    /*! Extract the #SENSOR_ERROR_TYPE from the #SENSOR_RESULT */
-    #define GET_SENSOR_ERROR_TYPE(result) ((SENSOR_ERROR_TYPE) ((result & 0xFF000000ul) >> 24ul))
+/*! Extract the #SENSOR_ERROR_TYPE from the #SENSOR_RESULT */
+#define GET_SENSOR_ERROR_TYPE(result) ((SENSOR_ERROR_TYPE) ((result & 0xFF000000ul) >> 24ul))
 
-    /*! Extract the driver error code from the #SENSOR_RESULT - the type will be a ADI_XXX_RESULT enumeration */
-    #define GET_DRIVER_ERROR_CODE(result) (result & 0x00FFFFFFul)
+/*! Extract the driver error code from the #SENSOR_RESULT - the type will be a ADI_XXX_RESULT enumeration */
+#define GET_DRIVER_ERROR_CODE(result) (result & 0x00FFFFFFul)
 
-    /*! Sensor API result code */
-    typedef uint32_t SENSOR_RESULT;
+/*! Sensor API result code */
+typedef uint32_t SENSOR_RESULT;
 
-    /*! Sensor error types */
-    typedef enum
-    {
-        SENSOR_ERROR_NONE   = 0u,
+/*! Sensor error types */
+typedef enum {
+	SENSOR_ERROR_NONE   = 0u,
 
-        /* Peripherals */
-        SENSOR_ERROR_DMA    = 1u,        /*!< DMA driver reported an error           */
-        SENSOR_ERROR_FLASH  = 2u,        /*!< Flash driver reported an error         */
-        SENSOR_ERROR_GPIO   = 3u,        /*!< GPIO driver reported an error          */
-        SENSOR_ERROR_I2C    = 4u,        /*!< I2C driver reported an error           */
-        SENSOR_ERROR_PWR    = 5u,        /*!< Power driver reported an error         */
-        SENSOR_ERROR_SPI    = 6u,        /*!< SPI driver reported an error           */
-        SENSOR_ERROR_SPORT  = 7u,        /*!< SPORT driver reported an error         */
-        SENSOR_ERROR_UART   = 8u,        /*!< UART driver reported an error          */
+	/* Peripherals */
+	SENSOR_ERROR_DMA    = 1u,        /*!< DMA driver reported an error           */
+	SENSOR_ERROR_FLASH  = 2u,        /*!< Flash driver reported an error         */
+	SENSOR_ERROR_GPIO   = 3u,        /*!< GPIO driver reported an error          */
+	SENSOR_ERROR_I2C    = 4u,        /*!< I2C driver reported an error           */
+	SENSOR_ERROR_PWR    = 5u,        /*!< Power driver reported an error         */
+	SENSOR_ERROR_SPI    = 6u,        /*!< SPI driver reported an error           */
+	SENSOR_ERROR_SPORT  = 7u,        /*!< SPORT driver reported an error         */
+	SENSOR_ERROR_UART   = 8u,        /*!< UART driver reported an error          */
 
-        /* Sensors */
-        SENSOR_ERROR_ADC    = 9u,        /*!< ADC sensor reported an error           */
-        SENSOR_ERROR_AXL    = 10,        /*!< Accelerometer sensor reported an error */
-        SENSOR_ERROR_C02    = 11u,       /*!< C02 sensor reported an error           */
-        SENSOR_ERROR_GAS    = 12u,       /*!< Gas sensor reported an error           */
-        SENSOR_ERROR_LIGHT  = 13u,       /*!< Visual Light sensor reported an error  */
-        SENSOR_ERROR_PH     = 14u,       /*!< PH sensor reported an error            */
-        SENSOR_ERROR_TEMP   = 15u,       /*!< Temperature sensor reported an error   */
+	/* Sensors */
+	SENSOR_ERROR_ADC    = 9u,        /*!< ADC sensor reported an error           */
+	SENSOR_ERROR_AXL    = 10,        /*!< Accelerometer sensor reported an error */
+	SENSOR_ERROR_C02    = 11u,       /*!< C02 sensor reported an error           */
+	SENSOR_ERROR_GAS    = 12u,       /*!< Gas sensor reported an error           */
+	SENSOR_ERROR_LIGHT  = 13u,       /*!< Visual Light sensor reported an error  */
+	SENSOR_ERROR_PH     = 14u,       /*!< PH sensor reported an error            */
+	SENSOR_ERROR_TEMP   = 15u,       /*!< Temperature sensor reported an error   */
 
-    } SENSOR_ERROR_TYPE;
+} SENSOR_ERROR_TYPE;
 
 
 #ifdef ADI_DEBUG
-    /*! Assert macro which maps to standard C assert in debug, nothing in release */
-    #define ASSERT(x) assert(x)
+/*! Assert macro which maps to standard C assert in debug, nothing in release */
+#define ASSERT(x) assert(x)
 #else
-    /*! Assert macro which maps to standard C assert in debug, nothing in release */
-    #define ASSERT(x) 
+/*! Assert macro which maps to standard C assert in debug, nothing in release */
+#define ASSERT(x)
 #endif
 
-    /*! Print the sensor error code by breaking it into the two parts using the macros defined above */
-    #define PRINT_SENSOR_ERROR(func, result) func("Sensor Error = %X\tDriver Error = %X\r\n", (int) GET_SENSOR_ERROR_TYPE(result), (int) GET_DRIVER_ERROR_CODE(result))
+/*! Print the sensor error code by breaking it into the two parts using the macros defined above */
+#define PRINT_SENSOR_ERROR(func, result) func("Sensor Error = %X\tDriver Error = %X\r\n", (int) GET_SENSOR_ERROR_TYPE(result), (int) GET_DRIVER_ERROR_CODE(result))
 
-    /*! @} */
+/*! @} */
 
 }
 
