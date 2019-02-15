@@ -35,38 +35,38 @@
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_dma.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.0/Source/drivers/dma/adi_dma.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/dma/adi_dma.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_pwr.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.0/Source/drivers/pwr/adi_pwr.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/pwr/adi_pwr.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_tmr.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.0/Source/drivers/tmr/adi_tmr.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/tmr/adi_tmr.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_uart.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.0/Source/drivers/uart/adi_uart.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/uart/adi_uart.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_wdt.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.0/Source/drivers/wdt/adi_wdt.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/wdt/adi_wdt.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/common.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.0/Source/common.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/common.c</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
 		<variable>
 			<name>CCES</name>
-			<value>file:/C:/Analog%20Devices/CrossCore%20Embedded%20Studio%202.7.0</value>
+			<value>file:/C:/Analog%20Devices/CrossCore%20Embedded%20Studio%202.8.0</value>
 		</variable>
 	</variableList>
 </projectDescription>
