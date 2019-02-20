@@ -41,7 +41,7 @@ all: ADuCM3029_demo_cli
 ADuCM3029_demo_cli: $(USER_OBJS) $(SRC_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: CrossCore GCC ARM Embedded C Linker'
-	arm-none-eabi-gcc -TC:\Users\ADrimbar\git\EVAL-ADICUP3029\projects\ADuCM3029_demo_cli/RTE/Device/ADuCM3029/ADuCM3029.ld -Wl,--gc-sections -mcpu=cortex-m3 -mthumb -specs=nosys.specs -o  "ADuCM3029_demo_cli" @input-file.txt -lm
+	arm-none-eabi-gcc -TD:\workspace\adicup\ADuCM3029_demo_cli/RTE/Device/ADuCM3029/ADuCM3029.ld -Wl,--gc-sections -mcpu=cortex-m3 -mthumb -specs=nosys.specs -o  "ADuCM3029_demo_cli" @input-file.txt -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -51,6 +51,5 @@ clean:
 	-@echo ' '
 
 .PHONY: all clean dependents
-.SECONDARY:
 
 -include ../makefile.targets
