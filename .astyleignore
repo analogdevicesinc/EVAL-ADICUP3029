@@ -2,3 +2,8 @@
 /RTE/
 /Debug/
 /system/
+
+# CN0414 ignored files
+projects/ADuCM3029_demo_cn0414/src/ad4111_regs.h
+projects/ADuCM3029_demo_cn0414/src/ad717x.h
+projects/ADuCM3029_demo_cn0414/src/ad717x.c
