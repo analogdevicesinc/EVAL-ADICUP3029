@@ -9,6 +9,7 @@ build_default() {
 }
 
 build_astyle() {
+    export ASTYLE_EXT_LIST=".cpp .hpp"	
     . ./build/astyle.sh
 }
 
