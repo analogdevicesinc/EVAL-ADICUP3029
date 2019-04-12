@@ -47,6 +47,9 @@
 
 #include <drivers/uart/adi_uart.h>
 #include <drivers/spi/adi_spi.h>
+#include <radio/adi_ble_radio.h>
+#include <common/adi_error_handling.h>
+#include <framework/noos/adi_ble_noos.h>
 
 /*
                     Baudrate divider for PCLK-26000000
@@ -103,44 +106,54 @@
 /* Memory required by the driver for DMA mode of operation */
 #define ADI_UART_MEMORY_SIZE    ((48u + (60u + ADI_SEM_SIZE)*2u))
 
+/* BLE event processing dispatcher timeout. Waits for 2 seconds for BLE events */
+#define ADI_APP_DISPATCH_TIMEOUT (2000)
+
+#define PERIPHERAL_MODE      ((ADI_BLE_GAP_MODE)(ADI_BLE_GAP_MODE_CONNECTABLE |  \
+		ADI_BLE_GAP_MODE_DISCOVERABLE))
+
+extern ADI_BLE_GAP_MODE   gGapMode;
+
 void UART_Init(void);
 int UART_WriteChar(char data);
 int UART_WriteString(char *string);
 void AppPrintf(const char *fmt, ...);
+void configure_ble_radio(void);
+void SetAdvertisingMode(void);
 
-typedef struct GenericReg
-{
-  __packed uint8_t pktTypeSensorId;
-  __packed uint8_t sensorType;
-  __packed uint8_t sensorName[15];
-}GenericReg_t;
+typedef union {
+	uint8_t u8Value[4];
+	float fValue;
+} floatUnion_t;
 
-typedef struct
-{
-  __packed uint8_t pktTypeSensorId;
-  __packed uint8_t sensorType;
-  __packed uint8_t sensorName1;
-  __packed uint8_t sensorName2;
-  __packed uint8_t sensorName3;
-}GenericReg_t1;
+#pragma pack(push)
+#pragma pack(1)
+struct RegistrationPacket {
+	uint8_t pktTypeSensorId;
+	uint8_t numFields;
+	uint8_t dataType;
+	uint8_t sensorName[17];
+};
+#pragma pack(pop)
 
-__packed
-typedef struct
-{
-  __packed uint8_t pktTypeSensorId;
-  __packed uint8_t sensorType;
-  __packed uint8_t rtcTimestamp[4];
-  __packed float Sensor_Data;
-}DataPacket_t;
+#pragma pack(push)
+#pragma pack(1)
+struct FieldNamePacket {
+	uint8_t pktTypeSensorId;
+	uint8_t fieldId;
+	uint8_t fieldName[18];
+};
+#pragma pack(pop)
 
-/* to send an array of data*/
-__packed
-typedef struct
-{
-	__packed uint8_t pktTypeSensorId;
-	__packed uint8_t sensorType;
-	__packed uint8_t rtcTimestamp[4];
-	__packed float Sensor_Data1[3];
-}DataPacket_t1;
+#pragma pack(push)
+#pragma pack(1)
+struct DataPacket {
+	uint8_t pktTypeSensorId;
+	floatUnion_t Sensor_Data1;
+	floatUnion_t Sensor_Data2;
+	floatUnion_t Sensor_Data3;
+	floatUnion_t Sensor_Data4;
+};
+#pragma pack(pop)
 
 #endif /* COMMUNICATION_H_ */

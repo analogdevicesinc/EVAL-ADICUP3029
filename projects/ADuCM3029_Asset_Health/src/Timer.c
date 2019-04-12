@@ -54,32 +54,29 @@ static volatile  uint32_t timer_delayCount = 0;
 void timer_start (void)
 {
 
-    if(adi_pwr_Init()!= ADI_PWR_SUCCESS)
-    {
-        printf("\n Failed to initialize the power service \n");
-    }
-    if(ADI_PWR_SUCCESS != adi_pwr_SetClockDivider(ADI_CLOCK_HCLK,1))
-    {
-        printf("Failed to set clock divider for HCLK\n");
-    }
-    if(ADI_PWR_SUCCESS != adi_pwr_SetClockDivider(ADI_CLOCK_PCLK,1))
-    {
-        printf("Failed to set clock divider for PCLK\n");
-    }
+	if(adi_pwr_Init()!= ADI_PWR_SUCCESS) {
+		printf("\n Failed to initialize the power service \n");
+	}
+	if(ADI_PWR_SUCCESS != adi_pwr_SetClockDivider(ADI_CLOCK_HCLK,1)) {
+		printf("Failed to set clock divider for HCLK\n");
+	}
+	if(ADI_PWR_SUCCESS != adi_pwr_SetClockDivider(ADI_CLOCK_PCLK,1)) {
+		printf("Failed to set clock divider for PCLK\n");
+	}
 
-    /*
-     * SysTick initialization
-     */
-    SysTick_Config(26000); // 26 MHz / 26000, 1ms interrupt
+	/*
+	 * SysTick initialization
+	 */
+	SysTick_Config(26000); // 26 MHz / 26000, 1ms interrupt
 }
 
 void timer_sleep (uint32_t ticks)
 {
-   timer_delayCount = ticks;
+	timer_delayCount = ticks;
 
-   // Busy wait until the SysTick decrements the counter to zero.
-   while (timer_delayCount != 0u)
-      ;
+	// Busy wait until the SysTick decrements the counter to zero.
+	while (timer_delayCount != 0u)
+		;
 }
 
 void SysTick_Handler(void)
