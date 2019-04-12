@@ -14,10 +14,8 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-RTE/Board_Support \
+RTE/BLE \
 RTE/Device/ADuCM3029 \
-src/ADXL372 \
-src/Application \
 src \
 system \
 system/pinmux/GeneratedSources \

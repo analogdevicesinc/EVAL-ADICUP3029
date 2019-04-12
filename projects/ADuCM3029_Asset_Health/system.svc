@@ -19,7 +19,6 @@
 					<signal bit="4" mux="1" name="SCLK" pin="2" port="P1"/>
 					<signal bit="6" mux="1" name="MISO" pin="3" port="P1"/>
 					<signal bit="8" mux="1" name="MOSI" pin="4" port="P1"/>
-					<signal bit="6" mux="3" name="RDY" pin="3" port="P0"/>
 				</peripheral>
 				<peripheral description="UART0 Module" name="UART0">
 					<signal bit="20" mux="1" name="Tx" pin="10" port="P0"/>
@@ -30,7 +29,6 @@
 					<signal bit="0" name="P0_00" pin="0" port="P0"/>
 					<signal bit="2" name="P0_01" pin="1" port="P0"/>
 					<signal bit="4" name="P0_02" pin="2" port="P0"/>
-					<signal bit="6" name="P0_03" pin="3" port="P0"/>
 					<signal bit="20" name="P0_10" pin="10" port="P0"/>
 					<signal bit="22" name="P0_11" pin="11" port="P0"/>
 					<signal bit="24" name="P0_12" pin="12" port="P0"/>
