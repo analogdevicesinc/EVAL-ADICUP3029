@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.analog.crosscore.debug.ui.arm.bareMetalAppOpenOCDLaunchCfgType">
+<stringAttribute key="bad_container_name" value="\${project_name}"/>
+<intAttribute key="com.analog.crosscore.debug.arm.HardwareBreakpointCount" value="2"/>
+<stringAttribute key="com.analog.crosscore.debug.arm.OpenocdArguments" value=" "/>
+<stringAttribute key="com.analog.crosscore.debug.arm.OpenocdCommand" value="openocd"/>
+<stringAttribute key="com.analog.crosscore.debug.arm.OpenocdDapMemAccess" value="6"/>
+<booleanAttribute key="com.analog.crosscore.debug.arm.OpenocdHaltPeripherals" value="false"/>
+<stringAttribute key="com.analog.crosscore.debug.arm.OpenocdInterfaceScript" value="C:\Analog Devices\CrossCore Embedded Studio 2.6.0\ARM\openocd\share\openocd\scripts\interface\cmsis-dap.cfg"/>
+<stringAttribute key="com.analog.crosscore.debug.arm.OpenocdMaxSpeed" value="1000"/>
+<stringAttribute key="com.analog.crosscore.debug.arm.OpenocdTargetBoardScript" value="C:\Analog Devices\CrossCore Embedded Studio 2.6.0\ARM\packs\AnalogDevices\ADuCM302x_DFP\2.0.0\openocd\scripts\target\aducm3029.cfg"/>
+<booleanAttribute key="com.analog.crosscore.debug.arm.OpenocdTargetEnabled" value="true"/>
+<stringAttribute key="com.analog.crosscore.debug.arm.QemuArguments" value="-semihosting -S"/>
+<stringAttribute key="com.analog.crosscore.debug.arm.QemuCommand" value="qemu-system-arm"/>
+<booleanAttribute key="com.analog.crosscore.debug.arm.QemuEnablement" value="false"/>
+<intAttribute key="org.eclipse.cdt.debug.gdbjtag.core.delay" value="1"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.doHalt" value="true"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.doReset" value="true"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageFileName" value=""/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageOffset" value=""/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.initCommands" value=""/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.ipAddress" value="localhost"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.jtagDevice" value="Generic TCP/IP"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.loadImage" value="true"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.loadSymbols" value="true"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.pcRegister" value=""/>
+<intAttribute key="org.eclipse.cdt.debug.gdbjtag.core.portNumber" value="3333"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.runCommands" value=""/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.setPcRegister" value="false"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.setResume" value="true"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.setStopAt" value="true"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.stopAt" value="main"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.symbolsFileName" value=""/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.symbolsOffset" value=""/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useFileForImage" value="false"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useFileForSymbols" value="false"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useProjBinaryForImage" value="true"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useProjBinaryForSymbols" value="true"/>
+<booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useRemoteTarget" value="true"/>
+<stringAttribute key="org.eclipse.cdt.dsf.gdb.DEBUG_NAME" value="${CCES_HOME}\ARM\gcc-arm-embedded\bin\arm-none-eabi-gdb"/>
+<booleanAttribute key="org.eclipse.cdt.dsf.gdb.UPDATE_THREADLIST_ON_SUSPEND" value="false"/>
+<intAttribute key="org.eclipse.cdt.launch.ATTR_BUILD_BEFORE_LAUNCH_ATTR" value="2"/>
+<stringAttribute key="org.eclipse.cdt.launch.COREFILE_PATH" value=""/>
+<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="Debug/cn0397_example_noos"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="cn0397_example_noos"/>
+<booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="false"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="arm.toolchain.gcc.target.exe.debug.1863219639"/>
+<booleanAttribute key="org.eclipse.cdt.launch.use_terminal" value="false"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/cn0397_example_noos"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<stringAttribute key="process_factory_id" value="org.eclipse.cdt.dsf.gdb.GdbProcessFactory"/>
+</launchConfiguration>
