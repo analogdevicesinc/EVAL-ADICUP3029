@@ -1,0 +1,478 @@
+Analog Devices, Inc. (“ADI”)
+Source Code Software License Agreement
+20120511-LWSC-CTSLA
+BEFORE YOU SELECT THE "I ACCEPT" BUTTON AT THE BOTTOM OF THIS WINDOW, CAREFULLY READ THE TERMS AND CONDITIONS SET FORTH BELOW.  BY SELECTING THE “I ACCEPT” BUTTON BELOW, OR DOWNLOADING, REPRODUCING, DISTRIBUTING OR OTHERWISE USING THE SOFTWARE, YOU AGREE TO BE BOUND BY THE TERMS AND CONDITIONS SET FORTH BELOW.  IF YOU DO NOT AGREE TO ALL OF THE TERMS AND CONDITIONS, SELECT THE 'I DO NOT ACCEPT' BUTTON AND YOU MUST NOT DOWNLOAD, INSTALL OR OTHERWISE USE THE SOFTWARE.
+
+DOWNLOADING, REPRODUCING, DISTRIBUTING OR OTHERWISE USING THE SOFTWARE CONSTITUTES ACCEPTANCE OF THIS LICENSE.  THE SOFTWARE MAY NOT BE USED EXCEPT AS EXPRESSLY AUTHORIZED UNDER THIS LICENSE. 
+
+The software is protected by copyright law and international copyright treaties.  
+
+1. License:  Subject to the terms and conditions of this license, the software may be reproduced, modified and distributed in source code and object code form.
+
+2. Conditions: 
+(a) Any distribution of the software must include a complete copy of this license and retain all copyright and other proprietary notices.  The software that is distributed (including modified versions of the software) shall be subject to the terms and conditions of this license.  
+(b) The software may not be combined or merged with other software in any manner that would cause the software to become subject to terms and conditions which differ from those of this license.
+(c) The software is licensed solely and exclusively for use with processors manufactured by or for ADI.
+(d) Licensee shall not use the name or any trademark of ADI (including those of its licensors) or any contributor to endorse or promote products without prior written consent of the owner of the name or trademark.  The term “contributor” means any person or entity that modifies or distributes the software.  
+(e) Modified versions of the Software must be conspicuously marked as such.
+(f) Use of the software may or may not infringe patent rights of one or more patent holders.  This license does not alleviate the obligation to obtain separate licenses from patent holders to use the software.
+(g) All rights not expressly granted hereunder are reserved.  
+(h) This license shall be governed by the laws of Massachusetts, without regard to its conflict of laws rules.  The software shall only be used in compliance with all applicable laws and regulations, including without limitation export control laws.  
+
+3. WARRANTY DISCLAIMER: THE SOFTWARE AND ANY RELATED INFORMATION AND/OR ADVICE IS PROVIDED ON AN “AS IS” BASIS, WITHOUT REPRESENTATIONS, GUARANTEES OR WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, ORAL OR WRITTEN, INCLUDING WITHOUT LIMITATION, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. There is no obligation to provide software support or updates.  The Software is not fault-tolerant and is not intended for use in high risk applications, including without limitation in the operation of nuclear facilities, aircraft navigation or control systems, air traffic control, life support machines, weapons systems or any other application in which the failure of the software could lead to death, personal injury, or severe physical or environmental damages.  The software is not authorized to be used under such circumstances.
+
+4. LIMITATION OF LIABILITY: TO THE MAXIMUM EXTENT PERMITTED BY LAW ADI (INCLUDING ITS LICENSORS) AND CONTRIBUTORS SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING FROM OR RELATED TO THE SOFTWARE, ITS USE OR ANY RELATED INFORMATION AND/OR SERVICES, INCLUDING BUT NOT LIMITED TO ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, EXEMPLARY, CONSEQUENTIAL OR ANALOGOUS DAMAGES (INCLUDING WITHOUT LIMITATION ANY DAMAGES RESULTING FROM LOSS OF USE, DATA, REVENUE, PROFITS, OR SAVINGS, COMPUTER DAMAGE OR ANY OTHER CAUSE), UNDER ANY LEGAL THEORY (INCLUDING WITHOUT LIMITATION CONTRACT, WARRANTY, TORT, NEGLIGENCE, STRICT OR PRODUCT LIABILITY), EVEN IF IT HAS BEEN INFORMED OF THE POSSIBILITY OF SUCH DAMAGES.  Some jurisdictions do not permit the exclusion or limitation of liability for consequential, incidental or other damages, and, as such, some portion of the above limitation may not apply.  In such jurisdictions, liability is limited to the greatest extent permitted by law.
+5.  Third Party Software:  The software may be accompanied by or include software made available by one or more third parties (“Third Party Software”).  Each portion of Third Party Software is subject to its own separate software license terms and conditions (“Third Party Licenses”).  The Third Party Licenses for Third Party Software delivered with the software are set forth or identified (by url or otherwise) in (i) Appendix A to this license (if any), (ii) the applicable software header or footer text, (iii) a text file located in the directory of the applicable Third Party Software component and/or (iv) such other location customarily used for licensing terms. The use of each portion of Third Party Software is subject to the Third Party Licenses, and you agree that your use of any Third Party Software is bound by the applicable Third Party License.  You agree to review and comply with all applicable Third Party Licenses prior to any use or distribution of any Third Party Software.  Third Party Software is provided on an “as is” basis without any representation, warranty or liability of any kind.  ADI (including its licensors) and contributors shall have no liability or responsibility for the operation or performance of the Third Party Software and shall not be liable for any damages, costs, or expenses, direct or indirect, arising out of the performance or failure to perform of the Third Party Software.  ADI (including its licensors) and contributors shall be entitled to the benefit of any and all limitations of liability and disclaimers of warranties contained in the Third Party Licenses. For the avoidance of doubt, this license does not alter, limit or expand the terms and conditions of, or rights granted to you pursuant to, Third Party Licenses.  
+
+20120511-LWSC-CTSLA	Page 1 of 2
+IOTNODE APP 
+TERMS OF USE
+As part of demonstrating its Internet of Things (“IoT”) offerings, Analog Devices, Inc., a Massachusetts corporation with its principal office in Norwood, Massachusetts (“ADI”, “we” or “us”), is making its  mobile device applications, including the IoTNode Kit (“App”), its Analog Devices Connect feature (“Cloud Solution”), and the websites to which the Cloud Solution and the App connects (“Site”) available to you under these Terms of Use (“Terms”).  The App, the Cloud Solution and the Site are referred to together as the “Applications”.  By downloading or using the App, using the Cloud Solution or accessing the Site and/or by clicking the “I Agree” button on the Site or the “Accept” button in the App, you represent and warrant that you are authorized to represent the company or organization you are acting for and you conclude a legally binding contract based on these Terms (“Agreement”) with us on behalf of yourself and the company or other organization you are acting for (collectively referred to herein as “you”). If you do not agree to be bound by and comply with all of these Terms, you may not use our Applications.
+We offer the Applications only to developers who are associated with corporate customers or prospects that evaluate ADI products - NOT FOR CONSUMERS OR PERSONAL OR HOUSEHOLD PURPOSES AND NOT FOR ANY MEDICAL DIAGNOSIS OR TREATMENT PURPOSES.
+You acknowledge that you understand that the Applications are not medical devices and further acknowledge and agree that the purpose of the Applications is only to demonstrate ADI’s IoT offerings and you agree to only use the Applications to evaluate possibilities of designing and developing products and services that utilize ADI technologies and services and not to use the Applications for personal use (the Applications are for ‘proof of concept use’ only).
+Do Not Rely on the Applications - Use them at your own Risk
+THE APPLICATIONS ARE IN A BETA TESTING PHASE AND ARE PROVIDED ON AN “AS IS” AND “AS AVAILABLE” BASIS, INCLUDING AS DESCRIBED IN THE FOLLOWING: WE MAKE NO REPRESENTATIONS OR WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, AS TO THE OPERATION OF THE APPLICATIONS OR ANY INFORMATION, CONTENT, MATERIALS OR PRODUCTS INCLUDED OR REFERENCED THEREIN. TO THE FULL EXTENT PERMISSIBLE BY APPLICABLE LAW, WE DISCLAIM ALL WARRANTIES AND CONDITIONS, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES AND CONDITIONS OF MERCHANTABILITY OR SATISFACTORY QUALITY, NON-INFRINGEMENT OF THIRD PARTIES’ RIGHTS AND FITNESS FOR A PARTICULAR PURPOSE. YOU ACKNOWLEDGE THAT YOUR USE OF THE APPLICATIONS IS AT YOUR SOLE RISK. NO COMMUNICATION, INFORMATION OR ADVICE GIVEN BY US OR ANY REPRESENTATIVE OF OURS SHALL CREATE ANY WARRANTY AND CONDITION. THIS DISCLAIMER CONSTITUTES AN ESSENTIAL PART OF THIS AGREEMENT.
+Use at your own Cost
+We do not currently charge for the Applications, but you may be subject to charges from your mobile phone and Internet services providers or other third parties.  You are responsible for any associated fees, charges or expenses.
+User’s Responsibilities
+If you submit any information, messages, comments, posts, text, photographs, data and other materials to us through or related to the Applications or send us any business information, idea, concept or invention to us by e-mail (collectively “User Content”), you represent and warrant to us that such User Content is not confidential and that you have all necessary permission to submit or otherwise make available such User Content.  You irrevocably agree to grant us, and you hereby do grant us a royalty-free, perpetual, irrevocable, world-wide nonexclusive license to reproduce, create derivative works from, distribute, modify, publish, edit, translate, distribute, perform, display and otherwise use and commercialize User Content in any media or medium, or any form, format, or forum now known or hereafter developed.
+You further agree that:
+* you will not reproduce, duplicate, copy, sell, resell, or exploit the Applications, its content, its software or any portion of any of the foregoing;
+* you will not use the Applications for any purpose in violation of local, state, national or international laws; and
+* you will not impersonate another person or entity or otherwise misrepresent your affiliation with a person or entity.
+You agree not to interfere or attempt to interfere with the proper working of the Applications or to disrupt the operations or violate the security of the Applications.  Violations of system or network operation or security may result in civil or criminal liability.  We will investigate possible occurrences of such violations, and we may involve and cooperate with law enforcement authorities in prosecuting anyone involved with such violations.
+You agree to comply with all user responsibilities and obligations as stated in this Agreement.  Our failure to act with respect to a breach by you or others of these Terms does not waive our right to act with respect to similar or other breaches.
+Use Applications lawfully and within scope of employment or independent contractor relationship
+You acknowledge and warrant that you have either received credentials to access the Applications from a company working with ADI (“Credentials Provider”) or that you have received such credentials directly from ADI in your capacity as a representative of a Credentials Provider.  You may not use the Applications, unless you are in a jurisdiction where local laws allow you to use the Applications and you comply with these Terms and applicable law at all times.  You acknowledge and agree that the Credentials Provider, and not ADI, is responsible for ensuring that its and your use of the Applications is legal.  You agree only to use the Applications within the scope of your employment or independent contractor relationship with the Credentials Provider and agree not to use the Applications for personal use.  You acknowledge and agree that the Credentials Provider, and not ADI, is responsible for any notice and consent requirements that may apply to you in any employer-employee or independent contractor relationship. 
+Account and Password
+You must keep your information in the Applications accurate, complete and current.  Throughout the Applications, we use reasonable organizational, technical, and administrative measures to protect personal information under our control, and you are responsible for the security and confidentiality of your Applications account and password and any activity on your account.  It is your sole responsibility to monitor and control access to and use of your account and password.  At any time, you may delete your account.
+Confidentiality
+You shall not disclose ADI Confidential Information without ADI’s prior written consent. “ADI Confidential Information” includes without limitation: (a) all ADI software, technology, programming, specifications, materials, guidelines and documentation relating to the Cloud Solution, the App, the Site; and (b) any other information designated in writing by ADI as “Confidential” or an equivalent designation.
+Force Majeure
+Nonperformance by either party to this Agreement shall be excused to the extent that performance is rendered impossible by strike, fire, flood, governmental action, failure of suppliers, earthquake, or any other reason where failure to perform is beyond the reasonable control of the non-performing party. 
+License Grant
+We hereby grant you a limited, revocable, royalty-free, non-exclusive, non-assignable, non-sublicensable license to access and use our Applications and any user guides, specifications or related documentation (the “Documentation”) subject to the terms and conditions of this Agreement, which constitute conditions to our license grant, define the limits of our grant and also have the effect of contractual covenants.  Note that our App contains open source code as noted in Appendix B of these Terms and that your use of the App is subject to the open source license terms included in the Terms.
+You may not distribute or make the Applications available for use to anyone.
+If you violate any of these restrictions, this license will automatically terminate, and you may be subject to prosecution and damages.
+Ownership
+We retain all rights to the Applications that are not specifically granted to you in this Agreement.  We do not transfer to you any title to or any proprietary or intellectual property rights in or to the Applications, any updates or derivative works of the Applications, or the Documentation, or any copyrights, patent rights, or trademarks embodied or used in connection with the Applications.
+Copyright and Trademarks
+You agree that the Applications contains proprietary content, information and material that are protected by intellectual property and other laws in the United States and internationally.  Therefore, service marks, trade names, trade dress and products are the property of their respective companies.  No trademark or service mark license is granted to you with regard to materials contained in the Applications.  Your access to the Applications does not authorize you to use any name, logo or mark in the Applications in any manner.  Furthermore, all Applications software is the property of us or our suppliers and protected by U.S. and international copyright laws.  No software license is granted to you with respect to any Applications software except as expressly granted herein.
+Any use of the Applications or its content that is not expressly permitted by these Terms is a breach of this Agreement and may violate copyright, trademark and other laws.  All rights not expressly granted to you in this Agreement are reserved by us and our licensors.
+Limitations on Liability
+UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL OR EQUITABLE THEORY, WHETHER IN TORT, CONTRACT, STRICT LIABILITY OR OTHERWISE, SHALL WE, OUR AFFILIATES, OR ANY OF OUR OR THEIR EMPLOYEES, DIRECTORS, OFFICERS, AGENTS, VENDORS, LICENSORS OR SUPPLIERS BE LIABLE TO YOU OR TO ANY OTHER PERSON FOR ANY PERSONAL INJURY, INCLUDING DEATH, OR FOR ANY INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL LOSSES OR DAMAGES OF ANY NATURE ARISING OUT OF OR IN CONNECTION WITH THE USE OF OR INABILITY TO USE THE APPLICATIONS, INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOST PROFITS, LOSS OF GOODWILL, LOSS OF DATA, WORK STOPPAGE, ACCURACY OF RESULTS, OR COMPUTER OR DEVICE FAILURE OR MALFUNCTION, EVEN IF A REPRESENTATIVE OF OURS HAS BEEN ADVISED OF OR SHOULD HAVE KNOWN OF THE POSSIBILITY OF SUCH DAMAGES.  IN NO EVENT WILL WE, OUR AFFILIATES, OR ANY OF OUR OR THEIR EMPLOYEES, DIRECTORS, OFFICERS, AGENTS, VENDORS, LICENSORS OR SUPPLIERS BE LIABLE FOR ANY DAMAGES IN EXCESS OF ONE HUNDRED DOLLARS ($100).  Some jurisdictions do not allow the exclusion of certain warranties or the limitation or exclusion of liability for certain damages.  Accordingly, some of the above limitations and disclaimers may not apply to you.  To the extent that we may not, as a matter of applicable law, disclaim any implied warranty or limit liabilities, the scope and duration of such warranty and the extent of our liability will be the minimum permitted under such applicable law.
+Any claims arising in connection with your use of the Applications must be brought within one (1) year of the date of the even giving rise to such action occurred.  Remedies under these Terms are exclusive and are limited to those expressly provided for in these Terms even if the applicable remedy under these Terms fails of its essential purpose.
+Indemnity
+You agree to defend, indemnify, and hold harmless us, our officers, directors, employees, agents, licensors and suppliers, any of our affiliated companies or organizations, and any successors, assigns or licensees, from and against any claims, actions or demands, damages, losses, liabilities, judgments, settlements, costs or expenses (including attorneys’ fees and costs) arising from or relating to your use of the Applications or your breach or violation of this Agreement.
+Changes, termination
+This Agreement shall be effective until terminated by either you or us.  You may terminate this Agreement at any time by written notice to us, provided that you discontinue any further use of any parts of the Applications.  We may terminate this Agreement, discontinue the Applications and/or terminate or suspend your access to any or all of the Applications, at any time and for any reason.  In the event of your breach of this Agreement, these actions are in addition to and not in lieu or limitation of any other right or remedy that may be available to us.
+Upon any termination of the Agreement by either you or us, you must promptly uninstall the Applications on all of your devices and destroy all materials downloaded or otherwise obtained from the Applications, all Documentation, and all copies of such materials and Documentation.  Upon any such termination, we may delete User Content and other information related to your account. The following provisions survive the expiration or termination of this Agreement for any reason whatsoever indefinitely:  Limitation on Liability, Indemnity, Choice of Law and Forum, Complete Agreement and Severability.
+Choice of Law and Arbitration
+This Agreement (including validity and interpretation) will be governed by, construed and enforced in accordance with the laws of the Commonwealth of Massachusetts, U.S.A., without reference to any conflict of law principles. If a dispute, controversy or claim arises out of or relates to these terms and conditions, or the breach, termination or validity thereof, and if either party decides that the dispute cannot be settled through direct discussions, the parties agree to settle the dispute through arbitration. The arbitration shall be conducted by one arbitrator in accordance with the Commercial Arbitration Rules of the American Arbitration Association (AAA) in effect at the time of the arbitration, except as they may be modified herein or by mutual agreement of the parties. The seat of the arbitration shall be Boston, Massachusetts and the arbitration shall be conducted in the English language. The arbitrator shall not have the authority, power, or right to alter, change, amend, modify, add, or subtract from any provision of these terms and conditions. The arbitral award shall be in writing and shall be final and binding on the parties. Judgment upon the award may be entered by any court having jurisdiction thereof or having jurisdiction over the parties or their assets. Subject to any arbitral award, costs of arbitration shall be borne equally by the parties. The arbitration requirement does not limit the right of either party to obtain provisional or ancillary remedies, such as injunctive relief, before, during or after any arbitration proceeding.
+Complete Agreement
+This Agreement and our Privacy Statement located at Appendix A constitute the entire agreement between you and us relating to your access to and use of the Applications.  To the extent there is an inconsistency between this Agreement and the Privacy Statement, this Agreement shall govern.  Anything contained in or delivered through the Applications that is inconsistent with or conflicts with the terms of this Agreement is superseded by the terms of this Agreement.  This Agreement may not be modified, in whole or in part, except as described elsewhere in this Agreement.
+Compliance
+You must comply with all U.S. laws and, unless inconsistent with U.S. laws, also with other applicable laws and regulations relating to your use of our Applications. Without limiting the generality of the foregoing, you must comply with all U.S. export control and trade laws and refrain from exporting or re-exporting the Applications or any information related thereto in violation of U.S. law.
+Severability
+If any of the provisions of this Agreement are held to be not enforceable by a court or other tribunal of competent jurisdiction, then such provisions shall be reformed, limited or eliminated to the minimum extent necessary so that this Agreement shall otherwise remain in full force and effect.
+Assignability
+You agree that these Terms and all incorporated agreements between you and us may be automatically assigned by us, in our sole discretion, without restrictions. You may not assign any rights or delegate any duties hereunder, and any purported assignment or delegation shall be null and void and constitute a material breach.
+Contact Information
+All notices relating to this Agreement shall be posted on the App or Site.  All notices to us relating to this Agreement shall be in writing and sent to the following:
+One Technology Way PO BOX 9106
+Norwood, MA 02062
+U.S.A.
+
+Last updated: May 2017
+
+
+
+
+APPENDIX A
+ADI Sensor Node Privacy Statement
+We, Analog Devices, Inc. (“ADI”), provide information about our data processing practices relating to our Internet of Things (“IoT”) offerings to developers in this IoT Developer Privacy Statement (“Privacy Statement”). This Privacy Statement applies to our Analog Devices Connect feature (“Cloud Solution”), our mobile device applications, including the ADI Sensor Node Kit (“App”) and the websites to which the Cloud Solution and the App connect (“Site”). We provide access to the Cloud Solution, the App and the Site (collectively “Applications”) only to corporate customers and prospective customers subject to the ADI IoT Terms of Use (“Terms”) - NOT FOR CONSUMERS OR PERSONAL OR HOUSEHOLD PURPOSES AND NOT FOR ANY MEDICAL DIAGNOSIS OR TREATMENT PURPOSES.
+
+Categories of Personal Data
+When you first access or when you use the Applications, we may request that you provide personal data such as name, email address, company affiliation, telephone number and the like. We may request personal data to facilitate future communications, purchases of ADI products, or so that you can receive software, tools, information or other materials from us.
+When you use the Applications, you or your device may transmit information that we automatically collect, such as IP address, operating system, temperature, moisture, location, browser information, Web pages visited, links clicked, etc. 
+
+Purposes of Data Collection
+We use personal data to provide and improve the Applications and other ADI products and to provide you with information about us, our products and our business.
+
+Your Choices 
+Our Applications are voluntary. If you do not wish us to collect personal data, you can refrain from using our Applications.
+
+Cookie Notice
+A cookie is a tiny piece of text placed on your computer’s hard drive by a website you visit.  For information about how we use cookies, please see our analog.com website Privacy & Security Statement.
+ 
+Processing and Storage of Personal Data
+We use and store data in the United States and other locations worldwide.
+
+Sharing of Personal Data
+We do not share your individual personal data with third parties, except as follows:
+- With your consent.
+- We use affiliated and unaffiliated service providers all over the world that help us deliver our service and run our business subject to strict confidentiality agreements.
+- We share aggregated usage statistics that cannot be used to identify you individually.
+- We will disclose data as required by law or to protect you, other users, us or third parties from harm, including fraud, data security breaches or where someone's physical safety seems at risk.
+- In a reorganization or sale of our company or assets, your data may be transferred, subject to the acquirer accepting the commitments made in this Statement and compliance with applicable law.
+
+Data Retention
+We retain personal data for as long as needed to provide our services. We retain data collected for analysis (heartrate, location, temperature, etc.) for the duration of your development instance. If you request to have your personal data removed, we will delete, de-identify or archive it within 30 days of your request.
+We retain web logs, access data and aggregate technical information as long as permitted by law.
+We will also retain personal data as necessary to comply with legal obligations, resolve disputes or enforce our agreements.
+
+Third Party Links
+Links on the Site to third party websites are provided solely as a convenience to you. If you use these links, you will leave the Site. We have not reviewed all third party sites and we do not control and are not responsible for their content or their privacy and security policies. We do not endorse or make any representations about third party sites, or about any information, software or other products or materials found there, or about any results that may be obtained from using them. If you decide to access any of these third party sites, you do so at your own risk.
+
+Security
+We have implemented reasonable information security practices designed to help safeguard your personal data.  We do not authorize our employees or service providers to access or use personal data unless they have a need to know it in connection with performing their employment duties or providing services to us.
+While we will continue to exercise diligence and use reasonable measures to protect the security of the Applications, we cannot warrant that all internet communications will be absolutely secure.  If you have any questions about this Security Statement, please contact us at external.webmaster@analog.com.
+
+Effective Date and Changes
+This Privacy Statement is effective March 8, 2016. We may update it from time to time, at our sole discretion. If you continue to use the Applications after we update this Privacy Statement, you accept our changes.
+If you have questions about our Privacy Statement or our mobile and website security, please email us at external.webmaster@analog.com.
+
+
+
+
+APPENDIX B
+Open Source Licenses
+The App has the following open source code:
+Android
+Blueteeth
+March 8th 2015
+
+Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "{}"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright {yyyy} {name of copyright owner}
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+Indicator Library
+September 12th 2012
+Copyright 2012 Jake Wharton
+Copyright 2011 Patrik Åkerfeldt
+Copyright 2011 Francisco Figueiredo Jr.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Graph
+Copyright 2015 AndroidPlot.com
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Glide Image
+October 2nd 2014
+
+License for everything not in third_party and not otherwise marked:
+
+Copyright 2014 Google, Inc. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+
+   1. Redistributions of source code must retain the above copyright notice, this list of
+         conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright notice, this list
+         of conditions and the following disclaimer in the documentation and/or other materials
+         provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY GOOGLE, INC. ``AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GOOGLE, INC. OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those of the
+authors and should not be interpreted as representing official policies, either expressed
+or implied, of Google, Inc.
+---------------------------------------------------------------------------------------------
+License for third_party/disklrucache:
+
+Copyright 2012 Jake Wharton
+Copyright 2011 The Android Open Source Project
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+---------------------------------------------------------------------------------------------
+License for third_party/gif_decoder:
+
+Copyright (c) 2013 Xcellent Creations, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+---------------------------------------------------------------------------------------------
+License for third_party/gif_encoder/AnimatedGifEncoder.java and
+third_party/gif_encoder/LZWEncoder.java:
+
+No copyright asserted on the source code of this class. May be used for any
+purpose, however, refer to the Unisys LZW patent for restrictions on use of
+the associated LZWEncoder class. Please forward any corrections to
+kweiner@fmsware.com.
+
+-----------------------------------------------------------------------------
+License for third_party/gif_encoder/NeuQuant.java
+
+Copyright (c) 1994 Anthony Dekker
+
+NEUQUANT Neural-Net quantization algorithm by Anthony Dekker, 1994. See
+"Kohonen neural networks for optimal colour quantization" in "Network:
+Computation in Neural Systems" Vol. 5 (1994) pp 351-367. for a discussion of
+the algorithm.
+
+Any party obtaining a copy of these files from the author, directly or
+indirectly, is granted, free of charge, a full and unrestricted irrevocable,
+world-wide, paid up, royalty-free, nonexclusive right and license to deal in
+this software and documentation files (the "Software"), including without
+limitation the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Software, and to permit persons who
+receive copies from any such party to do so, with the only requirement being
+that this copyright notice remain intact.
+
+

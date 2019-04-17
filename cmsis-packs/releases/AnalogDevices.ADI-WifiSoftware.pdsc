@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package schemaVersion="1.2" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
+    <vendor>AnalogDevices</vendor>
+    <name>ADI-WifiSoftware</name>
+    <description>Analog Devices WiFi Software</description>
+    <url>http://download.analog.com/tools/WiFi_Sofware/Releases</url>
+    <supportContact>http://www.analog.com/en/support/technical-support.html</supportContact>
+    <license>License/2017-07-27-LWSCEDL Click Thru SLA.txt</license>
+
+    <releases>
+	<release version="1.0.1" date="2019-04-03">
+            Test Release
+        </release>
+        <release version="1.0.0" date="2017-08-11">
+            Initial Release
+        </release>
+    </releases>
+
+    <keywords>
+        <keyword>Analog Devices</keyword>
+        <keyword>WiFi</keyword>
+    </keywords>    
+
+  <taxonomy>
+    <description Cclass="Wi-Fi" doc="Documents/html/index.html">Analog Devices Wi-Fi Software Pack Documentation </description>
+  </taxonomy>
+
+    <boards>
+        <board vendor="AnalogDevices" name="EVAL-ADICUP3029" revision="Ver 1.0" orderForm="http://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/eval-adicup3029.html#eb-buy">
+            <description>Analog Devices ADICUP3029 Evaluation Board</description>
+
+            <image small="Documents/eval-adicup3029-image.jpg" />
+            
+            <mountedDevice    deviceIndex="0" Dvendor="Analog Devices:1" Dname="ADuCM3029"/>
+            <compatibleDevice deviceIndex="0" Dvendor="Analog Devices:1" Dfamily="ADuCM302x Series"/>
+
+            <feature type="Batt"   n="2"        name="AAA batteries"/>
+            <feature type="PWR"    n="7" m="12" name="+7V to +12V DC power supply"/>
+            <feature type="Button" n="3"        name="Push-buttons: Reset, WiFi Reset, and Boot" />
+            <feature type="SPI"    n="2"        name="4-Pin Header (1 PMOD and 1 Arduino Shield)" />             
+            <feature type="I2C"    n="2"        name="2-Pin Header (1 PMOD and 1 Arduino Shield)" />
+            <feature type="LED"    n="4"        name="2 Debug LEDs and 2 User LEDs" />
+            <feature type="USB"    n="1"        name="UART over USB for serial input/output" />
+
+            <debugInterface adapter="CMSIS-DAP" connector="Micro-USB"/>
+            <debugInterface adapter="CMSIS-DAP" connector="10-pin Cortex Debug Connector"/>
+            <debugInterface adapter="J-Link" connector="10-pin Cortex Debug Connector"/>
+        </board>
+    </boards>    
+
+  <conditions>
+    <condition id="ADuCM3029">
+      <description>ADuCM3029 device</description>
+      <require Dvendor="Analog Devices:1"/>
+      <require Dname="ADuCM3029"/>
+    </condition>
+    <condition id="Supported Devices">
+        <description>Supported microcontrollers</description>
+        <accept condition="ADuCM3029" />
+    </condition>    
+    <condition id="noos">
+      <description>No OS</description>
+      <require condition="Supported Devices"/>
+      <deny Cclass="RTOS" Cgroup="Core"/>
+    </condition>  
+    <condition id="Timestamp Timer">
+      <description>Timestamp Timer</description>
+      <require condition="Supported Devices"/>
+      <accept Cclass="RTOS" Cgroup="Core" />
+      <accept  Cclass="Device" Cgroup="Drivers" Csub="RTC" />
+    </condition>
+    <condition id="ESP8266 Requirements">
+      <description>ESP8266 Requirements</description>
+      <require condition="Supported Devices"/>
+      <accept Cclass="RTOS" Cgroup="Core" />
+      <accept  Cclass="Device" Cgroup="Drivers" Csub="RTC" />
+      <deny Cclass="Device" Cgroup="Drivers" Csub="UART"/>
+    </condition>
+  </conditions>
+
+    <components>
+    <component Cclass="Wi-Fi" Cgroup="ESP8266 Wi-Fi" Cversion="1.0.1" condition="ESP8266 Requirements">
+      <description>ESP8266 Wi-Fi</description>
+      <files>
+    		<file category="include" name="Include/" />
+    		<file category="include" name="Include/communication/" />
+    		<file category="include" name="Include/communication/wifi/" />
+    		<file category="include" name="Include/communication/wifi/transport/" />
+    		<file category="include" name="Source/communication/wifi/MQTT/" />
+    		<file category="header" name="Include/communication/wifi/config/adi_uart_config.h" version="1.0.0" attr="config" />
+    		<file category="header" name="Include/communication/wifi/config/adi_wifi_config.h" version="1.0.0" attr="config" />
+    		<file category="source" name="Source/communication/wifi/radio/adi_wifi_logevent.c"/>
+    		<file category="source" name="Source/communication/wifi/radio/adi_wifi.c"/>
+    		<file category="source" name="Source/communication/wifi/framework/noos/adi_wifi_noos.c" condition="noos" />
+    		<file category="source" name="Source/communication/wifi/transport/adi_uart.c"/>
+    		<file category="source" name="Source/communication/wifi/transport/adi_wifi_transport.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTConnectClient.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTConnectServer.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTDeserializePublish.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTPacket.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTSerializePublish.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTSubscribeClient.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTSubscribeServer.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTUnsubscribeClient.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTUnsubscribeServer.c"/>
+    		<file category="source" name="Source/communication/wifi/MQTT/MQTTFormat.c"/>
+        <file category="doc" name="Documents/html/group___wi_fi.html"/>
+      </files>
+    </component>
+
+    <component Cclass="Wi-Fi" Cgroup="Utilities" Csub="Timestamp utility" Cversion="1.0.1" condition="Timestamp Timer" >
+      <description>Timestamp Application Utility</description>
+      <files>
+          <file category="source" name="Source/communication/common/adi_timestamp.c"   />
+          <file category="include" name="Include/communication/wifi/" />
+          <file category="include" name="Include/communication/" />
+          <file category="doc" name="Documents/html/group__adi__timestamp.html"/>
+      </files>
+    </component>
+    </components>
+
+</package>
