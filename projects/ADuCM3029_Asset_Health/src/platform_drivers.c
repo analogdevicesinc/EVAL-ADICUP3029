@@ -310,11 +310,8 @@ int32_t init_gpio(void)
 
 	/* Set interrupt pin */
 	ret = adi_gpio_Init(gpioMemory, ADI_GPIO_MEMORY_SIZE); //initialize gpio
-//	ret |= adi_gpio_OutputEnable(INTACC_PORT, INTACC_PIN, false);
 	ret |= adi_gpio_InputEnable(INTACC_PORT, INTACC_PIN,
 				    true);    // Set INTACC_PORT as input
-//	ret |= adi_gpio_PullUpEnable(INTACC_PORT, INTACC_PIN, false); 	// Disable pull-up resistors
-	ret |= adi_gpio_SetGroupInterruptPolarity(INTACC_PORT, INTACC_PIN);
 	ret |= adi_gpio_SetGroupInterruptPins(INTACC_PORT,  SYS_GPIO_INTA_IRQn,
 					      INTACC_PIN);
 	ret |= adi_gpio_RegisterCallback (SYS_GPIO_INTA_IRQn, pinIntCallback, NULL );
