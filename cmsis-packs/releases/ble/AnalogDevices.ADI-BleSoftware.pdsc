@@ -4,13 +4,13 @@
     <vendor>AnalogDevices</vendor>
     <name>ADI-BleSoftware</name>
     <description>Analog Devices Bluetooth Low Energy Software</description>
-    <url>http://download.analog.com/tools/BLE_Software/Releases</url>
+    <url>https://github.com/analogdevicesinc/EVAL-ADICUP3029/tree/master/cmsis-packs/releases/ble</url>
     <supportContact>http://www.analog.com/en/support/technical-support.html</supportContact>
     <license>License/license_ble.txt</license>
 
     <releases>
 	<release version="1.0.1" date="2019-04-03">
-            Test release
+            - updated download url.
         </release>
         <release version="1.0.0" date="2017-08-11">
             Initial Release
