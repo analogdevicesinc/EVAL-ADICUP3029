@@ -4,7 +4,7 @@
     <vendor>AnalogDevices</vendor>
     <name>ADI-WifiSoftware</name>
     <description>Analog Devices WiFi Software</description>
-    <url>https://github.com/analogdevicesinc/EVAL-ADICUP3029/tree/master/cmsis-packs/releases/wifi</url>
+    <url>https://github.com/analogdevicesinc/EVAL-ADICUP3029/raw/master/cmsis-packs/releases/wifi</url>
     <supportContact>http://www.analog.com/en/support/technical-support.html</supportContact>
     <license>License/2017-07-27-LWSCEDL Click Thru SLA.txt</license>
 
