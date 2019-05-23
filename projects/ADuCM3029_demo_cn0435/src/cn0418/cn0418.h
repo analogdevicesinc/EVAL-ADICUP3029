@@ -48,6 +48,7 @@
 #include "ad5755.h"
 #include "ad5700.h"
 #include "memory.h"
+#include "config.h"
 
 #define _NC 0
 #define _BS 8
@@ -60,7 +61,7 @@
 #define HART_BUFF_SIZE 256
 #define HART_COMMAND_ZERO_SIZE 5
 #define HART_TERMINATOR_CHARACTER_SIZE 1
-#define HART_NOTHING_RECEIVED -3
+#define HART_NOTHING_RECEIVED_CN0418 -3
 #define HART_PREAMBLE_CHAR 0xFF
 #define HART_SHORT_ADDR_RESPONSE 0x06
 #define HART_LONG_ADDR_RESPONSE 0x86
@@ -81,11 +82,11 @@ enum hart_status {
 };
 
 /* HART channels */
-enum hart_channels {
-	CH1,
-	CH2,
-	CH3,
-	CH4,
+enum hart_channels_cn0418 {
+	CH1_CN0418,
+	CH2_CN0418,
+	CH3_CN0418,
+	CH4_CN0418,
 	HART_CHANNEL_NO
 };
 
@@ -116,11 +117,20 @@ struct cn0418_dev {
 	uint16_t hart_rec_size;
 };
 
-typedef  int32_t (*cmd_func)(struct cn0418_dev*, uint8_t*);
+typedef  int32_t (*cmd_func_cn0418)(struct cn0418_dev*, uint8_t*);
+
+int32_t cn0418_setup_dac_verify_presence_min(struct cn0418_dev *dev);
+
+void cn0418_setup_dac_verify_presence(struct cn0418_dev *dev);
+
+int32_t cn0418_setup_minimum(struct cn0418_dev **device,
+			     struct cn0418_init_param *init_param);
 
 /* Initializes the cn0418 device. */
 int32_t cn0418_setup(struct cn0418_dev **device,
 		     struct cn0418_init_param *init_param);
+
+int32_t cn0418_remove_minimum(struct cn0418_dev *dev);
 
 /* Free the resources allocated by cn0418_setup(). */
 int32_t cn0418_remove(struct cn0418_dev *dev);
@@ -174,24 +184,15 @@ int32_t cn0418_set_channel_rset(struct cn0418_dev *dev, uint8_t *arg);
 
 /* Display EEPROM address. */
 int32_t cn0418_mem_display_addr(struct cn0418_dev *dev, uint8_t* arg);
-
-/* Implements CLI feedback. */
-int32_t cn0418_parse(struct cn0418_dev *dev);
-
+#ifdef TEST_GPIO
+int32_t cn0418_test_sweep(struct cn0418_dev *dev, uint8_t* arg);
+#endif
 /* Implements the CLI logic. */
 int32_t cn0418_process(struct cn0418_dev *dev);
 
-/* Get the CLI commands and correlate them to functions. */
-void cn0418_find_command(struct cn0418_dev *dev, uint8_t *command,
-			 cmd_func* function);
-
-/* Display command prompt for the user on the CLI at the beginning of the
- * program. */
-int32_t cn0418_cmd_prompt(struct cn0418_dev *dev);
-
 /* cn0418_hart_change_channel helper function. */
 int32_t cn0418_hart_change_chan_helper(struct cn0418_dev *dev,
-				       enum hart_channels channel);
+				       enum hart_channels_cn0418 channel);
 
 /* Convert floating point value to ASCII. Maximum 8 decimals. */
 void cn0418_ftoa(uint8_t *buffer, float value);

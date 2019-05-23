@@ -49,6 +49,7 @@
 #include "adc_update_timer.h"
 #include "memory.h"
 #include "ad717x.h"
+#include "config.h"
 
 #define ADC_CHANNEL_NO 8
 #define ADC_VOLTAGE_CHAN_NO 4
@@ -58,13 +59,6 @@
 #define OPEN_WIRE_DETECT_DISABLED 0
 
 #define ERROR -1
-
-#define _NC 0
-#define _BS 8
-#define _CR 13
-#define _LF 10
-#define _TB 9
-#define _SP 32
 
 #define HART_BUFF_SIZE 256
 #define HART_COMMAND_ZERO_SIZE 5
@@ -76,17 +70,6 @@
 
 #define HELP_SHORT_COMMAND true
 #define HELP_LONG_COMMAND false
-
-#define SYS_TEST_MEM_ADDRESS 	 0
-#define SYS_TEST_VOLTAGE_VALUE   23.0
-#define SYS_TEST_CURRENT_VALUE   0.0035
-#define SYS_TEST_MEM_PASS_VALUE  (1<<0)
-#define SYS_TEST_READ_PASS_VALUE (1<<1)
-#define SYS_TEST_HART_PASS_VALUE (1<<2)
-#define SYS_TEST_PASS_VALUE SYS_TEST_MEM_PASS_VALUE | SYS_TEST_READ_PASS_VALUE \
-	| SYS_TEST_HART_PASS_VALUE
-
-#define CN0414_SUCCESS 0
 
 /******************************************************************************/
 /*************************** Types Declarations *******************************/
@@ -105,11 +88,11 @@ enum adc_channels {
 };
 
 /* HART channels */
-enum hart_channels {
-	CH1,
-	CH2,
-	CH3,
-	CH4
+enum hart_channels_cn0414 {
+	CH1_CN0414,
+	CH2_CN0414,
+	CH3_CN0414,
+	CH4_CN0414
 };
 
 enum odr_values {
@@ -170,15 +153,21 @@ struct cn0414_dev {
 	uint16_t hart_rec_size; /* Size of the last received HART transmission */
 };
 
-typedef  int32_t (*cmd_func)(struct cn0414_dev*, uint8_t*);
-
 /******************************************************************************/
 /************************ Functions Declarations ******************************/
 /******************************************************************************/
 
+int32_t cn0414_setup_minimum(struct cn0414_dev **device,
+			     struct cn0414_ini_param *init_param);
+
+//TODO: COMMENT cn0414_setup_adc_verify_id
+int32_t cn0414_setup_adc_verify_id(struct cn0414_dev *dev);
+
 /* Initializes the cn0414 device. */
 int32_t cn0414_setup(struct cn0414_dev **device,
 		     struct cn0414_ini_param *init_param);
+
+int32_t cn0414_remove_minimum(struct cn0414_dev *dev);
 
 /* Free the resources allocated by cn0414_setup(). */
 int32_t cn0414_remove(struct cn0414_dev *dev);
@@ -201,6 +190,10 @@ int32_t cn0414_hart_enable(struct cn0414_dev *dev, uint8_t* arg);
 
 /* Disable HART modem. */
 int32_t cn0414_hart_disable(struct cn0414_dev *dev, uint8_t* arg);
+
+/* cn0414_hart_change_channel helper function. */
+int32_t cn0414_hart_change_chan_helper(struct cn0414_dev *dev,
+				       enum hart_channels_cn0414 channel);
 
 /* Change the active HART channel. */
 int32_t cn0414_hart_change_channel(struct cn0414_dev *dev, uint8_t* arg);
@@ -244,6 +237,10 @@ int32_t cn0414_adc_dis_postfilt(struct cn0414_dev *dev, uint8_t* arg);
 /* Change the ADC postfilter option. */
 int32_t cn0414_adc_set_postfilt(struct cn0414_dev *dev, uint8_t* arg);
 
+//TODO: COMMENT cn0414_adc_set_output_coding_helper
+int32_t cn0414_adc_set_output_coding_helper(struct cn0414_dev *dev,
+		uint8_t i);
+
 /* Set ADC output coding (unipolar/bipolar). */
 int32_t cn0414_adc_set_output_coding(struct cn0414_dev *dev, uint8_t* arg);
 
@@ -256,19 +253,8 @@ int32_t cn0414_adc_open_wire_disable(struct cn0414_dev *dev, uint8_t* arg);
 /* Display EEPROM address. */
 int32_t cn0414_mem_display_addr(struct cn0414_dev *dev, uint8_t* arg);
 
-/* Echoes characters received from CLI. Implements CLI feedback. */
-int32_t cn0414_parse(struct cn0414_dev *dev);
-
 /* Implements the CLI logic. */
 int32_t cn0414_process(struct cn0414_dev *dev);
-
-/* Get the CLI commands and correlate them to functions. */
-int32_t cn0414_find_command(struct cn0414_dev *dev, uint8_t *command,
-			    cmd_func* function);
-
-/* Display command prompt for the user on the CLI at the beginning of the
- * program. */
-int32_t cn0414_cmd_prompt(struct cn0414_dev *dev);
 
 /* Read one of the channels on the board. */
 int32_t cn0414_read_channel(struct cn0414_dev *dev,
@@ -279,7 +265,7 @@ int32_t cn0414_compute_adc_value(struct cn0414_dev *dev, uint32_t code,
 				 bool ncurr_or_volt, float *result);
 
 /* Convert floating point value to ASCII. Maximum 4 decimals. */
-int32_t cn0414_ftoa(uint8_t *buffer, float value);
+void cn0414_ftoa(uint8_t *buffer, float value);
 
 /* Discover the first EEPROM present on the board. */
 int32_t cn0414_mem_discover(struct cn0414_dev *dev, uint8_t start_addr,
@@ -289,7 +275,11 @@ int32_t cn0414_mem_discover(struct cn0414_dev *dev, uint8_t start_addr,
 int32_t cn0414_open_wire_detect(struct cn0414_dev *dev, uint32_t voltage_chan1,
 				uint32_t voltage_chan2, uint8_t *floating);
 
-/* The production test routine as a callable command from the CLI. */
-int32_t cn0414_system_test_routine(struct cn0414_dev *dev, uint8_t* arg);
+/* Test function. Displays on the terminal all ADC registers at the point where
+ * it's inserted in code. */
+int32_t cn0414_show_regs(struct cn0414_dev *dev);
+
+/* Test function. Updates all registers with actual values. */
+void cn0414_update_regs(struct cn0414_dev *dev);
 
 #endif /* CN0414_H_ */

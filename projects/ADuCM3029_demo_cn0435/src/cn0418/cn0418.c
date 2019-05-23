@@ -45,20 +45,16 @@
 #include <string.h>
 #include <limits.h>
 #include <math.h>
-#include "config.h"
+#include "cli.h"
 
 /******************************************************************************/
 /************************ Variables Definitions *******************************/
 /******************************************************************************/
-uint8_t uart_current_line[256];
-uint8_t uart_previous_line[256];
-uint8_t uart_line_index;
-uint8_t uart_cmd;
-uint8_t adc_chan_index = 0;
-extern volatile bool modem_rec_flag;
+extern bool modem_rec_flag;
+extern uint32_t unique_id;
 
 /* HART channel names */
-char *hart_chan_names[] = {
+char *cn0418_hart_chan_names[] = {
 	"cha",
 	"chb",
 	"chc",
@@ -98,7 +94,7 @@ char *rset_options[] = {
 };
 
 /* Available commands */
-char *cmd_commands[] = {
+char *cn0418_cmd_commands[] = {
 	"help",
 	"h",
 	"dac_set_range ",
@@ -137,35 +133,35 @@ char *cmd_commands[] = {
 };
 
 /* Functions for available commands */
-cmd_func v_cmd_fun[] = {
-	cn0418_help,
-	cn0418_set_channel_range,
-	cn0418_set_channel_voltage,
-	cn0418_set_channel_current,
-	cn0418_hart_change_channel,
-	cn0418_hart_transmit,
-	cn0418_hart_get_rec,
-	cn0418_set_channel_code,
-	cn0418_set_channel_rset,
-	cn0418_hart_enable,
-	cn0418_hart_disable,
-	cn0418_hart_send_command_zero,
-	cn0418_mem_display_addr,
-	cn0418_hart_send_command_zero,
-	cn0418_status,
-	cn0418_hart_phy_test,
-	cn0418_reset,
+cmd_func cn0418_v_cmd_fun[] = {
+	(cmd_func)cn0418_help,
+	(cmd_func)cn0418_set_channel_range,
+	(cmd_func)cn0418_set_channel_voltage,
+	(cmd_func)cn0418_set_channel_current,
+	(cmd_func)cn0418_hart_change_channel,
+	(cmd_func)cn0418_hart_transmit,
+	(cmd_func)cn0418_hart_get_rec,
+	(cmd_func)cn0418_set_channel_code,
+	(cmd_func)cn0418_set_channel_rset,
+	(cmd_func)cn0418_hart_enable,
+	(cmd_func)cn0418_hart_disable,
+	(cmd_func)cn0418_hart_send_command_zero,
+	(cmd_func)cn0418_mem_display_addr,
+	(cmd_func)cn0418_hart_send_command_zero,
+	(cmd_func)cn0418_status,
+	(cmd_func)cn0418_hart_phy_test,
+	(cmd_func)cn0418_reset,
 	NULL
 };
 
 /* CLI command sizes */
-uint8_t command_size[] = {
+uint8_t cn0418_command_size[] = {
 	5, 2, 14, 4, 16, 4, 16, 4, 20, 4, 14, 3, 13, 3, 13, 4, 13, 4, 12, 3, 13,
-	3, 18, 4, 16, 3, 18, 4, 7, 5, 14, 4, 6, 4, 1
+	3, 18, 4, 16, 3, 18, 4, 7, 5, 14, 4, 1, 6, 4,
 };
 
 /* HART Command zero */
-uint8_t hart_command_zero[] = {0x02, 0x80, 0x00, 0x00, 0x82};
+uint8_t cn0418_hart_command_zero[] = {0x02, 0x80, 0x00, 0x00, 0x82};
 
 /******************************************************************************/
 /************************ Functions Definitions *******************************/
@@ -173,15 +169,18 @@ uint8_t hart_command_zero[] = {0x02, 0x80, 0x00, 0x00, 0x82};
 
 /**
  * Check if there is a SPI device connected and uses the same format of
- * communication as the AD5755. To do this, read the main control register,
+ * communication as the AD5755.
+ *
+ * To do this, read the main control register,
  * change the value, see if the change has been made by reading again and
- * restore the value from before the procedure.
+ * restore the value from before the procedure. This is for usage with the
+ * minimal initialization function.
  *
  * @param [in] dev - The device structure.
  *
  * @return 0 in case of success, negative error code otherwise.
  */
-static void cn0418_setup_dac_verify_presence(struct cn0418_dev *dev)
+int32_t cn0418_setup_dac_verify_presence_min(struct cn0418_dev *dev)
 {
 	uint16_t check_value, sense_reg_value, reg_keep;
 
@@ -201,9 +200,50 @@ static void cn0418_setup_dac_verify_presence(struct cn0418_dev *dev)
 			  AD5755_RD_MAIN_CTRL_REG);
 
 	if((uint16_t)sense_reg_value != check_value)
+		return -1;
+
+	ad5755_set_control_registers(dev->ad5755_dev, AD5755_CREG_MAIN, 0,
+				     reg_keep);
+
+	return 0;
+}
+
+/**
+ * Check if there is a SPI device connected and uses the same format of
+ * communication as the AD5755.
+ *
+ * To do this, read the main control register, change the value, see if the
+ * change has been made by reading again and restore the value from before the
+ * procedure.
+ *
+ * @param [in] dev - The device structure.
+ *
+ * @return 0 in case of success, negative error code otherwise.
+ */
+void cn0418_setup_dac_verify_presence(struct cn0418_dev *dev)
+{
+	uint16_t check_value, sense_reg_value, reg_keep;
+
+	sense_reg_value = (uint16_t)ad5755_get_register_value(dev->ad5755_dev,
+			  AD5755_RD_MAIN_CTRL_REG);
+	check_value = sense_reg_value;
+	reg_keep = sense_reg_value;
+	/* Delay between reading and writing the register to allow for internal
+	 * operations to finish */
+	mdelay(5);
+	check_value &= ~AD5755_MAIN_WD(0b11);
+	check_value |= AD5755_MAIN_WD(2);
+	ad5755_set_control_registers(dev->ad5755_dev, AD5755_CREG_MAIN, 0,
+				     check_value);
+
+	sense_reg_value = (uint16_t)ad5755_get_register_value(dev->ad5755_dev,
+			  AD5755_RD_MAIN_CTRL_REG);
+
+	if((uint16_t)sense_reg_value != check_value)
+#if defined(CLI_INTEFACE)
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"ERROR! DAC device not found.\n");
-
+#endif
 	ad5755_set_control_registers(dev->ad5755_dev, AD5755_CREG_MAIN, 0,
 				     reg_keep);
 }
@@ -260,6 +300,46 @@ static int32_t cn0418_setup_memory_content_setup(struct cn0418_dev *dev)
 /**
  * Initializes the cn0418 device.
  *
+ * This functions initializes only components that are specific to every
+ * instance of this driver. It should be used when more instances of this driver
+ * have to be used.
+ *
+ * @param [out] device    - The device structure.
+ * @param [in] init_param - The structure that contains the device initial
+ * 		       		        parameters.
+ *
+ * @return 0 in case of success, negative error code otherwise.
+ */
+int32_t cn0418_setup_minimum(struct cn0418_dev **device,
+			     struct cn0418_init_param *init_param)
+{
+	struct cn0418_dev *dev;
+	int32_t ret;
+
+	dev = calloc(1, sizeof *dev);
+	if (!dev)
+		return -1;
+
+	ret = ad5755_init(&dev->ad5755_dev, init_param->ad5755_init);
+	if(ret < 0)
+		goto error;
+
+	ret = cn0418_setup_gpio_setup(dev, init_param);
+	if(ret < 0)
+		goto error;
+
+	*device = dev;
+
+	return ret;
+error:
+	free(dev);
+
+	return ret;
+}
+
+/**
+ * Initializes the cn0418 device.
+ *
  * @param [out] device    - The device structure.
  * @param [in] init_param - The structure that contains the device initial
  * 		       		        parameters.
@@ -278,7 +358,7 @@ int32_t cn0418_setup(struct cn0418_dev **device,
 		return -1;
 
 	/* Devices */
-	ret = usr_uart_init(&dev->usr_uart_dev, &init_param->usr_uart_init);
+	ret = usr_uart_init(&dev->usr_uart_dev, init_param->usr_uart_init);
 	if(ret < 0)
 		goto error;
 
@@ -321,6 +401,29 @@ error:
 }
 
 /**
+ * Free the resources allocated by cn0418_setup_minimum().
+ *
+ * @param [in] dev - The device structure.
+ *
+ * @return 0 in case of success, negative error code otherwise.
+ */
+int32_t cn0418_remove_minimum(struct cn0418_dev *dev)
+{
+	int32_t ret;
+
+	if(!dev)
+		return -1;
+
+	ret = ad5755_remove(dev->ad5755_dev);
+	if(ret < 0)
+		return ret;
+
+	free(dev);
+
+	return ret;
+}
+
+/**
  * Free the resources allocated by cn0418_setup().
  *
  * @param [in] dev - The device structure.
@@ -331,14 +434,15 @@ int32_t cn0418_remove(struct cn0418_dev *dev)
 {
 	int32_t ret;
 
+	if(!dev)
+		return -1;
+
 	ret = ad5700_remove(dev->ad5700_device);
 	if(ret < 0)
 		return ret;
-
 	ret = ad5755_remove(dev->ad5755_dev);
 	if(ret < 0)
 		return ret;
-
 	ret = usr_uart_remove(dev->usr_uart_dev);
 	if(ret < 0)
 		return ret;
@@ -355,7 +459,7 @@ int32_t cn0418_remove(struct cn0418_dev *dev)
 
 	return ret;
 }
-
+#if defined(CLI_INTEFACE)
 /**
  * Help command helper function. Display help function prompt.
  *
@@ -413,7 +517,8 @@ static int32_t cn0418_help_general_commands(struct cn0418_dev *dev,
 
 	if (!short_command) {
 		ret = usr_uart_write_string(dev->usr_uart_dev,
-					    (uint8_t*)" help                          - Display available commands.\n");
+					    (uint8_t*)
+					    " help                          - Display available commands.\n");
 		if(ret < 0)
 			return ret;
 		ret = usr_uart_write_string(dev->usr_uart_dev,
@@ -426,7 +531,8 @@ static int32_t cn0418_help_general_commands(struct cn0418_dev *dev,
 					     " status                        - Display parameters and fault flags of the application.\n");
 	} else {
 		ret = usr_uart_write_string(dev->usr_uart_dev,
-					    (uint8_t*)" h                  - Display available commands.\n");
+					    (uint8_t*)
+					    " h                  - Display available commands.\n");
 		if(ret < 0)
 			return ret;
 		ret = usr_uart_write_string(dev->usr_uart_dev,
@@ -920,6 +1026,7 @@ int32_t cn0418_status(struct cn0418_dev *dev, uint8_t *arg)
 
 	return ret;
 }
+#endif
 
 /**
  * Do a software reset of the device.
@@ -1042,17 +1149,20 @@ int32_t cn0418_hart_disable(struct cn0418_dev *dev, uint8_t* arg)
  */
 int32_t cn0418_hart_change_channel(struct cn0418_dev *dev, uint8_t* arg)
 {
+#if defined(CLI_INTEFACE)
 	int32_t ret;
+#endif
 	uint8_t i = 0;
 
 	/* Identify channel */
-	while (hart_chan_names[i][0] != '\0') {
-		if(strncmp((char *)arg, (char *)hart_chan_names[i], 4) == 0)
+	while (cn0418_hart_chan_names[i][0] != '\0') {
+		if(strncmp((char *)arg, (char *)cn0418_hart_chan_names[i], 4) == 0)
 			break;
 		i++;
 	}
 
 	if(i >= 4) {
+#if defined(CLI_INTEFACE)
 		ret = usr_uart_write_string(dev->usr_uart_dev,
 					    (uint8_t*)"Error. Incorrect channel. Available channels are:\n");
 		if(ret < 0)
@@ -1068,6 +1178,9 @@ int32_t cn0418_hart_change_channel(struct cn0418_dev *dev, uint8_t* arg)
 			return ret;
 		return usr_uart_write_string(dev->usr_uart_dev,
 					     (uint8_t*)"    - chd\n");
+#elif defined(MODBUS_INTERFACE)
+		return 0;
+#endif
 	}
 
 	return cn0418_hart_change_chan_helper(dev, i);
@@ -1091,9 +1204,9 @@ int32_t cn0418_hart_transmit(struct cn0418_dev *dev, uint8_t* arg)
 	/* Transmit without the "\n" character */
 	return ad5700_transmit(dev->ad5700_device, arg, size);
 }
-
+#if defined(CLI_INTEFACE)
 /**
- * Receive a HART transmission.
+ * Make a HART transmission.
  *
  * @param [in] dev - The device structure.
  * @param [in] arg - The string to be transmitted.
@@ -1112,12 +1225,12 @@ int32_t cn0418_hart_get_rec(struct cn0418_dev *dev, uint8_t* arg)
 					    (uint8_t*)"Nothing received.\n");
 		if(ret < 0)
 			goto finish;
-		return HART_NOTHING_RECEIVED;
+		return HART_NOTHING_RECEIVED_CN0418;
 	}
 
 	for(i = 1; i < dev->hart_rec_size; i++) {
 		ret = usr_uart_write_char(dev->usr_uart_dev, dev->hart_buffer[i],
-					  UART_BLOCKING);
+					  UART_WRITE_NO_INT);
 		if(ret < 0)
 			goto finish;
 	}
@@ -1126,9 +1239,9 @@ int32_t cn0418_hart_get_rec(struct cn0418_dev *dev, uint8_t* arg)
 finish:
 	NVIC_EnableIRQ(HART_CD_INT);
 
-	return ret;
+	return 0;
 }
-
+#endif
 /**
  * Process function helper. Receive HART transmission on CD interrupt.
  *
@@ -1154,8 +1267,10 @@ static int32_t cn0418_process_hart_int_rec(struct cn0418_dev *dev)
 	} while((i < HART_BUFF_SIZE) && (cd_val != 0));
 
 	dev->hart_rec_size = i;
+#if defined(CLI_INTEFACE)
 	usr_uart_write_string(dev->usr_uart_dev,
 			      (uint8_t*)"\nReceived HART transmission.\n");
+#endif
 	dev->hart_buffer[0] = 1;
 
 	modem_rec_flag = false;
@@ -1207,7 +1322,7 @@ static int32_t cn0418_hart_receive_and_parse(struct cn0418_dev *dev,
 
 	return ret;
 }
-
+#if defined(CLI_INTEFACE)
 /**
  * Receive and parse the response of a command zero.
  *
@@ -1273,7 +1388,7 @@ static int32_t cn0418_hart_display_cmd_zero_response(struct cn0418_dev *dev,
 
 	return 0;
 }
-
+#endif
 /**
  * Send HART command zero.
  *
@@ -1288,35 +1403,43 @@ int32_t cn0418_hart_send_command_zero(struct cn0418_dev *dev, uint8_t* arg)
 	uint8_t *telegram;
 	int32_t ret;
 	uint8_t i;
-	uint8_t size;
+	uint8_t len;
 
 	preamb_size = atoi((char *)arg);
 
-	if((preamb_size < 3) || (preamb_size > 20))
+	if((preamb_size < 3) || (preamb_size > 20)) {
+#if defined(CLI_INTEFACE)
 		return usr_uart_write_string(dev->usr_uart_dev,
 					     (uint8_t*)"Preambule must be within 3 and 20 bytes.\n");
+#elif defined(MODBUS_INTERFACE)
+		return 0;
+#endif
+	}
 
-	size = preamb_size + HART_COMMAND_ZERO_SIZE;
+	len = preamb_size + HART_COMMAND_ZERO_SIZE;
 
-	telegram = calloc(size, sizeof *telegram);
-	if (!telegram)
+	telegram = calloc(len, sizeof *telegram);
+	if(!telegram)
 		return -1;
 
 	for(i = 0; i < preamb_size; i++)
 		telegram[i] = 0xFF;
 	for(i = 0; i < HART_COMMAND_ZERO_SIZE; i++)
-		telegram[i + preamb_size] = hart_command_zero[i];
+		telegram[i + preamb_size] = cn0418_hart_command_zero[i];
 
 	/* Disable interrupts to avoid hanging */
 	NVIC_DisableIRQ(TMR0_INT);
 	NVIC_DisableIRQ(HART_CD_INT);
 
 	/* Transmit without the "\n" character */
-	ret = ad5700_transmit(dev->ad5700_device, telegram, size);
+	ret = ad5700_transmit(dev->ad5700_device, telegram, len);
 	if(ret < 0)
+#if defined(CLI_INTEFACE)
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Transmission failed!\n");
-
+#elif defined(MODBUS_INTERFACE)
+		return 0;
+#endif
 	/* Enable interrupts */
 	NVIC_EnableIRQ(TMR0_INT);
 	NVIC_EnableIRQ(HART_CD_INT);
@@ -1326,16 +1449,16 @@ int32_t cn0418_hart_send_command_zero(struct cn0418_dev *dev, uint8_t* arg)
 	ret = cn0418_hart_receive_and_parse(dev, &telegram);
 	if(ret < 0)
 		return ret;
-
+#if defined(CLI_INTEFACE)
 	ret = cn0418_hart_display_cmd_zero_response(dev, telegram);
 	if(ret < 0)
 		return ret;
-
+#endif
 	dev->hart_buffer[0] = 0;
 
 	return ret;
 }
-
+#if defined(CLI_INTEFACE)
 /**
  * This method sends the provided test byte through the HART link continuously
  * until stopped by pressing q. Function used to test the HART physical layer.
@@ -1366,15 +1489,14 @@ int32_t cn0418_hart_phy_test(struct cn0418_dev *dev, uint8_t* arg)
 		NVIC_EnableIRQ(TMR0_INT);
 		NVIC_EnableIRQ(HART_CD_INT);
 
-		ret = usr_uart_read_char(dev->usr_uart_dev, &c, &rdy,
-					 UART_NON_BLOCKING);
+		ret = usr_uart_read_nb(dev->usr_uart_dev, &c, 1, &rdy);
 		if(ret < 0)
 			return ret;
 	} while (c != 'q');
 
 	return usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
 }
-
+#endif
 /**
  * Set the range of a channel.
  *
@@ -1388,8 +1510,10 @@ int32_t cn0418_set_channel_range(struct cn0418_dev *dev, uint8_t *arg)
 {
 	uint8_t *reg_chan_strg, *reg_data_strg;
 	uint8_t chan = 0, range = 0;
+#if defined(CLI_INTEFACE)
 	uint8_t buffer[20];
 	uint16_t reg_val_readback;
+#endif
 
 	reg_data_strg = (uint8_t*)strchr((char*)arg, ' ') + 1;
 	reg_chan_strg = arg;
@@ -1401,6 +1525,7 @@ int32_t cn0418_set_channel_range(struct cn0418_dev *dev, uint8_t *arg)
 		chan++;
 	}
 	if(chan >= 4) {
+#if defined(CLI_INTEFACE)
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Wrong channel option. Valid channel options are:\n");
 		usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"    - cha\n");
@@ -1408,6 +1533,9 @@ int32_t cn0418_set_channel_range(struct cn0418_dev *dev, uint8_t *arg)
 		usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"    - chc\n");
 		return usr_uart_write_string(dev->usr_uart_dev,
 					     (uint8_t*)"    - chd\n");
+#elif defined(MODBUS_INTERFACE)
+		return 0;
+#endif
 	}
 
 	while (chan_ranges[range][0] != '\0') {
@@ -1417,6 +1545,7 @@ int32_t cn0418_set_channel_range(struct cn0418_dev *dev, uint8_t *arg)
 		range++;
 	}
 	if(range >= 7) {
+#if defined(CLI_INTEFACE)
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Wrong range option. Valid range options are:\n");
 		usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"    - r05v\n");
@@ -1427,18 +1556,28 @@ int32_t cn0418_set_channel_range(struct cn0418_dev *dev, uint8_t *arg)
 		usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"    - r020ma\n");
 		return usr_uart_write_string(dev->usr_uart_dev,
 					     (uint8_t*)"    - r024ma\n");
+#elif defined(MODBUS_INTERFACE)
+		return 0;
+#endif
 	}
 
 	ad5755_set_channel_range(dev->ad5755_dev, chan, range);
 
 	/* Display new control register value */
-	reg_val_readback = ad5755_get_register_value(dev->ad5755_dev,
-			   AD5755_RD_CTRL_REG(chan));
+#if defined(CLI_INTEFACE)
+	reg_val_readback =
+#endif
+		ad5755_get_register_value(dev->ad5755_dev,
+					  AD5755_RD_CTRL_REG(chan));
+#if defined(CLI_INTEFACE)
 	itoa(reg_val_readback, (char *)buffer, 16);
 	usr_uart_write_string(dev->usr_uart_dev,
-			      (uint8_t*)"New value of the DAC control regiter is: ");
+			      (uint8_t*)"New value of the DAC control register is: ");
 	usr_uart_write_string(dev->usr_uart_dev, buffer);
 	return usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
+#elif defined(MODBUS_INTERFACE)
+	return 0;
+#endif
 }
 
 /**
@@ -1467,6 +1606,7 @@ int32_t cn0418_set_channel_voltage(struct cn0418_dev *dev, uint8_t *arg)
 			break;
 		chan++;
 	}
+#if defined(CLI_INTEFACE)
 	if(chan >= 4) {
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Wrong channel option. Valid channel options are:\n");
@@ -1476,21 +1616,27 @@ int32_t cn0418_set_channel_voltage(struct cn0418_dev *dev, uint8_t *arg)
 		return usr_uart_write_string(dev->usr_uart_dev,
 					     (uint8_t*)"    - chd\n");
 	}
-
+#endif
 	value = atof((char *)reg_data_strg);
 
 	value = ad5755_set_voltage(dev->ad5755_dev, chan, value);
 
 	cn0418_ftoa(buffer, value);
+#if defined(CLI_INTEFACE)
 	usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"Actual output value: ");
 	usr_uart_write_string(dev->usr_uart_dev, buffer);
 	usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"V\n");
+#endif
 	reg_readback_val = ad5755_get_register_value(dev->ad5755_dev,
 			   AD5755_RD_DATA_REG(chan));
 	itoa(reg_readback_val, (char *)buffer, 16);
+#if defined(CLI_INTEFACE)
 	usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"Data register value: ");
 	usr_uart_write_string(dev->usr_uart_dev, buffer);
 	return usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
+#elif defined(MODBUS_INTERFACE)
+	return 0;
+#endif
 }
 
 /**
@@ -1519,6 +1665,7 @@ int32_t cn0418_set_channel_current(struct cn0418_dev *dev, uint8_t *arg)
 			break;
 		chan++;
 	}
+#if defined(CLI_INTEFACE)
 	if(chan >= 4) {
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Wrong channel option. Valid channel options are:\n");
@@ -1528,21 +1675,27 @@ int32_t cn0418_set_channel_current(struct cn0418_dev *dev, uint8_t *arg)
 		return usr_uart_write_string(dev->usr_uart_dev,
 					     (uint8_t*)"    - chd\n");
 	}
-
+#endif
 	value = atof((char *)reg_data_strg);
 
 	value = ad5755_set_current(dev->ad5755_dev, chan, value);
 
 	cn0418_ftoa(buffer, value);
+#if defined(CLI_INTEFACE)
 	usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"Actual output value: ");
 	usr_uart_write_string(dev->usr_uart_dev, buffer);
 	usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"mA\n");
+#endif
 	reg_readback_val = ad5755_get_register_value(dev->ad5755_dev,
 			   AD5755_RD_DATA_REG(chan));
 	itoa(reg_readback_val, (char *)buffer, 16);
+#if defined(CLI_INTEFACE)
 	usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"Data register value: ");
 	usr_uart_write_string(dev->usr_uart_dev, buffer);
 	return usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
+#elif defined(MODBUS_INTERFACE)
+	return 0;
+#endif
 }
 
 /**
@@ -1572,6 +1725,7 @@ int32_t cn0418_set_channel_code(struct cn0418_dev *dev, uint8_t *arg)
 		chan++;
 	}
 	if(chan >= 4) {
+#if defined(CLI_INTEFACE)
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Wrong channel option. Valid channel options are:\n");
 		usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"    - cha\n");
@@ -1579,16 +1733,23 @@ int32_t cn0418_set_channel_code(struct cn0418_dev *dev, uint8_t *arg)
 		usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"    - chc\n");
 		return usr_uart_write_string(dev->usr_uart_dev,
 					     (uint8_t*)"    - chd\n");
+#elif defined(MODBUS_INTERFACE)
+		return 0;
+#endif
 	}
 
 	code = atoi((char *)reg_data_strg);
 
 	if(code > USHRT_MAX) {
+#if defined(CLI_INTEFACE)
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Code value can't be bigger than ");
 		itoa(USHRT_MAX, (char *)buffer, 10);
 		usr_uart_write_string(dev->usr_uart_dev, buffer);
 		return usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)".\n");
+#elif defined(MODBUS_INTERFACE)
+		return 0;
+#endif
 	}
 
 	ad5755_set_register_value(dev->ad5755_dev, AD5755_DREG_WR_DAC, chan, code);
@@ -1596,9 +1757,13 @@ int32_t cn0418_set_channel_code(struct cn0418_dev *dev, uint8_t *arg)
 	reg_readback_val = ad5755_get_register_value(dev->ad5755_dev,
 			   AD5755_RD_DATA_REG(chan));
 	itoa(reg_readback_val, (char *)buffer, 16);
+#if defined(CLI_INTEFACE)
 	usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"Data register value: ");
 	usr_uart_write_string(dev->usr_uart_dev, buffer);
 	return usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
+#elif defined(MODBUS_INTERFACE)
+	return 0;
+#endif
 }
 
 /**
@@ -1628,6 +1793,7 @@ int32_t cn0418_set_channel_rset(struct cn0418_dev *dev, uint8_t *arg)
 			break;
 		chan++;
 	}
+#if defined(CLI_INTEFACE)
 	if(chan >= 4) {
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Wrong channel option. Valid channel options are:\n");
@@ -1637,12 +1803,13 @@ int32_t cn0418_set_channel_rset(struct cn0418_dev *dev, uint8_t *arg)
 		return usr_uart_write_string(dev->usr_uart_dev,
 					     (uint8_t*)"    - chd\n");
 	}
-
+#endif
 	while (rset_options[code][0] != '\0') {
 		if(strncmp((char *)reg_data_strg, (char *)rset_options[code], 4) == 0)
 			break;
 		code++;
 	}
+#if defined(CLI_INTEFACE)
 	if(code > 1) {
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Invalid option. Valid options are:\n");
@@ -1651,7 +1818,7 @@ int32_t cn0418_set_channel_rset(struct cn0418_dev *dev, uint8_t *arg)
 		return usr_uart_write_string(dev->usr_uart_dev,
 					     (uint8_t*)"    - int: use internal Rset\n");
 	}
-
+#endif
 	reg_val = ad5755_get_register_value(dev->ad5755_dev,
 					    AD5755_RD_CTRL_REG(chan));
 	reg_val &= ~AD5755_DAC_RSET;
@@ -1662,12 +1829,16 @@ int32_t cn0418_set_channel_rset(struct cn0418_dev *dev, uint8_t *arg)
 	reg_readback_val = ad5755_get_register_value(dev->ad5755_dev,
 			   AD5755_RD_CTRL_REG(chan));
 	itoa(reg_readback_val, (char *)buffer, 16);
+#if defined(CLI_INTEFACE)
 	usr_uart_write_string(dev->usr_uart_dev,
 			      (uint8_t*)"New value of the DAC control regiter is: ");
 	usr_uart_write_string(dev->usr_uart_dev, buffer);
 	return usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
+#elif defined(MODBUS_INTERFACE)
+	return 0;
+#endif
 }
-
+#if defined(CLI_INTEFACE)
 /**
  * Display EEPROM address.
  *
@@ -1725,57 +1896,7 @@ int32_t cn0418_mem_display_addr(struct cn0418_dev *dev, uint8_t* arg)
 
 	return ret;
 }
-
-/**
- * Implements CLI feedback.
- *
- * @param [in] dev - The device structure.
- *
- * @return 0 in case of success, negative error code otherwise.
- */
-int32_t cn0418_parse(struct cn0418_dev *dev)
-{
-	uint8_t c = 0, rdy = 1;
-	int8_t i;
-
-	usr_uart_read_char(dev->usr_uart_dev, &c, &rdy, UART_NON_BLOCKING);
-
-	if(rdy == 1) {
-		switch(c) {
-		case _LF:
-		case _CR:
-			uart_cmd = UART_TRUE;
-			break;
-		case _BS:
-			if(uart_line_index == 0)
-				break;
-			uart_line_index--;
-			break;
-		case _TB:
-			usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n>");
-			i = 0;
-			do {
-				uart_current_line[i] = uart_previous_line[i];
-				usr_uart_write_char(dev->usr_uart_dev, uart_current_line[i],
-						    UART_BLOCKING);
-			} while(uart_previous_line[i++] != '\0');
-			uart_line_index = --i;
-			break;
-		case _NC:
-			break;
-		default:
-			uart_current_line[uart_line_index++] = c;
-			if(uart_line_index == 256) {
-				uart_line_index--;
-			}
-		}
-
-		uart_current_line[uart_line_index] = '\0';
-	}
-
-
-	return 0;
-}
+#endif
 
 /**
  * Detect HART command zero from a freshly received buffer.
@@ -1800,12 +1921,15 @@ static void cn0418_process_hart_detect_command_zero(struct cn0418_dev *dev)
 
 	if(i <= 20)
 		for(k = 0; k < HART_COMMAND_ZERO_SIZE; k++)
-			if(dev->hart_buffer[i + k] != hart_command_zero[k])
+			if(dev->hart_buffer[i + k] != cn0418_hart_command_zero[k])
 				break;
 
-	if(k == HART_COMMAND_ZERO_SIZE)
+	if(k == HART_COMMAND_ZERO_SIZE) {
+#if defined(CLI_INTEFACE)
 		usr_uart_write_string(dev->usr_uart_dev,
 				      (uint8_t*)"Command zero detected.\n");
+#endif
+	}
 }
 
 /**
@@ -1818,163 +1942,21 @@ static void cn0418_process_hart_detect_command_zero(struct cn0418_dev *dev)
 int32_t cn0418_process(struct cn0418_dev *dev)
 {
 	int32_t ret;
-	cmd_func func = NULL;
-	uint8_t i = 0;
-
-	/* Disable interrupts to avoid hanging */
-	NVIC_DisableIRQ(TMR0_INT);
-	if(dev->hart_buffer[0] != 0)
-		NVIC_DisableIRQ(HART_CD_INT);
-
-	ret = cn0418_parse(dev);
-
-	/* Enable interrupts */
-	NVIC_EnableIRQ(TMR0_INT);
-	if(dev->hart_buffer[0] != 0)
-		NVIC_EnableIRQ(HART_CD_INT);
-
-	if (uart_cmd == UART_TRUE) {
-		do {
-			uart_previous_line[i] = uart_current_line[i];
-		} while(uart_current_line[i++] != '\0');
-		cn0418_find_command(dev, uart_current_line, &func);
-
-		if (func) {
-			usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
-			/* Call the desired function */
-			(*func)(dev, (uint8_t*)strchr((char*)uart_current_line, ' ') + 1);
-		} else if (strlen((char *)uart_current_line) != 0) {
-			usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
-			usr_uart_write_string(dev->usr_uart_dev,
-					      (uint8_t*)"Unknown command!");
-			usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
-		}
-		uart_cmd = UART_FALSE;
-		cn0418_cmd_prompt(dev);
-	}
 
 	if(modem_rec_flag == true) {
 		ret = cn0418_process_hart_int_rec(dev);
 		if(ret < 0)
+#if defined(CLI_INTEFACE)
 			usr_uart_write_string(dev->usr_uart_dev,
 					      (uint8_t*)"ERROR in HART receive.");
+#endif
 		cn0418_process_hart_detect_command_zero(dev);
+#if defined(CLI_INTEFACE)
 		usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)">");
+#endif
 	}
 
-	return ret;
-}
-
-/**
- * Get the CLI commands and correlate them to functions.
- *
- * @param [in] dev      - The device structure.
- * @param [in] command  - Command received from the CLI.
- * @param [in] function - Pointer to the corresponding function.
- *
- * @return 0 in case of success, negative error code otherwise.
- */
-void cn0418_find_command(struct cn0418_dev *dev, uint8_t *command,
-			 cmd_func* function)
-{
-	uint8_t i = 0;
-
-	while (v_cmd_fun[i/2] != NULL) {
-		if(strncmp((char *)command, (char *)cmd_commands[i],
-			   command_size[i]) == 0 ||
-		    strncmp((char *)command, (char *)cmd_commands[i + 1],
-			    command_size[i+1]) == 0) {
-			if(command_size == 0)
-				break;
-			*function = v_cmd_fun[i / 2];
-			break;
-		}
-		i += 2;
-	}
-}
-
-/**
- * Display command prompt for the user on the CLI at the beginning of the
- * program.
- *
- * @param [in] dev - The device structure.
- *
- * @return 0 in case of success, negative error code otherwise.
- */
-int32_t cn0418_cmd_prompt(struct cn0418_dev *dev)
-{
-	int32_t ret;
-	static uint8_t count = 0;
-
-	ret = usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
-
-	/* Check first <ENTER> is pressed after reset */
-	if(count == 0) {
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " ###########################         ###     ###    ###    ###     ###       #######      ####### \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " ###########################        #####    ####   ###    ####    ###      ###    ###  ###    ### \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " ###########################       ##  ##    #####  ###   ##  ##   ###     ###      ##  ##          \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####    ##################       ##   ##   ##  ## ###  ##   ##   ###     ##       ## ###   #####  \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####       ###############      #########  ##   #####  ########  ###     ###      ##  ##      ##  \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####          ############      ##     ##  ##    #### ###    ### ###      ###   ####  ###    ###  \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####             #########     ##      ### ##     ### ##      ## ########   ######      ###### #  \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####                ######                                                                        \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####                ######     # ####      #######   #      ##  #     ####     #######    ####    \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####             #########     #########  ######### ###    ### ###  ###  ###  ########  ###  ###  \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####          ############     ##     ##  ##         ##    ##  ### ###     ## ##       ###        \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####       ###############     ##     ### ########   ###  ###  ### ##         ########  ######    \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " #####    ##################     ##      ## ###         ##  ##   ### ##         ###          ###### \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " ###########################     ##     ### ##           ####    ### ###     ## ##       ##      ## \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " ###########################     #########  #########    ####    ###  ########  ######### ########  \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)
-				      " ###########################                                             ###                ####   \n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)"\n");
-
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)"\tWelcome to cn0418 application!\n");
-		usr_uart_write_string(dev->usr_uart_dev,
-				      (uint8_t*)"Type <help> or <h> to see available commands...\n");
-		usr_uart_write_string(dev->usr_uart_dev, (uint8_t*)"\n");
-		count++;
-	}
-
-	if(ret == UART_SUCCESS)
-		usr_uart_write_char(dev->usr_uart_dev, '>', UART_BLOCKING);
-
-	uart_line_index = 0;
-
-	return ret;
+	return 0;
 }
 
 /**
@@ -1986,14 +1968,13 @@ int32_t cn0418_cmd_prompt(struct cn0418_dev *dev)
  * @return 0 in case of success, negative error code otherwise.
  */
 int32_t cn0418_hart_change_chan_helper(struct cn0418_dev *dev,
-				       enum hart_channels channel)
+				       enum hart_channels_cn0418 channel)
 {
 	int32_t ret;
 
 	ret = gpio_set_value(dev->hart_mult_a1, (channel & 0x2) >> 1);
 	if(ret < 0)
 		return ret;
-
 	return gpio_set_value(dev->hart_mult_a0, (channel & 0x1) >> 0);
 }
 
@@ -2077,9 +2058,9 @@ int32_t cn0418_mem_discover(struct cn0418_dev *dev, uint8_t start_addr,
 
 	*address = i;
 
-	return ret;
+	return 0;
 }
-
+#if defined(CLI_INTEFACE)
 /**
  * cn0418_status helper function.
  *
@@ -2164,7 +2145,7 @@ int32_t cn0418_status_helper(struct cn0418_dev *dev, uint8_t index)
 		return ret;
 	range_status = temp_reg_value & AD5755_DAC_R(7);
 	ret = usr_uart_write_string(dev->usr_uart_dev,
-				    (uint8_t *)chan_ranges[range_status]);
+				    (uint8_t*)chan_ranges[range_status]);
 	if(ret < 0)
 		return ret;
 	ret = usr_uart_write_string(dev->usr_uart_dev,
@@ -2190,5 +2171,6 @@ int32_t cn0418_status_helper(struct cn0418_dev *dev, uint8_t index)
 	if(ret < 0)
 		return ret;
 
-	return ret;
+	return 0;
 }
+#endif
