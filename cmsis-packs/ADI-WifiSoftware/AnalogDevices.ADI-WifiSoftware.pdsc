@@ -4,13 +4,14 @@
     <vendor>AnalogDevices</vendor>
     <name>ADI-WifiSoftware</name>
     <description>Analog Devices WiFi Software</description>
-    <url>http://download.analog.com/tools/WiFi_Sofware/Releases</url>
+    <url>https://github.com/analogdevicesinc/EVAL-ADICUP3029/raw/master/cmsis-packs/releases/wifi</url>
     <supportContact>http://www.analog.com/en/support/technical-support.html</supportContact>
     <license>License/2017-07-27-LWSCEDL Click Thru SLA.txt</license>
 
     <releases>
 	<release version="1.0.1" date="2019-04-03">
-            Test Release
+		- update download url
+		- add user and password fields to mqtt connection function
         </release>
         <release version="1.0.0" date="2017-08-11">
             Initial Release
