@@ -36,118 +36,118 @@
 		<link>
 			<name>RTE/Wi-Fi/MQTTConnectClient.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTConnectClient.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTConnectClient.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/MQTTConnectServer.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTConnectServer.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTConnectServer.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/MQTTDeserializePublish.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTDeserializePublish.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTDeserializePublish.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/MQTTFormat.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTFormat.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTFormat.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/MQTTPacket.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTPacket.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTPacket.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/MQTTSerializePublish.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTSerializePublish.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTSerializePublish.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/MQTTSubscribeClient.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTSubscribeClient.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTSubscribeClient.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/MQTTSubscribeServer.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTSubscribeServer.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTSubscribeServer.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/MQTTUnsubscribeClient.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTUnsubscribeClient.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTUnsubscribeClient.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/MQTTUnsubscribeServer.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/MQTT/MQTTUnsubscribeServer.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/MQTT/MQTTUnsubscribeServer.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/adi_uart.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/transport/adi_uart.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/transport/adi_uart.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/adi_wifi.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/radio/adi_wifi.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/radio/adi_wifi.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/adi_wifi_logevent.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/radio/adi_wifi_logevent.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/radio/adi_wifi_logevent.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/adi_wifi_noos.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/framework/noos/adi_wifi_noos.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/framework/noos/adi_wifi_noos.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Wi-Fi/adi_wifi_transport.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.0/Source/communication/wifi/transport/adi_wifi_transport.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADI-WifiSoftware/1.0.1/Source/communication/wifi/transport/adi_wifi_transport.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_dma.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/dma/adi_dma.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/dma/adi_dma.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_gpio.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/gpio/adi_gpio.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/gpio/adi_gpio.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_pwr.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/pwr/adi_pwr.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/pwr/adi_pwr.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_rtc.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/rtc/adi_rtc.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/rtc/adi_rtc.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_spi.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/spi/adi_spi.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/spi/adi_spi.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_wdt.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/wdt/adi_wdt.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/wdt/adi_wdt.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/common.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/common.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/common.c</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
 		<variable>
 			<name>CCES</name>
-			<value>file:/C:/Analog%20Devices/CrossCore%20Embedded%20Studio%202.8.0</value>
+			<value>file:/opt/analog/cces/2.8.3</value>
 		</variable>
 	</variableList>
 </projectDescription>

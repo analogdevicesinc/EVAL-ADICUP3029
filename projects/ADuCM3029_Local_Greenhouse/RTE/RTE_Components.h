@@ -2,7 +2,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: ADuCM3029_Greenhouse_Local
+ * Project: ADuCM3029_Local_Greenhouse
  * RTE configuration: system.rteconfig
 */
 #ifndef RTE_COMPONENTS_H

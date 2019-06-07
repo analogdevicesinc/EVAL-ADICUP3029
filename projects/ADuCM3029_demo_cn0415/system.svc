@@ -5,46 +5,6 @@
 			<component-description><![CDATA[Since some processors have more peripherals than physical pins on the chip, the user needs to configure which peripherals they want enabled and onto which set of pins.  Peripheral configuration requires an in-depth understanding of the hardware.  This component makes it easier to program the peripherals without worrying about the internal details.  The user simply selects the peripherals to enable and this component will generate the C code necessary to configure the peripherals.]]></component-description>
 			<product name="SSL DD Product" version="1.0.0"/>
 		</component>
-		<component id="com.analog.crosscore.addins.ssldd.pwr.cortexm3" name="PWR Sevice for Cortex-M3" version="1.0.1" visible="true">
-			<component-description><![CDATA[This add-in provides Analog Devices' implementation of the Power Service (PWR)]]></component-description>
-			<product name="Analog Devices System Services and Device Drivers" version="1.0.0"/>
-		</component>
-		<component id="com.analog.crosscore.addins.ssldd.spi.cortexm3" name="SPI Driver for Cortex-M3" version="1.0.1" visible="true">
-			<component-description><![CDATA[This add-in provides Analog Devices' implementation of the Serial Peripheral Interface driver (SPI)]]></component-description>
-			<product name="Analog Devices System Services and Device Drivers" version="1.0.0"/>
-		</component>
-		<component id="com.analog.crosscore.addins.ssldd.uart.cortexm3" name="UART Driver for Cortex-M3" version="1.0.1" visible="true">
-			<component-description><![CDATA[This add-in provides Analog Devices' implementation of the UART Interface driver]]></component-description>
-			<product name="Analog Devices System Services and Device Drivers" version="1.0.0"/>
-		</component>
-		<component id="com.analog.crosscore.addins.ssldd.int.cortexm3" name="Interrupt Management Service for Cortex-M3" version="1.0.1" visible="true">
-			<component-description><![CDATA[This add-in provides Analog Devices' implementation of the Processor-independent Interupt Management APIs]]></component-description>
-			<product name="Analog Devices System Services and Device Drivers" version="1.0.0"/>
-		</component>
-		<component id="com.analog.crosscore.addins.ssldd.gpio.cortexm3" name="GPIO Service for Cortex-M3" version="1.0.1" visible="true">
-			<component-description><![CDATA[This add-in provides Analog Devices' implementation of the General-Purpose input/output Port Driver (GPIO)]]></component-description>
-			<product name="Analog Devices System Services and Device Drivers" version="1.0.0"/>
-		</component>
-		<component id="com.analog.crosscore.addins.cmsis.cortexm.startup" name="CMSIS Device Startup" version="1.0.1" visible="false">
-			<component-description><![CDATA[This add-in adds include paths, linker scripts, and links to the device system and startup files.]]></component-description>
-			<product name="Analog Devices CMSIS Support" version="1.0.1"/>
-		</component>
-		<component id="com.analog.crosscore.addins.ssldd.drivers.config_headers.cortexm3" name="Cortex-M3 Drivers Config Include Path" version="1.0.1" visible="false">
-			<component-description><![CDATA[This add-in provides the include path to find all the configuration files for drivers]]></component-description>
-			<product name="Analog Devices System Services and Device Drivers" version="1.0.0"/>
-		</component>
-		<component id="com.analog.crosscore.addins.ssldd.dma.cortexm3" name="DMA Sevice for Cortex-M3" version="1.0.1" visible="true">
-			<component-description><![CDATA[This add-in provides Analog Devices' implementation of the DMA Service]]></component-description>
-			<product name="Analog Devices System Services and Device Drivers" version="1.0.0"/>
-		</component>
-		<component id="com.analog.crosscore.addins.cmsis.core.cortexm" name="CMSIS Core (deprecated)" version="1.0.1" visible="true">
-			<component-description><![CDATA[This add-in provides access to the ARM Cortex Microcontroller Software Interface Standard (CMSIS) Core v4.5.0 header files.]]></component-description>
-			<product name="Analog Devices CMSIS Support" version="1.0.1"/>
-		</component>
-		<component id="com.analog.crosscore.addins.ssldd.services.config_headers.cortexm3" name="Cortex-M3 Services Config Include Path" version="1.0.1" visible="false">
-			<component-description><![CDATA[This add-in provides the include path to find all the configuration files for drivers]]></component-description>
-			<product name="Analog Devices System Services and Device Drivers" version="1.0.0"/>
-		</component>
 	</installedComponents>
 	<configurations>
 		<configuration id="com.analog.crosscore.ssldd.pinmux.component">

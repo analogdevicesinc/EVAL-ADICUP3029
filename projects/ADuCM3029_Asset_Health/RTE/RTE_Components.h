@@ -2,7 +2,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: ADuCM3029_Asset_Health
+ * Project: ADuCM3029_Asset_Health_Core0
  * RTE configuration: system.rteconfig
 */
 #ifndef RTE_COMPONENTS_H

@@ -2,7 +2,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: ADuCM3029_demo_cn0357
+ * Project: cn0357_example_noos
  * RTE configuration: system.rteconfig
 */
 #ifndef RTE_COMPONENTS_H

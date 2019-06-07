@@ -2,7 +2,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: ADuCM3029_IBMWatson
+ * Project: ADuCM3029_IBMWatson_Greenhouse
  * RTE configuration: system.rteconfig
 */
 #ifndef RTE_COMPONENTS_H
