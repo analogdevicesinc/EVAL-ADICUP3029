@@ -34,9 +34,6 @@
 								</option>
 								<option id="arm.assembler.option.additionaldirectories.488678607" name="Additional include directories (-I):" superClass="arm.assembler.option.additionaldirectories" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/system}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src/cn0414}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src/cn0418}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include/drivers/dma&quot;"/>
@@ -48,6 +45,9 @@
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include/drivers/uart&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ADuCM3029&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src/cn0414}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src/cn0418}&quot;"/>
 								</option>
 								<inputType id="arm.toolchain.assembler.base.input.1168291212" superClass="arm.toolchain.assembler.base.input"/>
 							</tool>
@@ -68,9 +68,6 @@
 								<option id="arm.toolchain.cpp.compiler.option.coreid.755861194" name="Specify the core Id (-DCORE[A|B|0-2])" superClass="arm.toolchain.cpp.compiler.option.coreid" useByScannerDiscovery="false" value="0" valueType="string"/>
 								<option id="arm.base.compiler.option.include.paths.577052346" name="Additional include directories (-I):" superClass="arm.base.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/system}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src/cn0414}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src/cn0418}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include/drivers/dma&quot;"/>
@@ -82,6 +79,9 @@
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include/drivers/uart&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ADuCM3029&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src/cn0414}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src/cn0418}&quot;"/>
 								</option>
 								<inputType id="arm.toolchain.gcc.c.input.1798028245" superClass="arm.toolchain.gcc.c.input"/>
 							</tool>
@@ -198,9 +198,6 @@
 								</option>
 								<option id="arm.assembler.option.additionaldirectories.539870999" name="Additional include directories (-I):" superClass="arm.assembler.option.additionaldirectories" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/system}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src/cn0414}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src/cn0418}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include/drivers/dma&quot;"/>
@@ -212,6 +209,9 @@
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include/drivers/uart&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ADuCM3029&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src/cn0414}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src/cn0418}&quot;"/>
 								</option>
 								<inputType id="arm.toolchain.assembler.base.input.1124140022" superClass="arm.toolchain.assembler.base.input"/>
 							</tool>
@@ -232,9 +232,6 @@
 								<option id="arm.toolchain.cpp.compiler.option.coreid.1520945731" name="Specify the core Id (-DCORE[A|B|0-2])" superClass="arm.toolchain.cpp.compiler.option.coreid" useByScannerDiscovery="false" value="0" valueType="string"/>
 								<option id="arm.base.compiler.option.include.paths.1376905934" name="Additional include directories (-I):" superClass="arm.base.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/system}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src/cn0414}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_plcsystem/src/cn0418}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.5.1/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include/drivers/dma&quot;"/>
@@ -246,6 +243,9 @@
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include/drivers/uart&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE/Device/ADuCM3029&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src/cn0414}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADuCM3029_demo_cn0435/src/cn0418}&quot;"/>
 								</option>
 								<inputType id="arm.toolchain.gcc.c.input.976693820" superClass="arm.toolchain.gcc.c.input"/>
 							</tool>
