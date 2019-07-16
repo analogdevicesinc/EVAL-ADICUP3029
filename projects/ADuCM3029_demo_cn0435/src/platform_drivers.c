@@ -631,6 +631,10 @@ int32_t gpio_get(gpio_desc **desc, uint8_t gpio_number)
 	*desc = dev;
 
 	return 0;
+error:
+	free(dev);
+
+	return ret;
 }
 
 /**
