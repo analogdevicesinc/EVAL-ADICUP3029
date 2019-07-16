@@ -248,7 +248,7 @@ uint8_t gpioMemory[ADI_GPIO_MEMORY_SIZE];
 	{
 
 		struct stLedCommands LedCommand = {0,0,0};
-		ADI_VISUAL_LIGHT_DATA eIntensity;
+		ADI_VISUAL_LIGHT_DATA eIntensity = {0};
 		bool valid = true;
 		float fpRedError, fpBlueError, fpGreenError;
 		float fpRedI = 0, fpBlueI = 0, fpGreenI = 0;
