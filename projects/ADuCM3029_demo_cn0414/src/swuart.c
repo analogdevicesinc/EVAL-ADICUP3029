@@ -141,7 +141,7 @@ int32_t swuart_init(struct swuart_dev **device, struct swuart_init *init_param)
 	if(gpio_init_flag == 0) {
 		ret = adi_gpio_Init(mem_gpio_handler, ADI_GPIO_MEMORY_SIZE);
 		if(ret != ADI_GPIO_SUCCESS)
-			return -1;
+			goto error;
 	}
 
 	gpio_init_flag++;
