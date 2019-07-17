@@ -11,6 +11,7 @@ __author__ = 'Mihai Ionut Suciu'
 __status__ = 'Development'
 
 from time import sleep
+from typing import Dict, Any, Tuple, List
 from colorama import init, Fore
 import dcs_cn0435_utilities as utilities
 
@@ -18,8 +19,8 @@ init(autoreset=True)
 
 
 def read_analog_input_regs_cn0418(
-        global_data: dict, address: int,
-        registers_number: int = 30, debug: bool = False) -> list:
+        global_data: Dict[str, Any], address: List[int],
+        registers_number: int = 30, debug: bool = False) -> List[int]:
     """Read analog input registers.
 
     Read analog input registers from CN0418 with function code 4.
@@ -64,8 +65,8 @@ def read_analog_input_regs_cn0418(
 
 
 def read_output_holding_regs_cn0418(
-        global_data: dict, address: list,
-        registers_number: int = 10, debug: bool = False) -> list:
+        global_data: Dict[str, Any], address: List[int],
+        registers_number: int = 10, debug: bool = False) -> List[int]:
     """Read output holding registers.
 
     Read output holding registers from CN0418 with function code 3.
@@ -104,7 +105,7 @@ def read_output_holding_regs_cn0418(
     return registers
 
 
-def request_dac_cs(global_data: dict) -> int:
+def request_dac_cs(global_data: Dict[str, Any]) -> int:
     """Request DAC CS.
 
     Args:
@@ -125,7 +126,7 @@ def request_dac_cs(global_data: dict) -> int:
               Fore.YELLOW + str(valid_dac_cs[0]) + Fore.CYAN + ": ", end='')
         input_data = input()
         if input_data == '':
-            cs_address = valid_dac_cs[0]
+            cs_address = int(valid_dac_cs[0])
             break
         elif int(input_data.split()[0]) not in valid_dac_cs:
             print(Fore.YELLOW + "Invalid option. Try again.")
@@ -135,7 +136,7 @@ def request_dac_cs(global_data: dict) -> int:
     return cs_address
 
 
-def request_dac_reconfig_data(global_data: dict) -> tuple:
+def request_dac_reconfig_data(global_data: Dict[str, Any]) -> Tuple[int, int]:
     """Request device CS address and register value.
 
     Args:
@@ -158,7 +159,7 @@ def request_dac_reconfig_data(global_data: dict) -> tuple:
     return cs_addr, reg_val
 
 
-def select_channel_range(global_data: dict, channel: int) -> None:
+def select_channel_range(global_data: Dict[str, Any], channel: int) -> None:
     """Select DAC channel output range, voltage or current output.
 
     Args:
@@ -184,7 +185,7 @@ def select_channel_range(global_data: dict, channel: int) -> None:
             reg_val)
 
 
-def select_hart_channel(global_data: dict) -> None:
+def select_hart_channel(global_data: Dict[str, Any]) -> None:
     """Select HART channel.
 
     Args:
@@ -208,7 +209,7 @@ def select_hart_channel(global_data: dict) -> None:
             global_data, [global_data["MODBUS_ADDRESS"], cs_addr, 6], reg_val)
 
 
-def send_hart_command_0(global_data: dict) -> None:
+def send_hart_command_0(global_data: Dict[str, Any]) -> None:
     """Send HART command 0.
 
     Args:
@@ -230,7 +231,7 @@ def send_hart_command_0(global_data: dict) -> None:
             global_data, [global_data["MODBUS_ADDRESS"], cs_addr, 5], reg_val)
 
 
-def set_channel_output(global_data: dict, channel: int) -> None:
+def set_channel_output(global_data: Dict[str, Any], channel: int) -> None:
     """Set DAC channel output value depending on current output range.
 
     Args:
@@ -249,7 +250,7 @@ def set_channel_output(global_data: dict, channel: int) -> None:
         set_dac_output(global_data, channel)
 
 
-def set_dac_output(global_data: dict, channel: int) -> None:
+def set_dac_output(global_data: Dict[str, Any], channel: int) -> None:
     """Request device CS address and register value.
 
     Args:
@@ -274,7 +275,7 @@ def set_dac_output(global_data: dict, channel: int) -> None:
               Fore.YELLOW + "0V: ", end='')
         input_data = input()
         if input_data == "":
-            voltage_value = 0
+            voltage_value = 0.0
         else:
             voltage_value = float(input_data.split()[0])
         write_voltage(
@@ -288,7 +289,7 @@ def set_dac_output(global_data: dict, channel: int) -> None:
               Fore.YELLOW + "0mA: ", end='')
         input_data = input()
         if input_data == "":
-            current_value = 0
+            current_value = 0.0
         else:
             current_value = float(input_data.split()[0]) / 1000
         write_current(
@@ -297,8 +298,8 @@ def set_dac_output(global_data: dict, channel: int) -> None:
 
 
 def write_current(
-        global_data: dict, channel_address: list,
-        channel_value: float, output_range: int):
+        global_data: Dict[str, Any], channel_address: List[int],
+        channel_value: float, output_range: int) -> None:
     """Write current channel.
 
     Args:
@@ -308,7 +309,9 @@ def write_current(
         output_range: Current range
 
     Returns:
-        None"""
+        None
+
+    """
     channel_address[2] += 3
     if output_range == 0:
         dac_code = int(((channel_value - 4) / 16) * 2**16)
@@ -322,8 +325,8 @@ def write_current(
 
 
 def write_voltage(
-        global_data: dict, channel_address: list,
-        channel_value: float, output_range: int):
+        global_data: Dict[str, Any], channel_address: List[int],
+        channel_value: float, output_range: int) -> None:
     """Write voltage channel.
 
     Args:
@@ -333,7 +336,9 @@ def write_voltage(
         output_range: Voltage range
 
     Returns:
-        None"""
+        None
+
+    """
     channel_address[2] += 3
     if output_range == 0:
         dac_code = int((channel_value / 5.0) * 2**16)
