@@ -101,5 +101,7 @@ if __name__ == "__main__":
                           error_message)
         except KeyboardInterrupt:
             print(Fore.CYAN + "\nSwitch to a new MODBUS address... ")
-            DATA = utilities.switch_modbus_address(PORT_NUMBER, MODBUS_ADDRESS)
-            MODBUS_ADDRESS, VALID_CS, BOARDS = DATA[0], DATA[1], DATA[2]
+            NEW_DATA = utilities.switch_modbus_address(
+                PORT_NUMBER, MODBUS_TIMEOUT)
+            MODBUS_ADDRESS = NEW_DATA[0]
+            VALID_CS, BOARDS = NEW_DATA[1], NEW_DATA[2]
