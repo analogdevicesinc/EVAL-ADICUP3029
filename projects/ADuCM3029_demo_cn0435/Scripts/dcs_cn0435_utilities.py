@@ -12,6 +12,7 @@ __status__ = 'Development'
 
 import sys
 from time import sleep
+from typing import Dict, Any, Tuple, List
 from colorama import init, Fore
 from tabulate import tabulate
 import serial.tools.list_ports
@@ -22,7 +23,8 @@ import dcs_cn0418_utilities as cn0418
 init(autoreset=True)
 
 
-def detect_system_configuration(global_data: dict) -> tuple:
+def detect_system_configuration(
+        global_data: Dict[str, Any]) -> Tuple[List[int], List[int]]:
     """Detect boards connected.
 
     Args:
@@ -53,7 +55,8 @@ def detect_system_configuration(global_data: dict) -> tuple:
     return valid_addr, boards
 
 
-def generate_channel_register_address(channel_type: str, address: list) -> int:
+def generate_channel_register_address(
+        channel_type: str, address: List[int]) -> int:
     """Generate channel register address.
 
     Args:
@@ -79,7 +82,7 @@ def generate_channel_register_address(channel_type: str, address: list) -> int:
     return register_address
 
 
-def generate_register_address(address: list) -> int:
+def generate_register_address(address: List[int]) -> int:
     """Generate register address from a list.
 
     Args:
@@ -97,7 +100,7 @@ def generate_register_address(address: list) -> int:
 
 
 def print_table(register_address: int, register_count: int,
-                labels: list, registers: list) -> None:
+                labels: List[str], registers: List[int]) -> None:
     """Print data in a table.
 
     Print registers addresses, description and
@@ -128,7 +131,8 @@ def print_table(register_address: int, register_count: int,
                    tabular_data=list(zip(address_list, labels, values))))
 
 
-def read_analog_input_regs_from_sys_config(global_data: dict) -> None:
+def read_analog_input_regs_from_sys_config(
+        global_data: Dict[str, Any]) -> None:
     """Read analog input registers from detected system configuration.
 
     Determine the number and type (analog input/output) of the boards detected
@@ -158,8 +162,8 @@ def read_analog_input_regs_from_sys_config(global_data: dict) -> None:
 
 
 def read_common_analog_input_regs(
-        global_data: dict, register_address: int = 0,
-        registers_number: int = 5, debug: bool = False) -> list:
+        global_data: Dict[str, Any], register_address: int = 0,
+        registers_number: int = 5, debug: bool = False) -> List[int]:
     """Read common analog input registers.
 
     Read common analog input registers with function code 4.
@@ -191,8 +195,8 @@ def read_common_analog_input_regs(
 
 
 def read_common_output_holding_regs(
-        global_data: dict, register_address: int = 254,
-        registers_number: int = 2, debug: bool = False) -> list:
+        global_data: Dict[str, Any], register_address: int = 254,
+        registers_number: int = 2, debug: bool = False) -> List[int]:
     """Read common output holding registers.
 
     Read common output holding registers with function code 3.
@@ -220,7 +224,8 @@ def read_common_output_holding_regs(
     return registers
 
 
-def read_output_holding_regs_from_sys_config(global_data: dict) -> None:
+def read_output_holding_regs_from_sys_config(
+        global_data: Dict[str, Any]) -> None:
     """Read output holding registers from detected system configuration.
 
     Determine the number and type (analog input/output) of the boards detected
@@ -249,7 +254,7 @@ def read_output_holding_regs_from_sys_config(global_data: dict) -> None:
             pass
 
 
-def request_cs_data(global_data: dict) -> int:
+def request_cs_data(global_data: Dict[str, Any]) -> int:
     """Request CS address.
 
     Args:
@@ -267,7 +272,7 @@ def request_cs_data(global_data: dict) -> int:
               end='')
         input_data = input()
         if input_data == "":
-            cs_addr = global_data["VALID_CS"][0]
+            cs_addr = int(global_data["VALID_CS"][0])
             break
         elif int(input_data.split()[0]) not in global_data["VALID_CS"]:
             print(Fore.YELLOW + "Invalid option. Try again.")
@@ -277,7 +282,7 @@ def request_cs_data(global_data: dict) -> int:
     return cs_addr
 
 
-def request_info() -> str:
+def request_info() -> Tuple[str, int, float, float, List[int], List[str]]:
     """Request input data.
 
     List all serial devices detected in use and wait for the user to choose
@@ -303,37 +308,37 @@ def request_info() -> str:
     print(Fore.GREEN + "\nEnter detected device index,", default, end='')
     input_data = input()
     if input_data == '':
-        port_number = 0
+        port_index = 0
     else:
-        port_number = int(input_data) - 1
+        port_index = int(input_data) - 1
 
     default = Fore.GREEN + "or press ENTER to use 0.1[s] timeout: "
     print(Fore.GREEN + "Enter MODBUS timeout (0.05[s] to inf),", default,
           end='')
     timeout = input()
     if timeout == '':
-        timeout = 0.1
+        returned_timeout = 0.1
     elif float(timeout) <= 0.05:
-        timeout = 0.05
+        returned_timeout = 0.05
     else:
-        timeout = float((timeout.split()[0]))
+        returned_timeout = float((timeout.split()[0]))
 
     modbus_address, current_cs_list, current_boards = switch_modbus_address(
-        ports[port_number], timeout)
+        ports[port_index], returned_timeout)
 
     default = Fore.GREEN + "or press ENTER to use 0.1[s] delay: "
     print(Fore.GREEN + "Enter commands delay (0[s] to inf),", default, end='')
     delay = input()
     if delay == '':
-        delay = 0.1
+        returned_delay = 0.1
     else:
-        delay = float((delay.split()[0]))
+        returned_delay = float((delay.split()[0]))
 
-    return ports[port_number], modbus_address, timeout, delay, \
-        current_cs_list, current_boards
+    return ports[port_index], modbus_address, returned_timeout, \
+        returned_delay, current_cs_list, current_boards
 
 
-def request_reconfig_data(global_data: dict) -> tuple:
+def request_reconfig_data(global_data: Dict[str, Any]) -> Tuple[int, int]:
     """Request device CS address and register value.
 
     Args:
@@ -356,7 +361,7 @@ def request_reconfig_data(global_data: dict) -> tuple:
     return cs_addr, reg_val
 
 
-def select_and_write_register(global_data: dict) -> None:
+def select_and_write_register(global_data: Dict[str, Any]) -> None:
     """Write any output holding register.
 
     Args:
@@ -366,7 +371,6 @@ def select_and_write_register(global_data: dict) -> None:
         None
 
     """
-
     cs_addr = request_cs_data(global_data)
 
     offset_msg = "Enter offset address, or press ENTER to use offset 0: "
@@ -390,7 +394,9 @@ def select_and_write_register(global_data: dict) -> None:
         reg_val)
 
 
-def scan_system_config(port_name: str, delay: float) -> None:
+def scan_system_config(
+        port_name: str,
+        delay: float) -> Tuple[List[int], List[List[int]], List[List[str]]]:
     """Detect system configuration for each possible MODBUS node.
 
     Create an instrument object for each MODBUS node and read 5 analog
@@ -405,6 +411,7 @@ def scan_system_config(port_name: str, delay: float) -> None:
 
     Returns:
         None
+
     """
     valid_modbus_addresses, current_cs, all_valid_cs = [], [], []
     current_board_type, all_boards = [], []
@@ -449,8 +456,8 @@ def scan_system_config(port_name: str, delay: float) -> None:
     return valid_modbus_addresses, all_valid_cs, all_boards
 
 
-def serial_devices() -> tuple:
-    """Lists serial port names and description.
+def serial_devices() -> Tuple[List[str], List[str]]:
+    """List serial port names and description.
 
     Search for all serial devices detected in use and return
     their description and port name as a list with an index.
@@ -471,8 +478,8 @@ def serial_devices() -> tuple:
     return devices, ports
 
 
-def serial_ports() -> list:
-    """Lists serial port names.
+def serial_ports() -> List[str]:
+    """List serial port names.
 
     Args:
         None
@@ -498,7 +505,8 @@ def serial_ports() -> list:
     return result
 
 
-def switch_modbus_address(selected_port: str, timeout: float) -> tuple:
+def switch_modbus_address(selected_port: str,
+                          timeout: float) -> Tuple[int, List[int], List[str]]:
     """Switch between MODBUS address.
 
     Args:
@@ -520,22 +528,25 @@ def switch_modbus_address(selected_port: str, timeout: float) -> tuple:
               Fore.YELLOW + str(modbus_list[0]) + Fore.GREEN + ': ', end='')
         modbus_address = input()
         if modbus_address == '':
-            modbus_address = modbus_list[0]
+            returned_modbus_address = modbus_list[0]
             current_cs_list = all_valid_cs[0]
             current_boards_list = all_boards[0]
             break
         elif int((modbus_address.split()[0])) not in modbus_list:
             print(Fore.YELLOW + "Invalid option. Try again.")
         else:
-            modbus_address = int((modbus_address.split()[0]))
-            current_cs_list = all_valid_cs[modbus_list.index(modbus_address)]
-            current_boards_list = all_boards[modbus_list.index(modbus_address)]
+            returned_modbus_address = int((modbus_address.split()[0]))
+            current_cs_list = all_valid_cs[modbus_list.index(
+                returned_modbus_address)]
+            current_boards_list = all_boards[modbus_list.index(
+                returned_modbus_address)]
             break
-    return modbus_address, current_cs_list, current_boards_list
+    return returned_modbus_address, current_cs_list, current_boards_list
 
 
 def write_output_holding_reg(
-        global_data: dict, address: list, registers_values: int) -> None:
+        global_data: Dict[str, Any], address: List[int],
+        registers_values: int) -> None:
     """Write output holding register.
 
     Write a single output holding register with function code 6.
