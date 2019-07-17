@@ -11,6 +11,7 @@ __author__ = 'Mihai Ionut Suciu'
 __status__ = 'Development'
 
 from time import sleep
+from typing import Dict, Any, List
 from colorama import init, Fore
 import dcs_cn0435_utilities as utilities
 
@@ -18,8 +19,8 @@ init(autoreset=True)
 
 
 def read_analog_input_regs_cn0414(
-        global_data: dict, address: list,
-        registers_number: int = 50, debug: bool = False) -> list:
+        global_data: Dict[str, Any], address: List[int],
+        registers_number: int = 50, debug: bool = False) -> List[int]:
     """Read analog input registers.
 
     Read analog input registers from CN0414 with function code 4.
@@ -75,7 +76,7 @@ def read_analog_input_regs_cn0414(
     return registers
 
 
-def read_board_current_channels(global_data: dict) -> None:
+def read_board_current_channels(global_data: Dict[str, Any]) -> None:
     """Read a single board current channels.
 
     Args:
@@ -104,7 +105,7 @@ def read_board_current_channels(global_data: dict) -> None:
                 print(Fore.RED + 'Register operation error!', error_message)
 
 
-def read_board_voltage_channels(global_data: dict) -> None:
+def read_board_voltage_channels(global_data: Dict[str, Any]) -> None:
     """Read a single board voltage channels.
 
     Args:
@@ -133,8 +134,8 @@ def read_board_voltage_channels(global_data: dict) -> None:
                 print(Fore.RED + 'Register operation error!', error_message)
 
 
-def read_current(
-        global_data: dict, channel_address: list, coding_type: int) -> float:
+def read_current(global_data: Dict[str, Any], channel_address: List[int],
+                 coding_type: int) -> float:
     """Read current channels.
 
     Args:
@@ -162,7 +163,8 @@ def read_current(
     return current
 
 
-def read_current_channels(global_data: dict, board_address: int) -> float:
+def read_current_channels(
+        global_data: Dict[str, Any], board_address: int) -> List[float]:
     """Read current channels from an address.
 
     Args:
@@ -183,7 +185,7 @@ def read_current_channels(global_data: dict, board_address: int) -> float:
     return values
 
 
-def read_device_current_channel(global_data: dict) -> None:
+def read_device_current_channel(global_data: Dict[str, Any]) -> None:
     """Read current continuously from selected channel.
 
     Args:
@@ -224,7 +226,7 @@ def read_device_current_channel(global_data: dict) -> None:
                       value_error_message)
 
 
-def read_device_voltage_channel(global_data: dict) -> None:
+def read_device_voltage_channel(global_data: Dict[str, Any]) -> None:
     """Read voltage continuously from selected channel.
 
     Args:
@@ -265,7 +267,7 @@ def read_device_voltage_channel(global_data: dict) -> None:
                 print(Fore.RED + 'Register operation error!', error_message)
 
 
-def read_instrument_current_channels(global_data: dict) -> None:
+def read_instrument_current_channels(global_data: Dict[str, Any]) -> None:
     """Read curent selected instrument current channels.
 
     Args:
@@ -298,7 +300,7 @@ def read_instrument_current_channels(global_data: dict) -> None:
                 print(Fore.RED + 'Register operation error!', error_message)
 
 
-def read_instrument_voltage_channels(global_data: dict) -> None:
+def read_instrument_voltage_channels(global_data: Dict[str, Any]) -> None:
     """Read curent selected instrument voltage channels.
 
     Args:
@@ -332,8 +334,8 @@ def read_instrument_voltage_channels(global_data: dict) -> None:
 
 
 def read_output_holding_regs_cn0414(
-        global_data: dict, address: list,
-        registers_number: int = 7, debug: bool = False) -> list:
+        global_data: Dict[str, Any], address: List[int],
+        registers_number: int = 7, debug: bool = False) -> List[int]:
     """Read output holding registers.
 
     Read output holding registers from CN0414 with function code 3.
@@ -370,8 +372,8 @@ def read_output_holding_regs_cn0414(
     return registers
 
 
-def read_voltage(
-        global_data: dict, channel_address: list, coding_type: int) -> float:
+def read_voltage(global_data: Dict[str, Any], channel_address: List[int],
+                 coding_type: int) -> float:
     """Read voltage channels.
 
     Args:
@@ -399,7 +401,8 @@ def read_voltage(
     return voltage
 
 
-def read_voltage_channels(global_data: dict, board_address: int) -> float:
+def read_voltage_channels(
+        global_data: Dict[str, Any], board_address: int) -> List[float]:
     """Read voltage channels from an address.
 
     Args:
@@ -420,7 +423,7 @@ def read_voltage_channels(global_data: dict, board_address: int) -> float:
     return values
 
 
-def request_adc_cs(global_data: dict) -> int:
+def request_adc_cs(global_data: Dict[str, Any]) -> int:
     """Request ADC CS.
 
     Args:
@@ -441,7 +444,7 @@ def request_adc_cs(global_data: dict) -> int:
               Fore.YELLOW + str(valid_adc_cs[0]) + Fore.CYAN + ": ", end='')
         input_data = input()
         if input_data == '':
-            cs_address = valid_adc_cs[0]
+            cs_address = int(valid_adc_cs[0])
             break
         elif int(input_data.split()[0]) not in valid_adc_cs:
             print(Fore.YELLOW + "Invalid option. Try again.")
@@ -451,7 +454,7 @@ def request_adc_cs(global_data: dict) -> int:
     return cs_address
 
 
-def select_hart_channel(global_data: dict) -> None:
+def select_hart_channel(global_data: Dict[str, Any]) -> None:
     """Select HART channel.
 
     Args:
@@ -475,7 +478,7 @@ def select_hart_channel(global_data: dict) -> None:
             global_data, [global_data["MODBUS_ADDRESS"], cs_addr, 6], reg_val)
 
 
-def send_hart_command_0(global_data: dict) -> None:
+def send_hart_command_0(global_data: Dict[str, Any]) -> None:
     """Send HART command 0.
 
     Args:
@@ -505,7 +508,7 @@ def send_hart_command_0(global_data: dict) -> None:
             print(Fore.GREEN + "DEVICE RESPONSE: " + Fore.YELLOW + response)
 
 
-def set_adc_filter(global_data: dict) -> None:
+def set_adc_filter(global_data: Dict[str, Any]) -> None:
     """Select ADC intrnal filter configuration.
 
     Args:
@@ -529,7 +532,7 @@ def set_adc_filter(global_data: dict) -> None:
             global_data, [global_data["MODBUS_ADDRESS"], cs_addr, 1], reg_val)
 
 
-def set_adc_open_wire_detection(global_data: dict) -> None:
+def set_adc_open_wire_detection(global_data: Dict[str, Any]) -> None:
     """Set ADC open wire detection feature.
 
     Args:
@@ -553,7 +556,7 @@ def set_adc_open_wire_detection(global_data: dict) -> None:
             global_data, [global_data["MODBUS_ADDRESS"], cs_addr, 4], reg_val)
 
 
-def set_adc_output_code(global_data: dict) -> None:
+def set_adc_output_code(global_data: Dict[str, Any]) -> None:
     """Set ADC output data coding.
 
     Args:
@@ -577,7 +580,7 @@ def set_adc_output_code(global_data: dict) -> None:
             global_data, [global_data["MODBUS_ADDRESS"], cs_addr, 0], reg_val)
 
 
-def set_adc_output_data_rate(global_data: dict) -> None:
+def set_adc_output_data_rate(global_data: Dict[str, Any]) -> None:
     """Set ADC output data rate.
 
     Args:
@@ -606,7 +609,7 @@ def set_adc_output_data_rate(global_data: dict) -> None:
             global_data, [global_data["MODBUS_ADDRESS"], cs_addr, 3], reg_val)
 
 
-def set_adc_postfilter(global_data: dict) -> None:
+def set_adc_postfilter(global_data: Dict[str, Any]) -> None:
     """Set ADC postfilter.
 
     Args:
