@@ -188,9 +188,9 @@ void ESP8266_SendCmd(char *CmdBuf)
 **/
 uint8_t ESP8266_ConnectAccessPoint(char *ssid, char *pass)
 {
-	char connection[250] = "";
+	char connection[250];
 
-	strncat(connection, "AT+CWJAP=\"", 11);
+	strcpy(connection, "AT+CWJAP=\"");
 	strncat(connection, ssid, strlen(ssid));
 	strncat(connection, "\",\"" , 5);
 	strncat(connection, pass, strlen(pass));
@@ -220,10 +220,10 @@ uint8_t ESP8266_ConnectAccessPoint(char *ssid, char *pass)
 **/
 void ESP8266_ConnectTCP(char *ip, char *port)
 {
-	char connection[250] = "";
+	char connection[250];
 	char *keep_alive = "7200";
 
-	strncat(connection, "AT+CIPSTART=\"TCP\",\"", strlen("AT+CIPSTART=\"TCP\",\""));
+	strcpy(connection, "AT+CIPSTART=\"TCP\",\"");
 	strncat(connection, ip, strlen(ip));
 	strncat(connection, "\"," , 3);
 	strncat(connection, port, strlen(port));
@@ -244,14 +244,14 @@ void ESP8266_ConnectTCP(char *ip, char *port)
 **/
 void ESP8266_SendTCPData(char *message, int len)
 {
-	char connection[250] = "";
+	char connection[250];
 	char msg[200] = "";
-	char MsgLen[256] = "";
+	char MsgLen[256];
 	int i = 0;
 	uint32_t nHardwareError;
 
 	sprintf(MsgLen, "%d", len);
-	strncat(connection, "AT+CIPSEND=", 11);
+	strcpy(connection, "AT+CIPSEND=");
 	strncat(connection, MsgLen, strlen(MsgLen));
 
 	adi_uart_Write(hUartDevice, connection, strlen(connection), 0, &nHardwareError);
