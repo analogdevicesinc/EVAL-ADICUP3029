@@ -68,7 +68,8 @@ void ESP8266_Init(void)
 
 	adi_gpio_Init(gpioMemory, ADI_GPIO_MEMORY_SIZE); //initialize gpio
 	adi_gpio_OutputEnable(ADI_GPIO_PORT2, ADI_GPIO_PIN_10, true);
-	adi_gpio_PullUpEnable(ADI_GPIO_PORT2, ADI_GPIO_PIN_10, true); 	// Enable pull-up resistors
+	adi_gpio_PullUpEnable(ADI_GPIO_PORT2, ADI_GPIO_PIN_10,
+			      true); 	// Enable pull-up resistors
 	adi_gpio_SetHigh(ADI_GPIO_PORT2, ADI_GPIO_PIN_10);
 
 }
@@ -109,12 +110,11 @@ ESP8266_RESULT ESP8266_CmdWriteRead(char *CmdBuf)
 	CmdSetPos = ESP8266_FindCommand(CmdBuf);
 
 	if (CmdSetPos >= 0) {
-		 // Cmd found, concatenate "\r\n" and send it via UART
+		// Cmd found, concatenate "\r\n" and send it via UART
 		ESP8266_SendCmd(CmdBuf);
 
 		return ESP8266_GetResponse(CmdSetPos);
-	}
-	else {
+	} else {
 		printf("Command %s not found\n", CmdBuf);
 		return ESP8266_FAILED;
 	}
@@ -136,22 +136,22 @@ ESP8266_RESULT ESP8266_GetResponse(ESP8266_CMD CmdPos)
 {
 	char *pNULL = NULL;
 	char *ExpectedReply = CmdParams[CmdPos].ExpectedReply;
-    char msg[250] = "";
-    int i = 0;
-    uint8_t ui8Char=0x00;
-    uint32_t nHardwareError;
+	char msg[250] = "";
+	int i = 0;
+	uint8_t ui8Char=0x00;
+	uint32_t nHardwareError;
 
-    adi_uart_Read(hUartDevice, &ui8Char, 1, 0, &nHardwareError);
-    msg[i] = ui8Char;
+	adi_uart_Read(hUartDevice, &ui8Char, 1, 0, &nHardwareError);
+	msg[i] = ui8Char;
 
-    while(pNULL == strstr(msg, ExpectedReply)) {
+	while(pNULL == strstr(msg, ExpectedReply)) {
 		i++;
 		adi_uart_Read(hUartDevice, &ui8Char, 1, 0, &nHardwareError);
 		msg[i] = ui8Char;
 	}
 
-    printf("%s\n",  msg);
-    fflush(stdout);
+	printf("%s\n",  msg);
+	fflush(stdout);
 
 	return ESP8266_OK;
 }
@@ -174,7 +174,8 @@ void ESP8266_SendCmd(char *CmdBuf)
 	strncat(command, CmdBuf, CmdLen);
 	strncat(command, rn, 2);
 
-	adi_uart_Write(hUartDevice, command, CmdLen+2, 0, &nHardwareError); // Send the command via UART
+	adi_uart_Write(hUartDevice, command, CmdLen+2, 0,
+		       &nHardwareError); // Send the command via UART
 }
 
 
@@ -192,9 +193,9 @@ uint8_t ESP8266_ConnectAccessPoint(char *ssid, char *pass)
 
 	strcpy(connection, "AT+CWJAP=\"");
 	strncat(connection, ssid, strlen(ssid));
-	strncat(connection, "\",\"" , 5);
+	strncat(connection, "\",\"", 5);
 	strncat(connection, pass, strlen(pass));
-	strncat(connection, "\"" , 2);
+	strncat(connection, "\"", 2);
 
 	// send test command
 	ESP8266_CmdWriteRead("AT");
@@ -225,9 +226,9 @@ void ESP8266_ConnectTCP(char *ip, char *port)
 
 	strcpy(connection, "AT+CIPSTART=\"TCP\",\"");
 	strncat(connection, ip, strlen(ip));
-	strncat(connection, "\"," , 3);
+	strncat(connection, "\",", 3);
 	strncat(connection, port, strlen(port));
-	strncat(connection, "," , 1);
+	strncat(connection, ",", 1);
 	strncat(connection, keep_alive, strlen(keep_alive));
 
 	ESP8266_CmdWriteRead(connection);
@@ -288,12 +289,13 @@ void ESP8266_WaitForBrokerResponse(uint8_t ui8Response)
 	uint8_t ui8Char=0x00;
 	uint32_t nHardwareError;
 
-	while(ui8Char != ui8Response){
+	while(ui8Char != ui8Response) {
 		adi_uart_Read(hUartDevice, &ui8Char, 1, 0, &nHardwareError);
 	}
 }
 
-uint8_t ESP8266_WaitForBrokerResponseNonBlocking(uint8_t ui8Response, uint32_t ui32Timeout)
+uint8_t ESP8266_WaitForBrokerResponseNonBlocking(uint8_t ui8Response,
+		uint32_t ui32Timeout)
 {
 	/* Bool variable for peek function */
 	bool bRxBufferComplete = false;
@@ -304,12 +306,11 @@ uint8_t ESP8266_WaitForBrokerResponseNonBlocking(uint8_t ui8Response, uint32_t u
 	while (ui8Char != ui8Response) {
 		adi_uart_SubmitRxBuffer(hUartDevice, &ui8Char, 1, 0u);
 
-			while(true != bRxBufferComplete)
-			{
-				if (get_esp_timer_ms() >= ui32Timeout)
-					return 0;
-				adi_uart_IsRxBufferAvailable(hUartDevice, &bRxBufferComplete);
-			}
+		while(true != bRxBufferComplete) {
+			if (get_esp_timer_ms() >= ui32Timeout)
+				return 0;
+			adi_uart_IsRxBufferAvailable(hUartDevice, &bRxBufferComplete);
+		}
 	}
 	return 1;
 }
