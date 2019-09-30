@@ -1514,6 +1514,7 @@ static inline int32_t aiodio_process_test(struct aiodio_dev *dev)
 		ret = dev->read_adc(dev->board_device, (i + 4), &analog_temp);
 		if(ret != 0)
 			return ret;
+		analog_temp &= 0xFFF;
 		min = staircase[3 - i] - test_tol;
 		max = staircase[3 - i] + test_tol;
 		if((analog_temp < min) || (analog_temp > max)) {
