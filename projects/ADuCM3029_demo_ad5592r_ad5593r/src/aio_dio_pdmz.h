@@ -61,6 +61,9 @@
 #define HELP_SHORT_COMMAND true
 #define HELP_LONG_COMMAND false
 
+#define AD5592_3_INTERNAL_REFERENCE (float)2.5
+#define AD5592_3_RESOLUTION_BITS 12
+
 typedef int32_t (*adc_read_ptr)(struct ad5592r_dev *, uint8_t, uint16_t *);
 typedef int32_t (*dac_write_ptr)(struct ad5592r_dev *, uint8_t, uint16_t);
 
@@ -141,5 +144,8 @@ int32_t aiodio_prod_test_mode(struct aiodio_dev *dev, uint8_t *arg);
 
 /* Application process. */
 int32_t aiodio_process(struct aiodio_dev *dev);
+
+/* Stream input data from the ADC inputs. */
+int32_t aiodio_analog_in_stream(struct aiodio_dev *dev, uint8_t *arg);
 
 #endif /* AIO_DIO_PDMZ_H_ */
