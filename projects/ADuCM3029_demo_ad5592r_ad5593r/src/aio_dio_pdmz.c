@@ -41,8 +41,11 @@
 /***************************** Include Files **********************************/
 /******************************************************************************/
 
-#include "aio_dio_pdmz.h"
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+#include "aio_dio_pdmz.h"
 
 /******************************************************************************/
 /************************** Variable Definitions ******************************/
@@ -61,6 +64,7 @@ cmd_func aiodio_fnc_ptr[] = {
 	(cmd_func)aiodio_mirror_mode,
 	(cmd_func)aiodio_prod_test_mode,
 	(cmd_func)aiodio_status,
+	(cmd_func)aiodio_analog_in_stream,
 	NULL
 };
 
@@ -82,12 +86,14 @@ char *aiodio_fnc_calls[] = {
 	"t",
 	"status",
 	"stts",
+	"analog_in_stream ",
+	"ais ",
 	""
 };
 
 /* Command size vector */
 uint8_t aiodio_fnc_call_size[] = {
-	5, 2, 11, 3, 10, 3, 12, 3, 11, 3, 6, 2, 5, 2, 7, 5, 1
+	5, 2, 11, 3, 10, 3, 12, 3, 11, 3, 6, 2, 5, 2, 7, 5, 17, 4, 1
 };
 
 static volatile uint8_t mode_timer_flag = 0;
@@ -731,9 +737,19 @@ static inline int32_t aiodio_help_mode_commands(struct aiodio_dev *dev,
 					    "                            Channel 2 = Analog Output (DAC) -> Channel 5 = Analog Input (ADC)\n");
 		if(ret != 0)
 			return ret;
-		return usr_uart_write_string(dev->board_cli->uart_device,
+		ret =  usr_uart_write_string(dev->board_cli->uart_device,
 					     (uint8_t*)
 					     "                            Channel 3 = Analog Output (DAC) -> Channel 4 = Analog Input (ADC)\n");
+		if(ret != 0)
+			return ret;
+		ret = usr_uart_write_string(dev->board_cli->uart_device,
+					    (uint8_t*)
+					    " analog_in_stream <ch_no> - Start ADC streaming mode. It streams data from the selected channel.\n");
+		if(ret != 0)
+			return ret;
+		return usr_uart_write_string(dev->board_cli->uart_device,
+					     (uint8_t*)
+					     "                            <ch_no> - Number of the channel to be streamed or 'a' to stream all channels.\n");
 	} else {
 		ret = usr_uart_write_string(dev->board_cli->uart_device,
 					    (uint8_t*)
@@ -793,10 +809,19 @@ static inline int32_t aiodio_help_mode_commands(struct aiodio_dev *dev,
 					    "                   Channel 2 = Analog Output (DAC) -> Channel 5 = Analog Input (ADC)\n");
 		if(ret != 0)
 			return ret;
+		ret = usr_uart_write_string(dev->board_cli->uart_device,
+					    (uint8_t*)
+					    "                   Channel 3 = Analog Output (DAC) -> Channel 4 = Analog Input (ADC)\n");
+		if(ret != 0)
+			return ret;
+		ret = usr_uart_write_string(dev->board_cli->uart_device,
+					    (uint8_t*)
+					    " ais <ch_no>     - Start ADC streaming mode. It streams data from the selected channel.\n");
+		if(ret != 0)
+			return ret;
 		return usr_uart_write_string(dev->board_cli->uart_device,
 					     (uint8_t*)
-					     "                   Channel 3 = Analog Output (DAC) -> Channel 4 = Analog Input (ADC)\n");
-
+					     "                   <ch_no> - Number of the channel to be streamed or 'a' to stream all channels.\n");
 	}
 }
 
@@ -1572,6 +1597,137 @@ int32_t aiodio_process(struct aiodio_dev *dev)
 		if(ret != 0)
 			return ret;
 	}
+
+	return ret;
+}
+
+/**
+ * Stream input data from all ADC inputs.
+ *
+ * If and input is not ADC it will place "N/A" in the place if its values.
+ *
+ * @param [in] dev - The device structure.
+ *
+ * @return 0 in case of success, negative error code otherwise.
+ */
+static int32_t aiodio_analog_in_stream_all(struct aiodio_dev *dev)
+{
+	uint8_t i = 0, exit_char, rdy;
+	uint8_t buff[20];
+	uint16_t adc_val;
+	float lsb_val = AD5592_3_INTERNAL_REFERENCE /
+			pow(2, AD5592_3_RESOLUTION_BITS);
+	float volt_val;
+
+	for(i = 0; i < 8; i++) {
+		itoa(i, (char *)buff, 10);
+		usr_uart_write_string(dev->board_cli->uart_device, (uint8_t*)"CH");
+		usr_uart_write_string(dev->board_cli->uart_device, buff);
+		usr_uart_write_string(dev->board_cli->uart_device, (uint8_t*)" ");
+	}
+	usr_uart_write_string(dev->board_cli->uart_device, (uint8_t*)"\n");
+
+	i = 0;
+	while(1) {
+		if(dev->board_device->channel_modes[i] != CH_MODE_ADC) {
+			usr_uart_write_string(dev->board_cli->uart_device,
+					      (uint8_t*)"N/A ");
+		} else {
+			dev->read_adc(dev->board_device, i, &adc_val);
+			adc_val &= 0xfff;
+			volt_val = lsb_val * adc_val;
+			sprintf((char *)buff, "%.8f", volt_val);
+			usr_uart_write_string(dev->board_cli->uart_device, buff);
+			usr_uart_write_string(dev->board_cli->uart_device, (uint8_t*)" ");
+		}
+		i++;
+		if(i >= 8) {
+			i = 0;
+			usr_uart_write_string(dev->board_cli->uart_device, (uint8_t*)"\n");
+			mdelay(500);
+		}
+		usr_uart_read_char(dev->board_cli->uart_device, &exit_char,
+				   &rdy, UART_NON_BLOCKING);
+		if((rdy) && (exit_char == 'q'))
+			return usr_uart_write_string(dev->board_cli->uart_device,
+						     (uint8_t*)"\nUser abort.\n");
+	}
+}
+
+/**
+ * Stream input data from an ADC input.
+ *
+ * If and input is not ADC it will exit with an error message.
+ *
+ * @param [in] dev     - The device structure.
+ * @param [in] chan_no - Channel number.
+ *
+ * @return 0 in case of success, negative error code otherwise.
+ */
+static int32_t aiodio_analog_in_stream_chan(struct aiodio_dev *dev,
+		uint8_t chan_no)
+{
+	uint8_t exit_char, rdy;
+	uint8_t buff[20];
+	uint16_t adc_val;
+	float lsb_val = AD5592_3_INTERNAL_REFERENCE /
+			pow(2, AD5592_3_RESOLUTION_BITS);
+	float volt_val;
+
+	if(dev->board_device->channel_modes[chan_no] != CH_MODE_ADC)
+		return usr_uart_write_string(dev->board_cli->uart_device,
+					     (uint8_t*)"N/A ");
+
+	itoa(chan_no, (char *)buff, 10);
+	usr_uart_write_string(dev->board_cli->uart_device, (uint8_t*)"CH");
+	usr_uart_write_string(dev->board_cli->uart_device, buff);
+	usr_uart_write_string(dev->board_cli->uart_device, (uint8_t*)"\n");
+
+	while(1) {
+		dev->read_adc(dev->board_device, chan_no, &adc_val);
+		adc_val &= 0xfff;
+		volt_val = lsb_val * adc_val;
+		sprintf((char *)buff, "%.8f", volt_val);
+		usr_uart_write_string(dev->board_cli->uart_device, buff);
+		usr_uart_write_string(dev->board_cli->uart_device, (uint8_t*)"\n");
+
+		usr_uart_read_char(dev->board_cli->uart_device, &exit_char,
+				   &rdy, UART_NON_BLOCKING);
+		if((rdy) && (exit_char == 'q'))
+			return usr_uart_write_string(dev->board_cli->uart_device,
+						     (uint8_t*)"\nUser abort.\n");
+		mdelay(500);
+	}
+}
+
+/**
+ * Stream input data from the ADC inputs.
+ *
+ * @param [in] dev - The device structure.
+ * @param [in] arg - The number of the channel (0-7) all (a).
+ *
+ * @return 0 in case of success, negative error code otherwise.
+ */
+int32_t aiodio_analog_in_stream(struct aiodio_dev *dev, uint8_t *arg)
+{
+	int32_t ret;
+	uint8_t chan_no;
+
+	usr_uart_write_string(dev->board_cli->uart_device,
+			      (uint8_t*)"Columns correspond to the following channels: ");
+
+	if(!strcmp((char *)arg, "a")) {
+		ret = aiodio_analog_in_stream_all(dev);
+	} else if(*arg >= '0' && *arg <= '7') {
+		chan_no = atoi((char *)arg);
+		ret = aiodio_analog_in_stream_chan(dev, chan_no);
+	} else {
+		return usr_uart_write_string(dev->board_cli->uart_device,
+					     (uint8_t *)"Input must be between 0 and 7 or 'a' for all.\n");
+	}
+
+	dev->mirror_mode = 0;
+	dev->test_mode = 0;
 
 	return ret;
 }
