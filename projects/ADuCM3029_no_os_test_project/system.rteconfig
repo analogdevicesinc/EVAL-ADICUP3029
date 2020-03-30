@@ -12,6 +12,64 @@
 <file category="doc" name="CMSIS/Documentation/Core/html/index.html"/>
 <file category="include" name="CMSIS/Core/Include/"/>
 </component>
+<component Cclass="Device" Cgroup="Drivers" Csub="DMA" Cvendor="AnalogDevices" Cversion="3.2.0" deviceDependent="1">
+<package name="ADuCM302x_DFP" url="http://download.analog.com/tools/EZBoards/CM302x/Releases/" vendor="AnalogDevices" version="3.2.0"/>
+<file category="source" deviceDependent="1" name="Source/drivers/dma/adi_dma.c"/>
+<file category="header" deviceDependent="1" name="Include/drivers/dma/adi_dma.h"/>
+<file category="doc" deviceDependent="1" name="Documents/html/group___d_m_a___driver.html"/>
+</component>
+<component Cclass="Device" Cgroup="Drivers" Csub="GPIO" Cvendor="AnalogDevices" Cversion="3.2.0" deviceDependent="1">
+<package name="ADuCM302x_DFP" url="http://download.analog.com/tools/EZBoards/CM302x/Releases/" vendor="AnalogDevices" version="3.2.0"/>
+<file category="source" deviceDependent="1" name="Source/drivers/gpio/adi_gpio.c"/>
+<file category="header" deviceDependent="1" name="Include/drivers/gpio/adi_gpio.h"/>
+<file category="doc" deviceDependent="1" name="Documents/html/group___g_p_i_o___driver.html"/>
+</component>
+<component Cclass="Device" Cgroup="Drivers" Csub="I2C" Cvendor="AnalogDevices" Cversion="3.2.0" deviceDependent="1">
+<package name="ADuCM302x_DFP" url="http://download.analog.com/tools/EZBoards/CM302x/Releases/" vendor="AnalogDevices" version="3.2.0"/>
+<file category="source" deviceDependent="1" name="Source/drivers/i2c/adi_i2c.c"/>
+<file category="header" deviceDependent="1" name="Include/drivers/i2c/adi_i2c.h"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_i2c_config.h" version="3.2.0"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_global_config.h" version="3.2.0"/>
+<file category="doc" deviceDependent="1" name="Documents/html/group___i2_c___driver.html"/>
+</component>
+<component Cclass="Device" Cgroup="Drivers" Csub="Interrupt" Cvendor="AnalogDevices" Cversion="3.2.0" deviceDependent="1">
+<package name="ADuCM302x_DFP" url="http://download.analog.com/tools/EZBoards/CM302x/Releases/" vendor="AnalogDevices" version="3.2.0"/>
+<file category="source" deviceDependent="1" name="Source/drivers/xint/adi_xint.c"/>
+<file category="header" deviceDependent="1" name="Include/drivers/xint/adi_xint.h"/>
+<file category="doc" deviceDependent="1" name="Documents/html/group___x_i_n_t___driver.html"/>
+</component>
+<component Cclass="Device" Cgroup="Drivers" Csub="Power" Cvendor="AnalogDevices" Cversion="3.2.0" deviceDependent="1">
+<package name="ADuCM302x_DFP" url="http://download.analog.com/tools/EZBoards/CM302x/Releases/" vendor="AnalogDevices" version="3.2.0"/>
+<file category="source" deviceDependent="1" name="Source/drivers/pwr/adi_pwr.c"/>
+<file category="header" deviceDependent="1" name="Include/drivers/pwr/adi_pwr.h"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_pwr_config.h" version="3.2.0"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_global_config.h" version="3.2.0"/>
+<file category="doc" deviceDependent="1" name="Documents/html/group___power___driver.html"/>
+</component>
+<component Cclass="Device" Cgroup="Drivers" Csub="SPI" Cvendor="AnalogDevices" Cversion="3.2.0" deviceDependent="1">
+<package name="ADuCM302x_DFP" url="http://download.analog.com/tools/EZBoards/CM302x/Releases/" vendor="AnalogDevices" version="3.2.0"/>
+<file category="source" deviceDependent="1" name="Source/drivers/spi/adi_spi.c"/>
+<file category="header" deviceDependent="1" name="Include/drivers/spi/adi_spi.h"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_spi_config.h" version="3.2.0"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_global_config.h" version="3.2.0"/>
+<file category="doc" deviceDependent="1" name="Documents/html/group___s_p_i___driver.html"/>
+</component>
+<component Cclass="Device" Cgroup="Drivers" Csub="TMR" Cvendor="AnalogDevices" Cversion="3.2.0" deviceDependent="1">
+<package name="ADuCM302x_DFP" url="http://download.analog.com/tools/EZBoards/CM302x/Releases/" vendor="AnalogDevices" version="3.2.0"/>
+<file category="source" deviceDependent="1" name="Source/drivers/tmr/adi_tmr.c"/>
+<file category="header" deviceDependent="1" name="Include/drivers/tmr/adi_tmr.h"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_tmr_config.h" version="3.2.0"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_global_config.h" version="3.2.0"/>
+<file category="doc" deviceDependent="1" name="Documents/html/group___t_m_r___driver.html"/>
+</component>
+<component Cclass="Device" Cgroup="Drivers" Csub="UART" Cvendor="AnalogDevices" Cversion="3.2.0" deviceDependent="1">
+<package name="ADuCM302x_DFP" url="http://download.analog.com/tools/EZBoards/CM302x/Releases/" vendor="AnalogDevices" version="3.2.0"/>
+<file category="source" deviceDependent="1" name="Source/drivers/uart/adi_uart.c"/>
+<file category="header" deviceDependent="1" name="Include/drivers/uart/adi_uart.h"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_uart_config.h" version="3.2.0"/>
+<file attr="config" category="header" deviceDependent="1" name="Include/config/adi_global_config.h" version="3.2.0"/>
+<file category="doc" deviceDependent="1" name="Documents/html/group___u_a_r_t___driver.html"/>
+</component>
 <component Cclass="Device" Cgroup="Global Configuration" Cvendor="AnalogDevices" Cversion="3.2.0" deviceDependent="1">
 <package name="ADuCM302x_DFP" url="http://download.analog.com/tools/EZBoards/CM302x/Releases/" vendor="AnalogDevices" version="3.2.0"/>
 <file attr="config" category="header" deviceDependent="1" name="Include/config/adi_cycle_counting_config.h" version="3.2.0"/>
