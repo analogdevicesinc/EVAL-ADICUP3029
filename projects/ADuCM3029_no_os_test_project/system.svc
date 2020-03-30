@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+	<installedComponents>
+		<component id="com.analog.crosscore.ssldd.pinmux.component" name="Pin Multiplexing" version="1.0.0" visible="true">
+			<component-description><![CDATA[Since some processors have more peripherals than physical pins on the chip, the user needs to configure which peripherals they want enabled and onto which set of pins.  Peripheral configuration requires an in-depth understanding of the hardware.  This component makes it easier to program the peripherals without worrying about the internal details.  The user simply selects the peripherals to enable and this component will generate the C code necessary to configure the peripherals.]]></component-description>
+			<product name="Pin Multiplexing Product" version="1.0.0"/>
+		</component>
+	</installedComponents>
+	<configurations>
+		<configuration id="com.analog.crosscore.ssldd.pinmux.component">
+			<pinmux-configuration processor="ADuCM3029" version="1.0"/>
+		</configuration>
+	</configurations>
+</root>
