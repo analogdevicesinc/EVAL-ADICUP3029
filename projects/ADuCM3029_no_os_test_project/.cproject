@@ -3,6 +3,9 @@
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="arm.toolchain.gcc.target.exe.debug.1014296431">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="arm.toolchain.gcc.target.exe.debug.1014296431" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<macros>
+					<stringMacro name="NO_OS_HOME" type="VALUE_TEXT" value="${ProjDirPath}..\..\..\no-OS"/>
+				</macros>
 				<externalSettings/>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
@@ -17,7 +20,7 @@
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="clean" description="" errorParsers="com.analog.crosscore.core.CCESARMErrorParser" id="arm.toolchain.gcc.target.exe.debug.1014296431" name="Debug" parent="arm.toolchain.gcc.target.exe.debug">
 					<folderInfo id="arm.toolchain.gcc.target.exe.debug.1014296431." name="/" resourcePath="">
-						<toolChain id="arm.gcc.toolchain.exe.debug.453213366" name="CrossCore GCC ARM Embedded Toolchain" superClass="arm.gcc.toolchain">
+						<toolChain id="arm.gcc.toolchain.exe.debug.453213366" name="CrossCore GCC ARM Embedded Toolchain" superClass="arm.gcc.toolchain" targetTool="arm.toolchain.gcc.c.linker">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="arm.toolchain.platform.base.1278882611" name="Development Platform" osList="all" superClass="arm.toolchain.platform.base"/>
 							<builder buildPath="${workspace_loc:/ADuCM3029_no_os_test_project}/Debug" id="arm.toolchain.builder.base.2123292859" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="arm.toolchain.builder.base"/>
 							<tool id="arm.toolchain.gcc.assembler.1065426903" name="CrossCore GCC ARM Embedded Assembler" superClass="arm.toolchain.gcc.assembler">
@@ -34,6 +37,8 @@
 								</option>
 								<option id="arm.assembler.option.additionaldirectories.1651156954" name="Additional include directories (-I):" superClass="arm.assembler.option.additionaldirectories" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/system}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${NO_OS_HOME}\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${NO_OS_HOME}\drivers\platform\aducm3029&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.6.0/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
@@ -58,6 +63,8 @@
 								<option id="arm.toolchain.cpp.compiler.option.coreid.198129684" name="Specify the core Id (-DCORE[A|B|0-2])" superClass="arm.toolchain.cpp.compiler.option.coreid" value="0" valueType="string"/>
 								<option id="arm.base.compiler.option.include.paths.1732709836" name="Additional include directories (-I):" superClass="arm.base.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/system}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${NO_OS_HOME}\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${NO_OS_HOME}\drivers\platform\aducm3029&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.6.0/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
@@ -111,10 +118,29 @@
 							<tool id="arm.toolchain.gcc.objcopy.746280273" name="CrossCore GCC ARM Embedded Object Copier" superClass="arm.toolchain.gcc.objcopy"/>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="arm.toolchain.gcc.target.exe.debug.1014296431.system" name="system" resourcePath="system">
+						<toolChain id="arm.gcc.toolchain.2047717824" name="CrossCore GCC ARM Embedded Toolchain" superClass="arm.gcc.toolchain" unusedChildren="">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="arm.toolchain.platform.base" name="Development Platform" osList="all" superClass="arm.toolchain.platform.base"/>
+							<tool id="arm.toolchain.gcc.assembler.70816014" name="CrossCore GCC ARM Embedded Assembler" superClass="arm.toolchain.gcc.assembler.1065426903">
+								<inputType id="arm.toolchain.assembler.base.input.235438048" superClass="arm.toolchain.assembler.base.input"/>
+							</tool>
+							<tool id="arm.toolchain.gcc.c.compiler.131931647" name="CrossCore GCC ARM Embedded C Compiler" superClass="arm.toolchain.gcc.c.compiler.62335307">
+								<inputType id="arm.toolchain.gcc.c.input.575598487" superClass="arm.toolchain.gcc.c.input"/>
+							</tool>
+							<tool id="arm.toolchain.gcc.c.linker.1580004145" name="CrossCore GCC ARM Embedded C Linker" superClass="arm.toolchain.gcc.c.linker.192409766"/>
+							<tool id="arm.toolchain.gcc.cpp.compiler.503825480" name="CrossCore GCC ARM Embedded C++ Compiler" superClass="arm.toolchain.gcc.cpp.compiler.2074959938"/>
+							<tool id="arm.toolchain.gcc.cpp.linker.382552079" name="CrossCore GCC ARM Embedded C++ Linker" superClass="arm.toolchain.gcc.cpp.linker.942187011"/>
+							<tool id="arm.toolchain.gcc.archiver.1314091942" name="CrossCore GCC ARM Embedded Archiver" superClass="arm.toolchain.gcc.archiver.1449482566"/>
+							<tool id="arm.loader.696711708" name="ARM Loader Base" superClass="arm.loader.1637449618"/>
+							<tool id="arm.toolchain.gcc.objcopy.1932498456" name="CrossCore GCC ARM Embedded Object Copier" superClass="arm.toolchain.gcc.objcopy.746280273"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
-						<entry excluding="system|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="platform_drivers|util|system|src" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="platform_drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="system"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="util"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -122,7 +148,12 @@
 		</cconfiguration>
 		<cconfiguration id="arm.toolchain.gcc.target.exe.release.510793364">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="arm.toolchain.gcc.target.exe.release.510793364" moduleId="org.eclipse.cdt.core.settings" name="Release">
-				<externalSettings/>
+				<macros>
+					<stringMacro name="NO_OS_HOME" type="VALUE_TEXT" value="${ProjDirPath}..\..\..\no-OS"/>
+				</macros>
+				<externalSettings>
+					<externalSetting/>
+				</externalSettings>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -136,7 +167,7 @@
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="clean" description="" errorParsers="com.analog.crosscore.core.CCESARMErrorParser" id="arm.toolchain.gcc.target.exe.release.510793364" name="Release" parent="arm.toolchain.gcc.target.exe.release">
 					<folderInfo id="arm.toolchain.gcc.target.exe.release.510793364." name="/" resourcePath="">
-						<toolChain id="arm.gcc.toolchain.exe.release.713362883" name="CrossCore GCC ARM Embedded Toolchain" superClass="arm.gcc.toolchain">
+						<toolChain id="arm.gcc.toolchain.exe.release.713362883" name="CrossCore GCC ARM Embedded Toolchain" superClass="arm.gcc.toolchain" targetTool="arm.toolchain.gcc.c.linker">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="arm.toolchain.platform.base.629270518" name="Development Platform" osList="all" superClass="arm.toolchain.platform.base"/>
 							<builder buildPath="${workspace_loc:/ADuCM3029_no_os_test_project}/Release" id="arm.toolchain.builder.base.1548284898" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="arm.toolchain.builder.base"/>
 							<tool id="arm.toolchain.gcc.assembler.1399842810" name="CrossCore GCC ARM Embedded Assembler" superClass="arm.toolchain.gcc.assembler">
@@ -146,13 +177,15 @@
 								<option id="arm.assembler.option.sirevision.1467113997" name="-msi-revision" superClass="arm.assembler.option.sirevision" value=" any" valueType="string"/>
 								<option id="arm.assembler.option.preprocessdefs.390597262" name="Preprocessor definitions (-D):" superClass="arm.assembler.option.preprocessdefs" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CORE0"/>
-									<listOptionValue builtIn="false" value="NDEBUG"/>
+									<listOptionValue builtIn="false" value="_DEBUG"/>
 									<listOptionValue builtIn="false" value="_RTE_"/>
 									<listOptionValue builtIn="false" value="__ADUCM3029__"/>
 									<listOptionValue builtIn="false" value="__SILICON_REVISION__=0xffff"/>
 								</option>
 								<option id="arm.assembler.option.additionaldirectories.161676053" name="Additional include directories (-I):" superClass="arm.assembler.option.additionaldirectories" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/system}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${NO_OS_HOME}\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${NO_OS_HOME}\drivers\platform\aducm3029&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.6.0/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
@@ -169,7 +202,7 @@
 								<option id="arm.base.compiler.option.sirevision.594092563" name="-msi-revision" superClass="arm.base.compiler.option.sirevision" value=" any" valueType="string"/>
 								<option id="arm.base.compiler.option.preprocessdefs.2040298695" name="Preprocessor definitions (-D):" superClass="arm.base.compiler.option.preprocessdefs" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CORE0"/>
-									<listOptionValue builtIn="false" value="NDEBUG"/>
+									<listOptionValue builtIn="false" value="_DEBUG"/>
 									<listOptionValue builtIn="false" value="_RTE_"/>
 									<listOptionValue builtIn="false" value="__ADUCM3029__"/>
 									<listOptionValue builtIn="false" value="__SILICON_REVISION__=0xffff"/>
@@ -177,6 +210,8 @@
 								<option id="arm.toolchain.cpp.compiler.option.coreid.348535688" name="Specify the core Id (-DCORE[A|B|0-2])" superClass="arm.toolchain.cpp.compiler.option.coreid" value="0" valueType="string"/>
 								<option id="arm.base.compiler.option.include.paths.15231722" name="Additional include directories (-I):" superClass="arm.base.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/system}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${NO_OS_HOME}\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${NO_OS_HOME}\drivers\platform\aducm3029&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/ARM/CMSIS/5.6.0/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${cmsis_pack_root}/AnalogDevices/ADuCM302x_DFP/3.2.0/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}/RTE&quot;"/>
@@ -230,10 +265,29 @@
 							<tool id="arm.toolchain.gcc.objcopy.1472362991" name="CrossCore GCC ARM Embedded Object Copier" superClass="arm.toolchain.gcc.objcopy"/>
 						</toolChain>
 					</folderInfo>
+					<folderInfo id="arm.toolchain.gcc.target.exe.release.510793364.system" name="system" resourcePath="system">
+						<toolChain id="arm.gcc.toolchain.1343876143" name="CrossCore GCC ARM Embedded Toolchain" superClass="arm.gcc.toolchain" unusedChildren="">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="arm.toolchain.platform.base" name="Development Platform" osList="all" superClass="arm.toolchain.platform.base"/>
+							<tool id="arm.toolchain.gcc.assembler.166736069" name="CrossCore GCC ARM Embedded Assembler" superClass="arm.toolchain.gcc.assembler.1399842810">
+								<inputType id="arm.toolchain.assembler.base.input.938474301" superClass="arm.toolchain.assembler.base.input"/>
+							</tool>
+							<tool id="arm.toolchain.gcc.c.compiler.1032089255" name="CrossCore GCC ARM Embedded C Compiler" superClass="arm.toolchain.gcc.c.compiler.1749799750">
+								<inputType id="arm.toolchain.gcc.c.input.2012063029" superClass="arm.toolchain.gcc.c.input"/>
+							</tool>
+							<tool id="arm.toolchain.gcc.c.linker.511293033" name="CrossCore GCC ARM Embedded C Linker" superClass="arm.toolchain.gcc.c.linker.837856472"/>
+							<tool id="arm.toolchain.gcc.cpp.compiler.1474977055" name="CrossCore GCC ARM Embedded C++ Compiler" superClass="arm.toolchain.gcc.cpp.compiler.700540941"/>
+							<tool id="arm.toolchain.gcc.cpp.linker.792366363" name="CrossCore GCC ARM Embedded C++ Linker" superClass="arm.toolchain.gcc.cpp.linker.560881047"/>
+							<tool id="arm.toolchain.gcc.archiver.707586435" name="CrossCore GCC ARM Embedded Archiver" superClass="arm.toolchain.gcc.archiver.888102084"/>
+							<tool id="arm.loader.1112662229" name="ARM Loader Base" superClass="arm.loader.1661325769"/>
+							<tool id="arm.toolchain.gcc.objcopy.1367795641" name="CrossCore GCC ARM Embedded Object Copier" superClass="arm.toolchain.gcc.objcopy.1472362991"/>
+						</toolChain>
+					</folderInfo>
 					<sourceEntries>
-						<entry excluding="system|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="util|platform_drivers|system|src" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="platform_drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="system"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="util"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -242,12 +296,6 @@
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="ADuCM3029_no_os_test_project.arm.toolchain.gcc.target.exe.1974800973" name="GCC ARM Embedded Executable Project" projectType="arm.toolchain.gcc.target.exe"/>
-	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="arm.toolchain.gcc.target.exe.release.510793364;arm.toolchain.gcc.target.exe.release.510793364.;arm.toolchain.gcc.c.compiler.1749799750;arm.toolchain.gcc.c.input.1039364184">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="org.eclipse.cdt.core.language.mapping">
@@ -272,6 +320,26 @@
 			<file name="RTE/Device/ADuCM3029/system_ADuCM3029.c" version="3.2.0"/>
 		</files>
 	</storageModule>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Multiple configurations">
+			<resource resourceType="PROJECT" workspacePath="/ADuCM3029_no_os_test_project"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/ADuCM3029_no_os_test_project"/>
+		</configuration>
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/ADuCM3029_no_os_test_project"/>
+		</configuration>
+	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="arm.toolchain.gcc.target.exe.release.510793364;arm.toolchain.gcc.target.exe.release.510793364.;arm.toolchain.gcc.c.compiler.1749799750;arm.toolchain.gcc.c.input.1039364184">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="arm.toolchain.gcc.target.exe.debug.1014296431;arm.toolchain.gcc.target.exe.debug.1014296431.;arm.toolchain.gcc.c.compiler.62335307;arm.toolchain.gcc.c.input.739188878">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

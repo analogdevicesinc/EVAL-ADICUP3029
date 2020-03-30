@@ -31,10 +31,26 @@
 		<nature>com.analog.crosscore.managedbuilder.core.CCESProjectNature</nature>
 		<nature>com.arm.cmsis.pack.project.RteNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>platform_drivers</name>
+			<type>2</type>
+			<locationURI>NO_OS_HOME/drivers/platform/aducm3029</locationURI>
+		</link>
+		<link>
+			<name>util</name>
+			<type>2</type>
+			<locationURI>NO_OS_HOME/util</locationURI>
+		</link>
+	</linkedResources>
 	<variableList>
 		<variable>
 			<name>CCES</name>
 			<value>file:/C:/Analog%20Devices/CrossCore%20Embedded%20Studio%202.8.0</value>
+		</variable>
+		<variable>
+			<name>NO_OS_HOME</name>
+			<value>$%7BPARENT-2-PROJECT_LOC%7D/no-OS</value>
 		</variable>
 	</variableList>
 </projectDescription>
