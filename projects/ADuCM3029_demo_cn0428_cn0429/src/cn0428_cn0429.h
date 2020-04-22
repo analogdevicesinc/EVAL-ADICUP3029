@@ -1,10 +1,10 @@
 /*******************************************************************************
 *   @file     cn0428_cn0429.h
 *   @brief    header file for CN0429/CN0428 support functions
-*   @version  V0.1
+*   @version  V0.2
 *   @author   ADI
 ********************************************************************************
- * Copyright 2018(c) Analog Devices, Inc.
+ * Copyright 2020(c) Analog Devices, Inc.
  *
  * All rights reserved.
  *
@@ -110,7 +110,7 @@ uint8_t *FindArgv(uint8_t *args);
 void GetArgv(char *dst, uint8_t *args);
 void CmdProcess(void);
 cmdFunc FindCommand(char *cmd);
-void CN0429_SetDefaultSns(uint8_t *args);
+void CN0429_SwitchSns(uint8_t *args);
 void CN0429_SnsConnected(uint8_t *args);
 void CN0429_RdCfgs(uint8_t *args);
 void CN0429_RdTemp(uint8_t *args);

@@ -1,10 +1,10 @@
 /*******************************************************************************
 *   @file     adi_m355_gas_sensor.h
 *   @brief    Gas sensor class object header file
-*   @version  V0.1
+*   @version  V0.2
 *   @author   ADI
 ********************************************************************************
- * Copyright 2018(c) Analog Devices, Inc.
+ * Copyright 2020(c) Analog Devices, Inc.
  *
  * All rights reserved.
  *
@@ -48,7 +48,7 @@
 #include <drivers/spi/adi_spi.h>
 
 
-#define	GET_STATUS			0x02
+#define	GET_STATUS				0x02
 #define SET_TEMPERATURE			0x03
 #define READ_TEMPERATURE		0x04
 #define SET_HUMIDITY			0x05
@@ -59,8 +59,8 @@
 #define STOP_MEASUREMENTS		0x0A
 #define SET_TIA_GAIN			0x0C
 #define READ_TIA_GAIN			0x0E
-#define SET_VBIAS			0x10
-#define READ_VBIAS			0x12
+#define SET_VBIAS				0x10
+#define READ_VBIAS				0x12
 #define SET_VZERO_VOLTAGE		0x14
 #define READ_VZERO_VOLTAGE		0x16
 #define SET_SENSOR_TYPE			0x18
@@ -69,19 +69,27 @@
 #define READ_SENSOR_SENS		0x1B
 #define	SET_TEMP_COMP			0x1C
 #define READ_TEMP_COMP			0x1D
-#define RUN_EIS				0x1E
+#define RUN_EIS					0x1E
 #define READ_EIS_RESULTS		0x1F
 #define READ_AVG_LSB			0x20
-#define READ_EIS_RESULTS_FULL		0x25
+#define READ_EIS_RESULTS_FULL	0x25
 #define READ_RAW_LSB			0x26
 #define READ_AVG_PPB			0x30
 #define READ_RAW_PPB			0x40
 #define RUN_PULSE_TEST			0x45
-#define READ_PULSE_TEST_RESULTS		0x50
-#define SET_RLOAD			0x51
-#define READ_RLOAD			0x52
+#define READ_PULSE_TEST_RESULTS	0x50
+#define SET_RLOAD				0x51
+#define READ_RLOAD				0x52
 #define READ_200R_RTIA_CAL_RESULT	0x55
 #define SET_I2C_ADDRESS			0x80
+
+#define NO_OF_EIS_RESULTS		240u
+#define NO_OF_EIS_FULL_RESULTS	1000u
+#define PULSE_AMPLITUDE_MIN		1u
+#define PULSE_AMPLITUDE_MAX		3u
+#define PULSE_DURATION_MIN		10u
+#define PULSE_DURATION_MAX		200u
+#define PULSE_DURATION_DEFAULT	100u
 
 typedef enum {
 	READ = 0,
@@ -96,7 +104,7 @@ namespace adi_sensor_swpack
  * @brief M355 Gas Sensor class interface.
  *
  **/
-class M355_GAS: public Gas_Reading
+class M355_GAS: public Gas_Sensor
 {
 public:
 	/*!< Pure virtual functions must be implemented by the derived class */
@@ -106,7 +114,7 @@ public:
 	virtual SENSOR_RESULT stop();
 	virtual SENSOR_RESULT close();
 
-	virtual SENSOR_RESULT openWithAddr(uint8_t sensor_address);
+	virtual SENSOR_RESULT open(uint8_t sensor_address);
 	virtual SENSOR_RESULT I2CReadWrite(uint8_t RW, uint8_t RegAddr,
 					   uint8_t *pData, uint16_t size);
 	virtual SENSOR_RESULT SensorInit(uint8_t sensor_address);

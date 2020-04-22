@@ -1,10 +1,10 @@
 /*******************************************************************************
  *   @file     ADuCM3029_demo_cn0428_cn0429.cpp
  *   @brief    Main project source file
- *   @version  V0.1
+ *   @version  V0.2
  *   @author   ADI
 ********************************************************************************
- * Copyright 2018(c) Analog Devices, Inc.
+ * Copyright 2020(c) Analog Devices, Inc.
  *
  * All rights reserved.
  *
@@ -103,8 +103,13 @@ char &tempChar = onecharstring[0];
 
 bool detected_sensors[NUM_SENSORS] = { };
 
+bool pulseTestInProgress = false;
+bool eisTestInProgress = false;
+extern Gas_Sensor *pGasSensor;
+extern uint8_t uiDefaultAddress;
+
 /* used for timing the data update rate when in STREAM state */
-uint16_t streamTickCnt = 0;
+uint16_t tickCnt = 0;
 
 /* used as configuration parameter for data update rate in STREAM mode
  *	default value is 1, i.e. 1 second update rate
@@ -291,7 +296,6 @@ GResult UART_TX_DIR(const char *initialcmd)
 
 /**
  @brief Perform initialization of sensors.
-
  @return none
  **/
 void InitState(void)
@@ -340,7 +344,25 @@ void DataDisplayFSM(void)
 		break;
 
 	case COMMAND:
-		/* waiting for user commands (CN0429) */
+		if (initialcycle) {
+			/* Reset Command and reenable UART Interrupt */
+			flushBuff(cmdInString, sizeof(cmdInString));
+			cmdInCnt = 0;
+			cmdReceived = 0;
+			adi_uart_SubmitRxBuffer(hDevice, &RXchar, 1, 0u);
+			initialcycle = 0;
+		}
+		/* Wait until the test is completed. SensorInit will wait until
+		 * the ADuCM355 is not performing tests and is free to communicate.
+		 */
+		if (pulseTestInProgress || eisTestInProgress) {
+			pulseTestInProgress = false;
+			eisTestInProgress = false;
+			delay_ms(250);
+			if (pGasSensor->SensorInit(uiDefaultAddress) == SENSOR_ERROR_NONE) {
+				UART_TX("Test finished! Results ready." _EOS);
+			}
+		}
 		break;
 
 	case STREAM_GAS:
@@ -422,6 +444,8 @@ int main(int argc, char *argv[])
 		return (ePwrResult);
 	}
 
+	delay_ms(1000);
+
 	/* Initialize GPIO */
 	GPIO_Init();
 
@@ -440,17 +464,18 @@ int main(int argc, char *argv[])
 	while (1) {
 		delay_ms(10);
 
+		/* waiting for user commands (CN0429) */
 		if (cmdReceived && FSM_State != WATER) {
-			CmdProcess();
-			cmdReceived = 0;
+				CmdProcess();
+				cmdReceived = 0;
 		}
 
 		if (FSM_State == STREAM_GAS) {
-			streamTickCnt++;
-			if (streamTickCnt >= ((100 * streamTickCfg) - 25)) {
+			tickCnt++;
+			if (tickCnt >= ((100 * streamTickCfg) - 25)) {
 				/* -25 to account for delays in readout */
 				DataDisplayFSM();
-				streamTickCnt = 0;
+				tickCnt = 0;
 			}
 		} else {
 			DataDisplayFSM();

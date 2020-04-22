@@ -1,10 +1,10 @@
 /*******************************************************************************
  *   @file     adi_gas_sensor.h
  *   @brief    Gas sensor class object header file
- *   @version  V0.1
+ *   @version  V0.2
  *   @author   ADI
 ********************************************************************************
- * Copyright 2018(c) Analog Devices, Inc.
+ * Copyright 2020(c) Analog Devices, Inc.
  *
  * All rights reserved.
  *
@@ -52,7 +52,7 @@ namespace adi_sensor_swpack
  * @brief Gas Sensor Class. Basic functions borrowed by water sensor also.
  *
  **/
-class Gas_Reading: public Sensor
+class Gas_Sensor: public Sensor
 {
 public:
 
@@ -110,7 +110,7 @@ public:
 
 	virtual SENSOR_RESULT ReadDataBits(uint16_t *pSensData) = 0;
 
-	virtual SENSOR_RESULT openWithAddr(uint8_t sensor_address) = 0;
+	virtual SENSOR_RESULT open(uint8_t sensor_address) = 0;
 
 	virtual SENSOR_RESULT I2CReadWrite(uint8_t RW, uint8_t RegAddr,
 					   uint8_t *pData, uint16_t size) = 0;
@@ -178,10 +178,10 @@ public:
 	virtual SENSOR_RESULT close() = 0;
 
 	/* Constructor */
-	Gas_Reading() { }
+	Gas_Sensor() { }
 
 	/* Destructor */
-	virtual ~Gas_Reading() { }
+	virtual ~Gas_Sensor() { }
 
 	/**
 	 * @brief	Returns I2C slave address
