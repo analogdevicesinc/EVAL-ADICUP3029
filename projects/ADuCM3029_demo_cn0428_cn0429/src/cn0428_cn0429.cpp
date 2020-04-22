@@ -1,10 +1,10 @@
 /*******************************************************************************
 *   @file     cn0428_cn0429.cpp
 *   @brief    Contains driver and support functions for CN0429/CN0428
-*   @version  V0.1
+*   @version  V0.2
 *   @author   ADI
 ********************************************************************************
- * Copyright 2018(c) Analog Devices, Inc.
+ * Copyright 2020(c) Analog Devices, Inc.
  *
  * All rights reserved.
  *
@@ -54,23 +54,26 @@ extern const ADI_GPIO_PORT	CS_Port[];
 extern const ADI_GPIO_DATA	CS_Pin[];
 extern const uint8_t		sensor_addresses[];
 extern uint8_t			TXbuff[256];
-extern char			&tempChar; /* Guaranteed to be followed by 0 */
+extern char			&tempChar; 	/* Guaranteed to be followed by 0 */
 
 M355_GAS m355_gas_sensor;
-Gas_Reading *pGasSensor = &m355_gas_sensor;
+Gas_Sensor *pGasSensor = &m355_gas_sensor;
 
 uint8_t uiDefaultSite = 0;		/* selected sensor location */
-uint8_t uiDefaultAddress = 0;		/* address of the selectet sensor location */
+uint8_t uiDefaultAddress = 0;	/* address of the selectet sensor location */
 uint8_t uiPulseAmpl = 0;		/* pulse test amplitude */
 uint8_t uiPulseDur = 0;			/* pulse test duration */
 
 uint8_t rcal = 0;
-uint8_t gBuff[64] = { 0 };			/* general use buffer */
+uint8_t gBuff[64] = { 0 };					/* general use buffer */
 uint8_t pulseResultBuffer[6144] = { 0 };	/* buffer holding pulse test result */
 uint8_t EISResponseBuff[1024] = { 0 };		/* buffer holding EIS results */
-uint32_t EISresults[192] = { 0 };		/* array of EIS results */
+uint32_t EISresults[256] = { 0 };			/* array of EIS results */
 int32_t EISpartialDFTresult[8] = { 0 };		/* array of partial results (DFT impedance) of EIS */
-double EISpartialresult[8] = { 0 };		/* array of partial (one line) EIS results */
+double EISpartialresult[12] = { 0 };		/* array of partial (one line) EIS results */
+
+extern bool pulseTestInProgress;
+extern bool eisTestInProgress;
 
 /* borrow this memory space for water quality results */
 uint8_t *Slave_Rx_Buffer = pulseResultBuffer;
@@ -87,7 +90,7 @@ const char* rload[] = { "0R", "10R", "30R", "50R", "100R", "1k6", "3k1", "3k6" }
 const bool no_sensors[NUM_SENSORS] = { };
 extern bool detected_sensors[];
 
-extern uint16_t streamTickCnt;
+extern uint16_t tickCnt;
 extern uint16_t streamTickCfg;
 
 extern eFSM_State FSM_State;
@@ -100,14 +103,12 @@ extern eFSM_State FSM_State;
 char const *CmdCommands[] = {
 	"",
 	"help",
-	"defaultsensor",
+	"switchsensor",
 	"sensorsconnected",
 	"readconfigs",
 	"readtemp",
 	"readhum",
 	"setmeastime",
-	"startmeas",
-	"stopmeas",
 	"setrtia",
 	"setrload",
 	"setvbias",
@@ -130,14 +131,12 @@ char const *CmdCommands[] = {
 cmdFunc CmdFun[] = {
 	DoNothing,
 	CN0429_CmdHelp,
-	CN0429_SetDefaultSns,
+	CN0429_SwitchSns,
 	CN0429_SnsConnected,
 	CN0429_RdCfgs,
 	CN0429_RdTemp,
 	CN0429_RdHum,
 	CN0429_CfgMeasTime,
-	CN0429_StartMeas,
-	CN0429_StopMeas,
 	CN0429_CfgRtia,
 	CN0429_CfgRload,
 	CN0429_CfgVbias,
@@ -157,15 +156,13 @@ cmdFunc CmdFun[] = {
 
 /**
  @brief Display info for <help> command
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_CmdHelp(uint8_t *args)
 {
 	UART_TX("help                           -Print commands" _EOS);
-	UART_TX("defaultsensor <site>           -Set default sensor site" _EOS);
+	UART_TX("switchsensor <site>            -Select the sensor site" _EOS);
 	UART_TX("                                  <site> = 1, 2, 3, 4" _EOS);
 	UART_TX("sensorsconnected               -Print which sensors are connected"
 		_EOS);
@@ -179,9 +176,6 @@ void CN0429_CmdHelp(uint8_t *args)
 	UART_TX("                                  <time> = <50-32000>" _EOS);
 	UART_TX("                                  ADC performs avg of 10 samples at this interval"
 		_EOS);
-	UART_TX("startmeas                      -Start ADC sampling at configured interval"
-		_EOS);
-	UART_TX("stopmeas                       -Stop ADC sampling the sensor" _EOS);
 	UART_TX("setrtia <rtia>                 -Configure TIA resistance" _EOS);
 	UART_TX("                                  <rtia> = <0-26> equals 0R - 512k"
 		_EOS);
@@ -222,11 +216,8 @@ void CN0429_CmdHelp(uint8_t *args)
 
 /**
  @brief Finds the next command line argument
-
  @param args - pointer to the arguments on the command line.
-
  @return pointer to the next argument.
-
  **/
 uint8_t *FindArgv(uint8_t *args)
 {
@@ -246,12 +237,9 @@ uint8_t *FindArgv(uint8_t *args)
 
 /**
  @brief Separates a command line argument
-
  @param dst - pointer to a buffer where the argument will be copied
  @param args - pointer to the current position of the command line .
-
  @return none
-
  **/
 void GetArgv(char *dst, uint8_t *args)
 {
@@ -269,7 +257,6 @@ void GetArgv(char *dst, uint8_t *args)
 
 /**
  @brief Command line process function
-
  @return none
  **/
 void CmdProcess(void)
@@ -291,7 +278,6 @@ void CmdProcess(void)
 
 /**
  @brief Command line prompt. Caller must verify that only the enabled board can run this.
-
  @return int - UART status: UART_SUCCESS or error status
  **/
 void CN0429_CmdPrompt(void)
@@ -308,9 +294,7 @@ void CN0429_CmdPrompt(void)
 
 /**
  @brief Find available commands
-
  @param cmd - command to search
-
  @return cmdFunc - return the specific function for available command or NULL
  for invalid command
  **/
@@ -350,13 +334,11 @@ void DoNothing(uint8_t *args)
 
 /**
  @brief Set sensor to use for single sensor commands
-
  @param args - pointer to the arguments on the command line.
  site: 1, 2, 3, or 4
-
  @return none
  **/
-void CN0429_SetDefaultSns(uint8_t *args)
+void CN0429_SwitchSns(uint8_t *args)
 {
 	uint8_t *p = args;
 	char arg[17];
@@ -383,9 +365,21 @@ void CN0429_SetDefaultSns(uint8_t *args)
 		uiDefaultAddress = sensor_addresses[3];
 	} else {
 		UART_TX("Invalid site" _EOS);
+		return;
 	}
-	sprintf(buff, "Selected site: %d%s", uiDefaultSite, _EOS);
-	UART_TX((const char*) buff);
+
+	eSensorResult = pGasSensor->SensorInit(uiDefaultAddress);
+	if (eSensorResult != SENSOR_ERROR_NONE) {
+		UART_TX("No sensor connected at selected site!" _EOS);
+		eSensorResult = pGasSensor->close();
+		return;
+	}
+	else {
+		snprintf(buff, 20, "Selected site: %d%s", uiDefaultSite, _EOS);
+		UART_TX((const char*) buff);
+	}
+
+	eSensorResult = pGasSensor->close();
 }
 
 /*!
@@ -400,14 +394,14 @@ SENSOR_RESULT CN0429_GetSensorCfg(uint8_t sensor_address)
 	uint16_t unsigVal = 0;
 	uint32_t unsiglVal = 0;
 
-	eSensorResult = pGasSensor->openWithAddr(sensor_address);
+	eSensorResult = pGasSensor->open(sensor_address);
 	if (eSensorResult != SENSOR_ERROR_NONE)
 		return eSensorResult;
 	delay_ms(5);
 
 	for (uint8_t i = 0; i < NUM_SENSORS; i++) {
 		if (sensor_address == sensor_addresses[i])
-			sprintf((char*) &TXbuff,
+			snprintf((char*) &TXbuff, 256,
 				"Config of sensor on site %d:%s", i + 1,
 				_EOS);
 	}
@@ -420,7 +414,7 @@ SENSOR_RESULT CN0429_GetSensorCfg(uint8_t sensor_address)
 	if (eSensorResult != SENSOR_ERROR_NONE)
 		return eSensorResult;
 	flushBuff(TXbuff, sizeof(TXbuff));
-	sprintf((char*) TXbuff, "RTIA = %s ohm%s", rtia[pBuff[0]], _EOS);
+	snprintf((char*) TXbuff, 256, "RTIA = %s ohm%s", rtia[pBuff[0]], _EOS);
 	UART_TX((const char*) TXbuff);
 	delay_ms(5);
 
@@ -429,7 +423,7 @@ SENSOR_RESULT CN0429_GetSensorCfg(uint8_t sensor_address)
 	if (eSensorResult != SENSOR_ERROR_NONE)
 		return eSensorResult;
 	flushBuff(TXbuff, sizeof(TXbuff));
-	sprintf((char*) TXbuff, "Rload = %s ohm%s", rload[pBuff[0]], _EOS);
+	snprintf((char*) TXbuff, 256, "Rload = %s ohm%s", rload[pBuff[0]], _EOS);
 	UART_TX((const char*) TXbuff);
 	delay_ms(5);
 
@@ -437,7 +431,7 @@ SENSOR_RESULT CN0429_GetSensorCfg(uint8_t sensor_address)
 	if (eSensorResult != SENSOR_ERROR_NONE)
 		return eSensorResult;
 	flushBuff(TXbuff, sizeof(TXbuff));
-	sprintf((char*) TXbuff, "Vbias = %d mV%s", sigVal, _EOS);
+	snprintf((char*) TXbuff, 256, "Vbias = %d mV%s", sigVal, _EOS);
 	UART_TX((const char*) TXbuff);
 	delay_ms(5);
 
@@ -445,7 +439,7 @@ SENSOR_RESULT CN0429_GetSensorCfg(uint8_t sensor_address)
 	if (eSensorResult != SENSOR_ERROR_NONE)
 		return eSensorResult;
 	flushBuff(TXbuff, sizeof(TXbuff));
-	sprintf((char*) TXbuff, "Sensitivity = %.2f nA/ppm%s",
+	snprintf((char*) TXbuff, 256, "Sensitivity = %.2f nA/ppm%s",
 		(unsiglVal / 100.0), _EOS);
 	UART_TX((const char*) TXbuff);
 	delay_ms(5);
@@ -454,7 +448,7 @@ SENSOR_RESULT CN0429_GetSensorCfg(uint8_t sensor_address)
 	if (eSensorResult != SENSOR_ERROR_NONE)
 		return eSensorResult;
 	flushBuff(TXbuff, sizeof(TXbuff));
-	sprintf((char*) TXbuff, "Measurement Time = %d msec%s", unsigVal, _EOS);
+	snprintf((char*) TXbuff, 256, "Measurement Time = %d msec%s", unsigVal, _EOS);
 	UART_TX((const char*) TXbuff);
 	delay_ms(5);
 
@@ -472,7 +466,7 @@ SENSOR_RESULT CN0429_GetSensorCfg(uint8_t sensor_address)
 int32_t CN0429_SensorReadoutPPB(uint8_t sensor_address)
 {
 	int32_t PPB_Gas_Reading = 0;
-	eSensorResult = pGasSensor->openWithAddr(sensor_address);
+	eSensorResult = pGasSensor->open(sensor_address);
 	eSensorResult = pGasSensor->ReadDataPPB(&PPB_Gas_Reading);
 	eSensorResult = pGasSensor->close();
 	delay_ms(10);
@@ -481,9 +475,7 @@ int32_t CN0429_SensorReadoutPPB(uint8_t sensor_address)
 
 /**
  @brief Print which sensors are connected
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_SnsConnected(uint8_t *args)
@@ -491,7 +483,7 @@ void CN0429_SnsConnected(uint8_t *args)
 	for (uint8_t i = 0; i < NUM_SENSORS; i++) {
 		if (detected_sensors[i]) {
 			flushBuff(TXbuff, sizeof(TXbuff));
-			sprintf((char*) TXbuff, "Sensor detected on site %d%s",
+			snprintf((char*) TXbuff, 256, "Sensor detected on site %d%s",
 				(i + 1), _EOS);
 			UART_TX((const char*) TXbuff);
 		}
@@ -500,9 +492,7 @@ void CN0429_SnsConnected(uint8_t *args)
 
 /**
  @brief Get configuration of sensors
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_RdCfgs(uint8_t *args)
@@ -517,21 +507,19 @@ void CN0429_RdCfgs(uint8_t *args)
 
 /**
  @brief Read temperature from the daughter board's on-board T&RH sensor
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_RdTemp(uint8_t *args)
 {
 	int16_t temperature = 0;
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	eSensorResult = pGasSensor->ReadTemperature(&temperature);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
 	} else {
-		sprintf((char*) TXbuff, "Temperature = %2.1f degC%s",
+		snprintf((char*) TXbuff, 256, "Temperature = %2.1f degC%s",
 			(temperature / 100.0), _EOS);
 		UART_TX((const char*) TXbuff);
 	}
@@ -539,21 +527,19 @@ void CN0429_RdTemp(uint8_t *args)
 }
 /**
  @brief Read humidity from the daughter board's on-board T&RH sensor
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_RdHum(uint8_t *args)
 {
 	int16_t humidity = 0;
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	eSensorResult = pGasSensor->ReadHumidity(&humidity);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
 	} else {
-		sprintf((char*) TXbuff, "Humidity = %2.1f %%RH%s",
+		snprintf((char*) TXbuff, 256, "Humidity = %2.1f %%RH%s",
 			(humidity / 100.0), _EOS);
 		UART_TX((const char*) TXbuff);
 	}
@@ -562,10 +548,8 @@ void CN0429_RdHum(uint8_t *args)
 
 /**
  @brief Set measurement time (ms)
-
  @param args - pointer to the arguments on the command line.
  time: [msec] 50 - 32000
-
  @return none
  **/
 void CN0429_CfgMeasTime(uint8_t *args)
@@ -598,56 +582,14 @@ void CN0429_CfgMeasTime(uint8_t *args)
 		UART_TX("Out of range! Set to default = 500 ms" _EOS);
 	}
 
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	eSensorResult = pGasSensor->SetMeasurementTime(value);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
 	} else {
-		sprintf((char*) TXbuff, "Measurement time set to %ld msec%s",
-			value, _EOS);
-		UART_TX((const char*) TXbuff);
-	}
-	pGasSensor->close();
-}
-
-/**
- @brief Start ADC sampling the sensor
-
- @param args - pointer to the arguments on the command line.
-
- @return none
- **/
-void CN0429_StartMeas(uint8_t *args)
-{
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
-	flushBuff(TXbuff, sizeof(TXbuff));
-	eSensorResult = pGasSensor->StartMeasurements();
-	if (eSensorResult != SENSOR_ERROR_NONE) {
-		UART_TX("ERROR!" _EOS);
-	} else {
-		sprintf((char*) TXbuff, "Measurement started%s", _EOS);
-		UART_TX((const char*) TXbuff);
-	}
-	pGasSensor->close();
-}
-
-/**
- @brief Stop ADC sampling the sensor
-
- @param args - pointer to the arguments on the command line.
-
- @return none
- **/
-void CN0429_StopMeas(uint8_t *args)
-{
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
-	flushBuff(TXbuff, sizeof(TXbuff));
-	eSensorResult = pGasSensor->StopMeasurements();
-	if (eSensorResult != SENSOR_ERROR_NONE) {
-		UART_TX("ERROR!" _EOS);
-	} else {
-		sprintf((char*) TXbuff, "Measurement stopped%s", _EOS);
+		snprintf((char*) TXbuff, 256,
+			"Measurement time set to %ld msec%s", value, _EOS);
 		UART_TX((const char*) TXbuff);
 	}
 	pGasSensor->close();
@@ -655,10 +597,8 @@ void CN0429_StopMeas(uint8_t *args)
 
 /**
  @brief Program the TIA with the requested gain resistor
-
  @param args - pointer to the arguments on the command line.
  Rtia: from 0 to 26 equals 0R - 512k , see user guide for details
-
  @return none
  **/
 void CN0429_CfgRtia(uint8_t *args)
@@ -692,13 +632,13 @@ void CN0429_CfgRtia(uint8_t *args)
 		UART_TX("Out of range! Set to default = 200 ohm" _EOS);
 	}
 
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	eSensorResult = pGasSensor->SetTIAGain(value);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
 	} else {
-		sprintf((char*) TXbuff, "TIA gain resistor set to %s ohm%s",
+		snprintf((char*) TXbuff, 256, "TIA gain resistor set to %s ohm%s",
 			rtia[value], _EOS);
 		UART_TX((const char*) TXbuff);
 	}
@@ -707,10 +647,8 @@ void CN0429_CfgRtia(uint8_t *args)
 
 /**
  @brief Set sensor bias voltage
-
  @param args - pointer to the arguments on the command line.
  sensor bias: [mV] from -2200 to 2200
-
  @return none
  **/
 void CN0429_CfgVbias(uint8_t *args)
@@ -746,13 +684,13 @@ void CN0429_CfgVbias(uint8_t *args)
 		UART_TX("Out of range! Set to default = 0 mV" _EOS);
 	}
 
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	eSensorResult = pGasSensor->SetSensorBias(value);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
 	} else {
-		sprintf((char*) TXbuff, "Sensor bias set to %ld mV%s", value,
+		snprintf((char*) TXbuff, 256, "Sensor bias set to %ld mV%s", value,
 			_EOS);
 		UART_TX((const char*) TXbuff);
 	}
@@ -761,10 +699,8 @@ void CN0429_CfgVbias(uint8_t *args)
 
 /**
  @brief Configure sensor sensitivity
-
  @param args - pointer to the arguments on the command line.
  sensitivity: [nA/ppm]
-
  @return none
  **/
 void CN0429_CfgSens(uint8_t *args)
@@ -810,13 +746,13 @@ void CN0429_CfgSens(uint8_t *args)
 		return;
 	}
 
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	eSensorResult = pGasSensor->SetSensorSensitivity(value * 100);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
 	} else {
-		sprintf((char*) TXbuff,
+		snprintf((char*) TXbuff, 256,
 			"Sensor sensitivity set to %2.2f nA/ppm%s",
 			value, _EOS);
 		UART_TX((const char*) TXbuff);
@@ -826,41 +762,47 @@ void CN0429_CfgSens(uint8_t *args)
 
 /**
  @brief Start electrochemical impedance spectroscopy test
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_RunEIS(uint8_t *args)
 {
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	eSensorResult = pGasSensor->RunEISMeasurement();
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
+		pGasSensor->close();
+		return;
 	} else {
-		sprintf((char*) TXbuff, "EIS test started%s", _EOS);
+		snprintf((char*) TXbuff, 256, "EIS test started. Depending on the frequency range,%s", _EOS);
+		UART_TX((const char*) TXbuff);
+		flushBuff(TXbuff, sizeof(TXbuff));
+		snprintf((char*) TXbuff, 256, "this can take several minutes. Don't enter additional%s", _EOS);
+		UART_TX((const char*) TXbuff);
+		flushBuff(TXbuff, sizeof(TXbuff));
+		snprintf((char*) TXbuff, 256, "commands until the test is finished.%s", _EOS);
 		UART_TX((const char*) TXbuff);
 	}
 	pGasSensor->close();
+
+	eisTestInProgress = true;
 }
 
 /**
  @brief Read electrochemical impedance spectroscopy results
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_RdEIS(uint8_t *args)
 {
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	memset(EISResponseBuff, 0, sizeof(EISResponseBuff));
 	memset(EISresults, 0, sizeof(EISresults));
 	eSensorResult = pGasSensor->ReadEISResults(EISResponseBuff);
 
-	for (int i = 0; i < 36; i++) {
+	for (int i = 0; i < 60; i++) {
 		gBuff[0] = EISResponseBuff[0 + (i * 4)];
 		gBuff[1] = EISResponseBuff[1 + (i * 4)];
 		gBuff[2] = EISResponseBuff[2 + (i * 4)];
@@ -874,19 +816,24 @@ void CN0429_RdEIS(uint8_t *args)
 		return;
 	}
 
-	sprintf((char*) TXbuff, "Frequency, Magnitude, Phase%s", _EOS);
+	snprintf((char*) TXbuff, 256, "Frequency, Magnitude, Phase, Real Mag, Imag Mag%s", _EOS);
 	UART_TX((const char*) TXbuff);
 	for (int j = 0; j < 12; j++) {
-		int2binString(EISresults[0 + (j * 3)], gBuff, 32);
+		int2binString(EISresults[0 + (j * 5)], gBuff, 32);
 		EISpartialresult[0] = Ieee754ConvertToDouble(gBuff);
-		int2binString(EISresults[1 + (j * 3)], gBuff, 32);
+		int2binString(EISresults[1 + (j * 5)], gBuff, 32);
 		EISpartialresult[1] = Ieee754ConvertToDouble(gBuff);
-		int2binString(EISresults[2 + (j * 3)], gBuff, 32);
+		int2binString(EISresults[2 + (j * 5)], gBuff, 32);
 		EISpartialresult[2] = Ieee754ConvertToDouble(gBuff);
+		int2binString(EISresults[3 + (j * 5)], gBuff, 32);
+		EISpartialresult[3] = Ieee754ConvertToDouble(gBuff);
+		int2binString(EISresults[4 + (j * 5)], gBuff, 32);
+		EISpartialresult[4] = Ieee754ConvertToDouble(gBuff);
 
 		flushBuff(TXbuff, sizeof(TXbuff));
-		sprintf((char*) TXbuff, "%f, %f, %f%s", EISpartialresult[0],
-			EISpartialresult[1], EISpartialresult[2], _EOS);
+		snprintf((char*) TXbuff, 256, "%f, %f, %f, %f, %f%s", EISpartialresult[0],
+			EISpartialresult[1], EISpartialresult[2], EISpartialresult[3],
+			EISpartialresult[4], _EOS);
 		UART_TX((const char*) TXbuff);
 	}
 
@@ -895,21 +842,19 @@ void CN0429_RdEIS(uint8_t *args)
 
 /**
  @brief Read electrochemical impedance spectroscopy FULL results
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_RdEISfull(uint8_t *args)
 {
 	uint8_t i;
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	memset(EISResponseBuff, 0, sizeof(EISResponseBuff));
 	memset(EISresults, 0, sizeof(EISresults));
 	eSensorResult = pGasSensor->ReadEISResultsFull(EISResponseBuff);
 
-	for (i = 0; i < 180; i++) {
+	for (i = 0; i < 204; i++) {
 		gBuff[0] = EISResponseBuff[0 + (i * 4)];
 		gBuff[1] = EISResponseBuff[1 + (i * 4)];
 		gBuff[2] = EISResponseBuff[2 + (i * 4)];
@@ -923,35 +868,36 @@ void CN0429_RdEISfull(uint8_t *args)
 		return;
 	}
 
-	sprintf((char*) TXbuff,
-		"Frequency, Rload+Rsens_real, Rload+Rsens_img, Rload_real, Rload_imag, Rcal_real, Rcal_imag, Mag_Rsens+Rload, Mag_Rload, Mag_Rcal, Mag_Rsens, MAG, PHASE%s",
+	snprintf((char*) TXbuff, 256,
+		"Frequency, Rload+Rsens_real, Rload+Rsens_img, Rload_real, Rload_imag, Rcal_real, Rcal_imag, Mag_Rsens+Rload, Mag_Rload, Mag_Rcal, Mag_Rsens, MAG, PHASE, Real_Mag, Imag_Mag%s",
 		_EOS);
 	UART_TX((const char*) TXbuff);
 	for (int j = 0; j < 12; j++) {
-		int2binString(EISresults[0 + (j * 15)], gBuff, 32);
+		int2binString(EISresults[0 + (j * 17)], gBuff, 32);
 		EISpartialresult[0] = Ieee754ConvertToDouble(gBuff);
 
 		for (i = 0; i < 6; i++) {
 			memcpy(&EISpartialDFTresult[i],
-			       (int32_t*) &EISresults[i + 1 + (j * 15)],
-			       sizeof(EISresults[i + 1 + (j * 15)]));
+			       (int32_t*) &EISresults[i + 1 + (j * 17)],
+			       sizeof(EISresults[i + 1 + (j * 17)]));
 		}
 
-		for (i = 1; i < 7; i++) {
-			int2binString(EISresults[i + 6 + (j * 15)], gBuff, 32);
+		for (i = 1; i < 11; i++) {
+			int2binString(EISresults[i + 6 + (j * 17)], gBuff, 32);
 			EISpartialresult[i] = Ieee754ConvertToDouble(gBuff);
 		}
 
 		flushBuff(TXbuff, sizeof(TXbuff));
-		sprintf((char*) TXbuff,
-			"%f, %ld, %ld, %ld, %ld, %ld, %ld, %f, %f, %f, %f, %f, %f%s",
+		snprintf((char*) TXbuff, 256,
+			"%f, %ld, %ld, %ld, %ld, %ld, %ld, %f, %f, %f, %f, %f, %f, %f, %f%s",
 			EISpartialresult[0], EISpartialDFTresult[0],
 			EISpartialDFTresult[1], EISpartialDFTresult[2],
 			EISpartialDFTresult[3], EISpartialDFTresult[4],
 			EISpartialDFTresult[5], EISpartialresult[1],
 			EISpartialresult[2], EISpartialresult[3],
 			EISpartialresult[4], EISpartialresult[5],
-			EISpartialresult[6], _EOS);
+			EISpartialresult[6], EISpartialresult[9],
+			EISpartialresult[10], _EOS);
 		UART_TX((const char*) TXbuff);
 	}
 	pGasSensor->close();
@@ -959,21 +905,19 @@ void CN0429_RdEISfull(uint8_t *args)
 
 /**
  @brief Read the value of the 200R calibration resistor
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_RdRcal(uint8_t *args)
 {
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	flushBuff(gBuff, sizeof(gBuff));
 	eSensorResult = pGasSensor->Read200RCal(gBuff);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
 	} else {
-		sprintf((char*) TXbuff, "Rcal = %d ohm%s", gBuff[0], _EOS);
+		snprintf((char*) TXbuff, 256, "Rcal = %d ohm%s", gBuff[0], _EOS);
 		UART_TX((const char*) TXbuff);
 	}
 	pGasSensor->close();
@@ -981,14 +925,12 @@ void CN0429_RdRcal(uint8_t *args)
 
 /**
  @brief Start chronoamperometry pulse test
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_RunPulse(uint8_t *args)
 {
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 
 	flushBuff(gBuff, sizeof(gBuff));
 	eSensorResult = pGasSensor->Read200RCal(gBuff);
@@ -998,25 +940,28 @@ void CN0429_RunPulse(uint8_t *args)
 	eSensorResult = pGasSensor->RunPulseTest(uiPulseAmpl, uiPulseDur);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
+		pGasSensor->close();
+		return;
 	} else {
-		sprintf((char*) TXbuff, "Pulse test started%s", _EOS);
+		snprintf((char*) TXbuff, 256, "Pulse test started.%s", _EOS);
 		UART_TX((const char*) TXbuff);
 	}
 	pGasSensor->close();
+
+	pulseTestInProgress = true;
 }
 
 /**
  @brief Read results of chronoamperometry pulse test
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_ReadPulse(uint8_t *args)
 {
 	uint16_t value = 0;
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
+	flushBuff(pulseResultBuffer, sizeof(pulseResultBuffer));
 	eSensorResult = pGasSensor->ReadPulseTestResults(&pulseResultBuffer[0],
 			uiPulseAmpl, uiPulseDur);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
@@ -1025,7 +970,7 @@ void CN0429_ReadPulse(uint8_t *args)
 		return;
 	}
 
-	UART_TX("time [msec], current [uA]" _EOS);
+	UART_TX("time [usec], current [uA]" _EOS);
 	uint16_t valToSend = (((uiPulseDur + 10) * 1000) / 110);
 	uint16_t cnt = 0;
 	uint16_t cnt2 = 1;
@@ -1033,7 +978,7 @@ void CN0429_ReadPulse(uint8_t *args)
 		flushBuff(TXbuff, sizeof(TXbuff));
 		value = ((pulseResultBuffer[cnt2] << 8)
 			 | pulseResultBuffer[cnt2 + 1]);
-		sprintf((char*) TXbuff, "%d, %.2f%s", ((cnt) * 110),
+		snprintf((char*) TXbuff, 256, "%d, %.2f%s", ((cnt) * 110),
 			((32768.0 - value) / 65535)
 			* ((1835 * 2 * 1000) / rcal),
 			_EOS);
@@ -1047,10 +992,8 @@ void CN0429_ReadPulse(uint8_t *args)
 
 /**
  @brief Set step amplitude for pulse test
-
  @param args - pointer to the arguments on the command line.
  amplitude: [mV] - Amplitude of the pulse in mV (typically 1mV)
-
  @return none
  **/
 void CN0429_SetPulseAmpl(uint8_t *args)
@@ -1087,17 +1030,15 @@ void CN0429_SetPulseAmpl(uint8_t *args)
 	}
 
 	flushBuff(gBuff, sizeof(gBuff));
-	sprintf((char *) gBuff, "Pulse amplitude set to %d mV%s", uiPulseAmpl,
-		_EOS);
+	snprintf((char *) gBuff, 64, "Pulse amplitude set to %d mV%s",
+		uiPulseAmpl, _EOS);
 	UART_TX((const char*) gBuff);
 }
 
 /**
  @brief Set duration for CAPA test
-
  @param args - pointer to the arguments on the command line.
  duration: [milliseconds] - Duration of the pulse (keep <200 ms)
-
  @return none
  **/
 void CN0429_SetPulseDuration(uint8_t *args)
@@ -1131,17 +1072,15 @@ void CN0429_SetPulseDuration(uint8_t *args)
 	}
 
 	flushBuff(gBuff, sizeof(gBuff));
-	sprintf((char *) gBuff, "Pulse duration set to %d msec%s", uiPulseDur,
+	snprintf((char *) gBuff, 64, "Pulse duration set to %d msec%s", uiPulseDur,
 		_EOS);
 	UART_TX((const char*) gBuff);
 }
 
 /**
  @brief Select sensor load resistor
-
  @param args - pointer to the arguments on the command line.
  Rtia: from 0 to 7 equals 0R - 3k6 , see user guide for details
-
  @return none
  **/
 void CN0429_CfgRload(uint8_t *args)
@@ -1175,13 +1114,13 @@ void CN0429_CfgRload(uint8_t *args)
 		UART_TX("Out of range! Set to default = 10 ohm" _EOS);
 	}
 
-	eSensorResult = pGasSensor->openWithAddr(uiDefaultAddress);
+	eSensorResult = pGasSensor->open(uiDefaultAddress);
 	flushBuff(TXbuff, sizeof(TXbuff));
 	eSensorResult = pGasSensor->SetRload((uint8_t) value);
 	if (eSensorResult != SENSOR_ERROR_NONE) {
 		UART_TX("ERROR!" _EOS);
 	} else {
-		sprintf((char*) TXbuff, "Load resistor set to %s ohm%s",
+		snprintf((char*) TXbuff, 256, "Load resistor set to %s ohm%s",
 			rload[(uint8_t) value], _EOS);
 		UART_TX((const char*) TXbuff);
 	}
@@ -1190,9 +1129,7 @@ void CN0429_CfgRload(uint8_t *args)
 
 /**
  @brief Read ppb value of all sensors
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_RdSensors(uint8_t *args)
@@ -1207,28 +1144,25 @@ void CN0429_RdSensors(uint8_t *args)
 	if (detected_sensors[3])
 		strcat((char*) TXbuff, "Sensor 4[ppb], ");
 	UART_TX((const char*) TXbuff);
+	tickCnt = (100 * streamTickCfg);	// force immediate readout after stream enabled
 	FSM_State = STREAM_GAS;
 }
 
 /**
  @brief Stop reading sensor data
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_StopRd(uint8_t *args)
 {
 	FSM_State = COMMAND;
-	streamTickCnt = 0;
+	tickCnt = 0;
 	UART_TX("Data reading interrupted!" _EOS);
 }
 
 /**
  @brief Configure update rate in STREAM mode
-
  @param args - pointer to the arguments on the command line.
-
  @return none
  **/
 void CN0429_CfgUpdateRate(uint8_t *args)
@@ -1264,14 +1198,13 @@ void CN0429_CfgUpdateRate(uint8_t *args)
 
 	streamTickCfg = value;
 	flushBuff(gBuff, sizeof(gBuff));
-	sprintf((char *) gBuff, "Stream data update rate set to %d sec %s",
+	snprintf((char *) gBuff, 64, "Stream data update rate set to %d sec %s",
 		streamTickCfg, _EOS);
 	UART_TX((const char *) gBuff);
 }
 
 /**
  @brief Stream data from gas sensor at specified intervals.
-
  @return none
  **/
 void CN0429_StreamData(void)
@@ -1280,7 +1213,7 @@ void CN0429_StreamData(void)
 	for (uint8_t i = 0; i < NUM_SENSORS; i++) {
 		if (detected_sensors[i]) {
 			flushBuff(gBuff, sizeof(gBuff));
-			sprintf((char*) gBuff, "%ld, ",
+			snprintf((char*) gBuff, 64, "%ld, ",
 				CN0429_SensorReadoutPPB(sensor_addresses[i]));
 			strcat((char*) TXbuff, (char*) gBuff);
 		}
@@ -1293,9 +1226,7 @@ void CN0429_StreamData(void)
  */
 /**
  @brief Empty the slave I2C buffer and optionally loop until slave complete signal
-
  @param continuous - run until slave sends the ~ command complete signal
-
  @return none
  **/
 void CN0428_RdSensorBuff(uint8_t continuous)
@@ -1353,7 +1284,6 @@ void CN0428_RdSensorBuff(uint8_t continuous)
 
 /**
  @brief Set up water quality sensor and do initial printout.
-
  @return none
  **/
 void CN0428_Setup(void)
@@ -1368,16 +1298,16 @@ void CN0428_Setup(void)
 	uint8_t sensor_enabled = 0;
 	do {
 		if (detected_sensors[i]) {
-			eSensorResult = pGasSensor->openWithAddr(
+			eSensorResult = pGasSensor->open(
 						sensor_addresses[i]);
 			flushBuff(TXbuff, sizeof(TXbuff));
 			if (eSensorResult != SENSOR_ERROR_NONE) {
-				sprintf((char*) TXbuff,
+				snprintf((char*) TXbuff, 256,
 					"Error opening sensor %d!%s",
 					(i + 1), _EOS);
 			} else {
-				sprintf((char*) TXbuff, "Sensor Site: %d!%s",
-					(i + 1), _EOS);
+				snprintf((char*) TXbuff, 256,
+					"Sensor Site: %d!%s", (i + 1), _EOS);
 				sensor_enabled = 1;
 			}
 			UART_TX((const char*) TXbuff);
@@ -1390,9 +1320,7 @@ void CN0428_Setup(void)
 
 /**
  @brief Switch Water Quality Sensors.
-
  @param siteNum - Number of site to switch to (1 to 4)
-
  @return none
  **/
 void CN0428_SwitchSensor(char siteNum)
@@ -1405,22 +1333,23 @@ void CN0428_SwitchSensor(char siteNum)
 		if (siteNum == i + 49 && detected_sensors[i]) {
 			pGasSensor->close();
 			delay_us(100);
-			eSensorResult = pGasSensor->openWithAddr(
+			eSensorResult = pGasSensor->open(
 						sensor_addresses[i]);
 			delay_us(100);
 			if(eSensorResult == SENSOR_ERROR_NONE)
 				success = 1;
 		}
 	}
-	if(!success)
+	if(!success) {
 		UART_TX("Invalid Site. Not switched." _EOS);
-	else
+	} else {
+		UART_TX("Site switched successfully." _EOS);
 		CN0428_RdSensorBuff(0); /* Print contents of slave buffer */
+	}
 }
 
 /**
  @brief Main Water Quality Command Loop.
-
  @return none
  **/
 void CN0428_CommandLoop(void)
@@ -1466,7 +1395,7 @@ void CN0428_CommandLoop(void)
  */
 SENSOR_RESULT SensorInitwithI2CAddr(uint8_t new_sensor_address, uint8_t site)
 {
-	uint8_t dataPayload[64];
+	uint8_t dataPayload[80];
 	uint8_t i = 0;
 
 	/* Set target site /CS low and all other sites high */
@@ -1480,16 +1409,16 @@ SENSOR_RESULT SensorInitwithI2CAddr(uint8_t new_sensor_address, uint8_t site)
 
 	eSensorResult = pGasSensor->SetI2CAddr(new_sensor_address);
 	if (eSensorResult == SENSOR_ERROR_NONE)
-		sprintf((char*) &dataPayload,
+		snprintf((char*) &dataPayload, 80,
 			" Gas Sensor in site %d initialized successfully with address 0x%02X!%s",
 			site, new_sensor_address, _EOS);
 	else if (eSensorResult == SENSOR_ERROR_PH)
 		/* SENSOR_ERROR_PH signal used to identify that a water quality probe was found */
-		sprintf((char*) &dataPayload,
+		snprintf((char*) &dataPayload, 80,
 			" Water Quality Sensor in site %d initialized successfully. Address 0x%02X!%s",
 			site, new_sensor_address, _EOS);
 	else
-		sprintf((char*) &dataPayload,
+		snprintf((char*) &dataPayload, 80,
 			" Sensor in site %d: 0x%02X initialization error. Address 0x%02X!%s",
 			site, (unsigned int) eSensorResult,
 			new_sensor_address, _EOS);

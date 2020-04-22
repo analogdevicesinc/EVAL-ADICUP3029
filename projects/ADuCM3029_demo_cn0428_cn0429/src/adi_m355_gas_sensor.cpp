@@ -1,10 +1,10 @@
 /*******************************************************************************
  *   @file     adi_m355_gas_sensor.cpp
  *   @brief    Gas sensor class object source file
- *   @version  V0.1
+ *   @version  V0.2
  *   @author   ADI
 ********************************************************************************
- * Copyright 2018(c) Analog Devices, Inc.
+ * Copyright 2020(c) Analog Devices, Inc.
  *
  * All rights reserved.
  *
@@ -59,7 +59,7 @@ SENSOR_RESULT M355_GAS::open()
 /*
  * Open M355 gas sensor with selected address
  */
-SENSOR_RESULT M355_GAS::openWithAddr(uint8_t sensor_address)
+SENSOR_RESULT M355_GAS::open(uint8_t sensor_address)
 {
 	pADI_GPIO0->DS |= (1 << 4) | (1 << 5);
 	this->m_i2c_address = sensor_address;
@@ -144,36 +144,18 @@ SENSOR_RESULT M355_GAS::I2CReadWrite(uint8_t RW, uint8_t RegAddr,
 	if (eI2cResult != ADI_I2C_SUCCESS)
 		return SET_SENSOR_ERROR(SENSOR_ERROR_I2C, eI2cResult);
 
-	if (RW == READ) {
-		aPrologueData[0] = RegAddr;
-		sTransfer.pPrologue = &aPrologueData[0u];
-		sTransfer.nPrologueSize = 1u;
-		sTransfer.pData = pData;
-		sTransfer.nDataSize = size;
-		sTransfer.bReadNotWrite = true;
-		sTransfer.bRepeatStart = true;
+	aPrologueData[0] = RegAddr;
+	sTransfer.pPrologue = &aPrologueData[0u];
+	sTransfer.nPrologueSize = 1u;
+	sTransfer.pData = pData;
+	sTransfer.nDataSize = size;
+	sTransfer.bReadNotWrite = RW == READ ? true : false;
+	sTransfer.bRepeatStart = true;
 
-		eI2cResult = adi_i2c_ReadWrite(m_i2c_handle, &sTransfer,
-					       &nHwErrors);
-		if (eI2cResult == ADI_I2C_SUCCESS) {
-			return SENSOR_ERROR_NONE;
-		}
-	}
-
-	else if (RW == WRITE) {
-		aPrologueData[0] = RegAddr;
-		sTransfer.pPrologue = &aPrologueData[0u];
-		sTransfer.nPrologueSize = 1u;
-		sTransfer.pData = pData;
-		sTransfer.nDataSize = size;
-		sTransfer.bReadNotWrite = false;
-		sTransfer.bRepeatStart = true;
-
-		eI2cResult = adi_i2c_ReadWrite(m_i2c_handle, &sTransfer,
-					       &nHwErrors);
-		if (eI2cResult == ADI_I2C_SUCCESS) {
-			return SENSOR_ERROR_NONE;
-		}
+	eI2cResult = adi_i2c_ReadWrite(m_i2c_handle, &sTransfer,
+					   &nHwErrors);
+	if (eI2cResult == ADI_I2C_SUCCESS) {
+		return SENSOR_ERROR_NONE;
 	}
 
 	return (SET_SENSOR_ERROR(SENSOR_ERROR_I2C, eI2cResult));
@@ -193,7 +175,7 @@ SENSOR_RESULT M355_GAS::SensorInit(uint8_t sensor_address)
 {
 	uint8_t pBuff[2] = { 0 };
 	uint16_t timeout = 5;
-	SENSOR_RESULT Result = this->openWithAddr(sensor_address);
+	SENSOR_RESULT Result = this->open(sensor_address);
 	if (Result != SENSOR_ERROR_NONE)
 		return Result;
 
@@ -232,18 +214,16 @@ SENSOR_RESULT M355_GAS::SetI2CAddr(uint8_t new_I2C_address)
 	 */
 	/* Send command to change I2C address */
 	Result = this->open(); /* uses default address */
-	if (Result != SENSOR_ERROR_NONE)
-		return Result;
+
 	delay_ms(50);
 	Result = this->I2CReadWrite(WRITE, SET_I2C_ADDRESS, pBuff, 1);
-	if (Result != SENSOR_ERROR_NONE)
-		return Result;
-
-	this->close();
+	/* Do not raise error in case of soft reset (address set previously) */
 
 	delay_ms(1000); /* wait for selected slave to change its address */
 
-	this->openWithAddr(new_I2C_address); /* Query new address */
+	this->m_i2c_address = new_I2C_address;
+	adi_i2c_SetSlaveAddress(m_i2c_handle, this->m_i2c_address);
+
 	*pBuff = 0;
 
 	do {
@@ -251,6 +231,8 @@ SENSOR_RESULT M355_GAS::SetI2CAddr(uint8_t new_I2C_address)
 		delay_ms(100);
 		timeout--;
 	} while ((*pBuff == 0) && (timeout > 0));
+
+	this->close();
 
 	if (timeout == 0)
 		return SENSOR_ERROR_I2C;
@@ -622,21 +604,21 @@ SENSOR_RESULT M355_GAS::RunEISMeasurement()
  * @return 	returns result of I2C communication
  *
  * @details This write command instructs the M355 board to begin returning EIS
- *		data representing Frequency, Magnitude and Phase when the next
- *		read command is issued. Continue reading until 0xFF is read
- *		continuously. Normally 144 bytes are expected. This consists of
- *		12bytes for the 12 frequencies (as detailed in the Run EIS
- *		command). Frequency, Magnitude and Phase are 4 bytes each. So 12
- *		bytes for 12 frequency points = 144bytes. The data returned is
- *		in byte array format representing IEEE754 single precision 32bit
- *		floating point data.
+ *		data representing Frequency, Magnitude, Phase and Complex Magnitude
+ *		(real and imaginary) when the next read command is issued. Continue
+ *		reading until 0xFF is read continuously. Normally 240 bytes are expected.
+ *		This consists of 20 bytes for the 12 frequencies (as detailed in the
+ *		Run EIS	command). Frequency, Magnitude, Phase and Complex Magnitude
+ *		are 4 bytes each. So 20 bytes for 12 frequency points = 240 bytes.
+ *		The data returned is in byte array format representing IEEE754 single
+ *		precision 32bit	floating point data.
  */
 SENSOR_RESULT M355_GAS::ReadEISResults(uint8_t *pSensData)
 {
-	this->I2CReadWrite(READ, READ_EIS_RESULTS, pSensData, 144u);
+	this->I2CReadWrite(READ, READ_EIS_RESULTS, pSensData, NO_OF_EIS_RESULTS);
 	delay_ms(100);
 
-	return this->I2CReadWrite(READ, READ_EIS_RESULTS, pSensData, 144u);
+	return this->I2CReadWrite(READ, READ_EIS_RESULTS, pSensData, NO_OF_EIS_RESULTS);
 }
 
 /**
@@ -650,19 +632,19 @@ SENSOR_RESULT M355_GAS::ReadEISResults(uint8_t *pSensData)
  *		EIS data representing DFT Impedance and Magnitude, Bode
  *		Magnitude, Bode Phase, RLoadMagnitude and Capacity when the next
  *		read command is issued. Continue reading until 0xFF is read
- *		continuously. Normally 720 bytes are expected. This consists of
- *		60 bytes for the 12 frequencies (as detailed in the Run EIS
- *		command). Every value is 4 bytes each. So 60 bytes for 12
- *		frequency points = 720 bytes. The data returned is in byte array
+ *		continuously. Normally 864 bytes are expected. This consists of
+ *		72 bytes for the 12 frequencies (as detailed in the Run EIS
+ *		command). Every value is 4 bytes each. So 72 bytes for 12
+ *		frequency points = 864 bytes. The data returned is in byte array
  *		format representing IEEE754 single precision 32bit floating
  *		point data.
  */
 SENSOR_RESULT M355_GAS::ReadEISResultsFull(uint8_t *pSensData)
 {
-	this->I2CReadWrite(READ, READ_EIS_RESULTS_FULL, pSensData, 1000u);
+	this->I2CReadWrite(READ, READ_EIS_RESULTS_FULL, pSensData, NO_OF_EIS_FULL_RESULTS);
 	delay_ms(150);
 
-	return this->I2CReadWrite(READ, READ_EIS_RESULTS_FULL, pSensData, 1000u);
+	return this->I2CReadWrite(READ, READ_EIS_RESULTS_FULL, pSensData, NO_OF_EIS_FULL_RESULTS);
 }
 
 /**
@@ -703,10 +685,10 @@ SENSOR_RESULT M355_GAS::RunPulseTest(uint8_t pulseAmplitude,
 {
 	SENSOR_RESULT Result;
 	uint8_t data[2] = { 0 };
-	if (pulseAmplitude < 1 || pulseAmplitude > 3)
-		pulseAmplitude = 1;
-	if (pulseDuration < 10 || pulseDuration > 200)
-		pulseDuration = 100;
+	if (pulseAmplitude < PULSE_AMPLITUDE_MIN || pulseAmplitude > PULSE_AMPLITUDE_MAX)
+		pulseAmplitude = PULSE_AMPLITUDE_MIN;
+	if (pulseDuration < PULSE_DURATION_MIN || pulseDuration > PULSE_DURATION_MAX)
+		pulseDuration = PULSE_DURATION_DEFAULT;
 	data[0] = pulseAmplitude;
 	data[1] = pulseDuration;
 	Result = this->I2CReadWrite(WRITE, RUN_PULSE_TEST, data, 2u);
@@ -794,12 +776,12 @@ SENSOR_RESULT M355_GAS::ReadRload(uint8_t *pCfgData)
  */
 SENSOR_RESULT M355_GAS::ReadDataPPB(int32_t *pSensData)
 {
-	uint8_t pBuff[3] = { 0 };
+	uint8_t pBuff[4] = { 0 };
 	int32_t val = 0;
-	SENSOR_RESULT Result = this->I2CReadWrite(READ, READ_AVG_PPB, pBuff, 3);
+	SENSOR_RESULT Result = this->I2CReadWrite(READ, READ_AVG_PPB, pBuff, 4);
 	delay_ms(50);
-	Result = this->I2CReadWrite(READ, READ_AVG_PPB, pBuff, 3);
-	val = ((pBuff[0] << 24) | (pBuff[1] << 16) | (pBuff[2] << 8)) >> 8;
+	Result = this->I2CReadWrite(READ, READ_AVG_PPB, pBuff, 4);
+	val = (pBuff[0] << 24) | (pBuff[1] << 16) | (pBuff[2] << 8) | pBuff[3];
 
 	*pSensData = val;
 
@@ -829,4 +811,3 @@ SENSOR_RESULT M355_GAS::ReadDataBits(uint16_t *pSensData)
 }
 
 }
-
