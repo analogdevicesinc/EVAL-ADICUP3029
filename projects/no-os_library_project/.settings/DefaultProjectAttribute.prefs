@@ -1,0 +1,5 @@
+CoreId=0
+Processor=ADuCM3029
+Revision=any
+addin.management=false
+eclipse.preferences.version=1
