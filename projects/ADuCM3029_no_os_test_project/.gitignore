@@ -1,4 +1,0 @@
-#Allow built hex files in this project for ease of programming
-!/Release
-/Release/*
-!/Release/*.hex
