@@ -590,9 +590,9 @@ int32_t can_ctrl_get_rec_message(struct can_ctrl_dev *dev, uint8_t fifo_nr,
 	payload_size = can_ctrl_dlc_to_size(obj.hdr_str.dlc);
 
 	if(fifo_con & FIFOCON_RXTSEN_MASK)
-		memcpy(data, (msg_buff + 12), payload_size);
+		memcpy(data, ((uint8_t *)msg_buff) + 12, payload_size);
 	else
-		memcpy(data, (msg_buff + 8), payload_size);
+		memcpy(data, ((uint8_t *)msg_buff) + 8, payload_size);
 	free(msg_buff);
 
 	fifo_con &= ~FIFOCON_UINC_MODE(WORD_MASK);
