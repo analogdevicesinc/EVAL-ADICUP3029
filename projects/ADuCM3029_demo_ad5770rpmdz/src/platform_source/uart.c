@@ -43,6 +43,7 @@
 #include <stdlib.h>
 #include <drivers/uart/adi_uart.h>
 #include "uart.h"
+#include "error.h"
 
 /******************************************************************************/
 /************************** Variable Definitions ******************************/
