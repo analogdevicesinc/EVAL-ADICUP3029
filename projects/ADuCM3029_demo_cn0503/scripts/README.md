@@ -1,3 +1,9 @@
+Prerequisites:
+ - Python3
+ - Python modules: PyQt5, numpy, pyserial, matplotlib and scipy
+   Install them with:
+      pip install -r py_requirements.txt
+
 Folder to include python scripts.
 
 > config_channel.py:
