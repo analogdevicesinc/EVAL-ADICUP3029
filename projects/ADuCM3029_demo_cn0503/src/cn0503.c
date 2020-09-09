@@ -3659,7 +3659,11 @@ static int32_t cn0503_update_data(struct cn0503_dev *dev, bool *data_rdy,
 		return FAILURE;
 	}
 
-	return cn0503_update_ins2(dev);
+	ret = cn0503_update_ins2(dev);
+	if (dev->mode == CN0503_CODE)
+		*data_rdy = false;
+
+	return ret;
 }
 
 /**
