@@ -3669,10 +3669,8 @@ static int32_t cn0503_update_data(struct cn0503_dev *dev, bool *data_rdy,
  */
 static int32_t cn0503_show_line_code(struct cn0503_dev *dev)
 {
-	uint8_t *buff;
+	uint8_t buff[256];
 	int8_t i = 0, j = 0;
-
-	buff = (uint8_t *)calloc(256, sizeof(uint8_t));
 
 	if(dev->mode == CN0503_CODE) {
 		cli_write_string(dev->cli_handler,
@@ -3695,8 +3693,6 @@ static int32_t cn0503_show_line_code(struct cn0503_dev *dev)
 		cli_write_string(dev->cli_handler,
 				 (uint8_t *)"\n");
 	}
-
-	free(buff);
 
 	return SUCCESS;
 }
