@@ -53,9 +53,6 @@
 #define GPIO_OUT	0x01
 #define GPIO_IN		0x00
 
-#define GPIO_HIGH	0x01
-#define GPIO_LOW	0x00
-
 /******************************************************************************/
 /*************************** Types Declarations *******************************/
 /******************************************************************************/
@@ -82,6 +79,19 @@ typedef struct gpio_desc {
 	void		*extra;
 } gpio_desc;
 
+/**
+ * @enum gpio_values
+ * @brief Enum that holds the possible output states of a GPIO.
+ */
+enum gpio_values {
+	/** GPIO logic low */
+	GPIO_LOW,
+	/** GPIO logic high */
+	GPIO_HIGH,
+	/** GPIO high impedance */
+	GPIO_HIGH_Z
+};
+
 /******************************************************************************/
 /************************ Functions Declarations ******************************/
 /******************************************************************************/
@@ -107,9 +117,6 @@ int32_t gpio_direction_output(struct gpio_desc *desc,
 /* Get the direction of the specified GPIO. */
 int32_t gpio_get_direction(struct gpio_desc *desc,
 			   uint8_t *direction);
-
-/* Place GPIO in tristate mode. */
-int32_t gpio_tristate(struct gpio_desc *desc);
 
 /* Set the value of the specified GPIO. */
 int32_t gpio_set_value(struct gpio_desc *desc,
