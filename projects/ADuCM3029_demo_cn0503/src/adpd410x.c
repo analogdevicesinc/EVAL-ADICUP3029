@@ -71,7 +71,7 @@ int32_t adpd410x_reg_read(struct adpd410x_dev *dev, uint16_t address,
 
 		ret = spi_write_and_read(dev->dev_ops.spi_phy_dev, buff, 4);
 		if(ret != SUCCESS)
-			return FAILURE;
+			return ret;
 		break;
 	case ADPD4101:
 		buff[0] = field_get(ADPD410X_UPPDER_BYTE_I2C_MASK, address);
@@ -81,10 +81,10 @@ int32_t adpd410x_reg_read(struct adpd410x_dev *dev, uint16_t address,
 		/* No stop bit */
 		ret = i2c_write(dev->dev_ops.i2c_phy_dev, buff, 2, 0);
 		if(ret != SUCCESS)
-			return FAILURE;
+			return ret;
 		ret = i2c_read(dev->dev_ops.i2c_phy_dev, (buff + 2), 2, 1);
 		if(ret != SUCCESS)
-			return FAILURE;
+			return ret;
 		break;
 	default:
 		return FAILURE;
@@ -125,7 +125,7 @@ int32_t adpd410x_reg_write(struct adpd410x_dev *dev, uint16_t address,
 
 		return i2c_write(dev->dev_ops.i2c_phy_dev, buff, 4, 1);
 	default:
-		return FAILURE;
+		return -EINVAL;
 	}
 }
 
@@ -166,7 +166,7 @@ static int32_t adpd410x_get_clk_opt(struct adpd410x_dev *dev)
 
 	ret = adpd410x_reg_read(dev, ADPD410X_REG_SYS_CTL, &reg_temp);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 	dev->clk_opt = (reg_temp & BITM_SYS_CTL_ALT_CLOCKS) >>
 		       BITP_SYS_CTL_ALT_CLOCKS;
 
@@ -233,7 +233,7 @@ int32_t adpd410x_set_sampling_freq(struct adpd410x_dev *dev,
 	    (dev->clk_opt == ADPD410X_INTLFO_EXTHFO)) {
 		ret = adpd410x_reg_read(dev, ADPD410X_REG_SYS_CTL, &reg_temp);
 		if(ret != SUCCESS)
-			return FAILURE;
+			return ret;
 		if(reg_temp & BITP_SYS_CTL_LFOSC_SEL)
 			reg_load = ADPD410X_LOW_FREQ_OSCILLATOR_FREQ1;
 		else
@@ -246,7 +246,7 @@ int32_t adpd410x_set_sampling_freq(struct adpd410x_dev *dev,
 	ret = adpd410x_reg_write(dev, ADPD410X_REG_TS_FREQ,
 				 (reg_load & 0xFFFF));
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 	return adpd410x_reg_write(dev, ADPD410X_REG_TS_FREQH,
 				  ((reg_load & 0x7F0000) >> 16));
 }
@@ -270,31 +270,32 @@ int32_t adpd410x_timeslot_setup(struct adpd410x_dev *dev,
 		return ret;
 	if(((data & BITM_OPMODE_TIMESLOT_EN) >> BITP_OPMODE_TIMESLOT_EN) <
 	    timeslot_no)
-		return FAILURE;
+		return -EINVAL;
 
 	/* Enable channel 2 */
 	ret = adpd410x_reg_read(dev, ADPD410X_REG_TS_CTRL(timeslot_no), &data);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 	if(init->enable_ch2)
 		data |= BITM_TS_CTRL_A_CH2_EN;
 	else
 		data &= ~BITM_TS_CTRL_A_CH2_EN;
 	ret = adpd410x_reg_write(dev, ADPD410X_REG_TS_CTRL(timeslot_no), data);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	/* Setup inputs */
 	data = init->ts_inputs.option << (init->ts_inputs.pair * 4);
 	ret = adpd410x_reg_write(dev, ADPD410X_REG_INPUTS(timeslot_no), data);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	/* Set precondition PD */
 	ret = adpd410x_reg_write_mask(dev, ADPD410X_REG_CATHODE(timeslot_no),
-				      init->precon_option, BITM_CATHODE_A_PRECON);
+				      init->precon_option,
+				      BITM_CATHODE_A_PRECON);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	/**
 	 *  Set TIA VREF and TRIM options. The 0xE000 is writing reserved bits
@@ -306,28 +307,28 @@ int32_t adpd410x_timeslot_setup(struct adpd410x_dev *dev,
 	       init->chan1 << BITP_AFE_TRIM_A_TIA_GAIN_CH1;
 	ret = adpd410x_reg_write(dev, ADPD410X_REG_AFE_TRIM(timeslot_no), data);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	/* Set LED pattern */
 	data = init->pulse4_subtract << BITP_PATTERN_A_SUBTRACT |
 	       init->pulse4_reverse << BITP_PATTERN_A_REVERSE_INTEG;
 	ret = adpd410x_reg_write(dev, ADPD410X_REG_PATTERN(timeslot_no), data);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	/* Set bytes number for time slot */
 	data = (init->byte_no << BITP_DATA1_A_SIGNAL_SIZE) &
 	       BITM_DATA1_A_SIGNAL_SIZE;
 	ret = adpd410x_reg_write(dev, ADPD410X_REG_DATA1(timeslot_no), data);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	/* Set decimate factor */
 	data = (init->dec_factor << BITP_DECIMATE_A_DECIMATE_FACTOR) &
 	       BITM_DECIMATE_A_DECIMATE_FACTOR;
 	ret = adpd410x_reg_write(dev, ADPD410X_REG_DECIMATE(timeslot_no), data);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	/* Set LED power */
 	data = init->led1.value |
@@ -335,13 +336,13 @@ int32_t adpd410x_timeslot_setup(struct adpd410x_dev *dev,
 	ret = adpd410x_reg_write(dev, ADPD410X_REG_LED_POW12(timeslot_no),
 				 data);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 	data = init->led3.value |
 	       (init->led4.value << BITP_LED_POW34_A_LED_CURRENT4);
 	ret = adpd410x_reg_write(dev, ADPD410X_REG_LED_POW34(timeslot_no),
 				 data);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	/* Set ADC cycle and repeat */
 	if(init->adc_cycles == 0)
@@ -365,7 +366,7 @@ int32_t adpd410x_get_fifo_bytecount(struct adpd410x_dev *dev, uint16_t *bytes)
 
 	ret = adpd410x_reg_read(dev, ADPD410X_REG_FIFO_STATUS, bytes);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	*bytes &= BITM_INT_STATUS_FIFO_FIFO_BYTE_COUNT;
 
@@ -383,7 +384,8 @@ int32_t adpd410x_get_fifo_bytecount(struct adpd410x_dev *dev, uint16_t *bytes)
  * @return SUCCESS in case of success, FAILURE otherwise.
  */
 static int32_t adpd410x_get_data_packet(struct adpd410x_dev *dev,
-					uint32_t *data, uint8_t no_slots, uint16_t dual_chan)
+					uint32_t *data, uint8_t no_slots,
+					uint16_t dual_chan)
 {
 	int32_t ret;
 	uint16_t j, temp_data, expect_byte_count = 0;
@@ -394,7 +396,7 @@ static int32_t adpd410x_get_data_packet(struct adpd410x_dev *dev,
 	slot_bytecount_tab = (uint8_t *)calloc(no_slots,
 					       sizeof (*slot_bytecount_tab));
 	if (!slot_bytecount_tab)
-		return FAILURE;
+		return -ENOMEM;
 	for(i = 0; i < no_slots; i++) {
 		ret = adpd410x_reg_read(dev, ADPD410X_REG_DATA1(i), &temp_data);
 		if(ret != SUCCESS)
@@ -408,12 +410,16 @@ static int32_t adpd410x_get_data_packet(struct adpd410x_dev *dev,
 		expect_byte_count++;
 	data_buff = (uint16_t *)calloc((expect_byte_count / 2),
 				       sizeof (*data_buff));
-	if (!data_buff)
+	if (!data_buff) {
+		ret = -ENOMEM;
 		goto error_slot;
+	}
 	data_byte_buff = (uint8_t *)calloc(expect_byte_count,
 					   sizeof (*data_byte_buff));
-	if (!data_byte_buff)
+	if (!data_byte_buff) {
+		ret = -ENOMEM;
 		goto error_data_buff;
+	}
 
 	for(i = 0; i < (expect_byte_count / 2); i++) {
 		ret = adpd410x_reg_read(dev, ADPD410X_REG_FIFO_DATA,
@@ -474,7 +480,7 @@ error_data_buff:
 error_slot:
 	free(slot_bytecount_tab);
 
-	return FAILURE;
+	return ret;
 }
 
 /**
@@ -524,7 +530,7 @@ int32_t adpd410x_setup(struct adpd410x_dev **device,
 
 	dev = calloc(1, sizeof *dev);
 	if(!dev)
-		return FAILURE;
+		return -ENOMEM;
 
 	dev->dev_type = init_param->dev_type;
 	dev->ext_lfo_freq = init_param->ext_lfo_freq;
@@ -565,14 +571,14 @@ int32_t adpd410x_setup(struct adpd410x_dev **device,
 	ret = adpd410x_reg_write(dev, 0xB5, 0x00);
 	if(ret != SUCCESS)
 		goto error_gpio3;
-	ret = gpio_tristate(dev->gpio0);
+	ret = gpio_set_value(dev->gpio0, GPIO_HIGH_Z);
 	if(ret != SUCCESS)
 		goto error_gpio3;
 
 	ret = adpd410x_reg_read(dev, ADPD410X_REG_CHIP_ID, &reg_temp);
 	if(ret != SUCCESS)
 		goto error_gpio3;
-	if((reg_temp & BITM_CHIP_ID_CHIP_ID) != ADPD410X_CHIP_ID)
+	if((reg_temp & BITM_CHIP_ID) != ADPD410X_CHIP_ID)
 		goto error_gpio3;
 
 	dev->clk_opt = init_param->clk_opt;
@@ -618,7 +624,7 @@ error_phy:
 error_dev:
 	free(dev);
 
-	return FAILURE;
+	return ret;
 }
 
 /**
@@ -631,27 +637,27 @@ int32_t adpd410x_remove(struct adpd410x_dev *dev)
 	int32_t ret;
 
 	if(!dev)
-		return FAILURE;
+		return -EINVAL;
 
 	if(dev->dev_type == ADPD4100)
 		ret = spi_remove(dev->dev_ops.spi_phy_dev);
 	else
 		ret = i2c_remove(dev->dev_ops.i2c_phy_dev);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	ret = gpio_remove(dev->gpio0);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 	ret = gpio_remove(dev->gpio1);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 	ret = gpio_remove(dev->gpio2);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 	ret = gpio_remove(dev->gpio3);
 	if(ret != SUCCESS)
-		return FAILURE;
+		return ret;
 
 	free(dev);
 
