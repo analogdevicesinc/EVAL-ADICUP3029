@@ -248,10 +248,10 @@
 #define BITM_INT_ACLEAR_INT_ACLEAR_FIFO         	0x8000
 
 /* ADPD410X_REG_CHIP_ID */
-#define BITP_CHIP_ID_CHIP_ID                    	0
-#define BITP_CHIP_ID_VERSION                    	8
-#define BITM_CHIP_ID_CHIP_ID                    	0x00ff
-#define BITM_CHIP_ID_VERSION                    	0xff00
+#define BITP_CHIP_ID		                    	0
+#define BITP_CHIP_VERSION                    		8
+#define BITM_CHIP_ID		                    	0x00ff
+#define BITM_CHIP_VERSION                    		0xff00
 #define ADPD410X_CHIP_ID				0xC2
 
 /* ADPD410X_REG_OSC32M */
