@@ -74,7 +74,8 @@ def parse_input():
     parser.add_argument('display_type', choices=CN0503.DISPLAY_MODE.ALL,\
                             help=display_type_help)
     parser.add_argument('-s', metavar='samples', default=DEFAULT_NB_SAMPLES,\
-	    		help="Number of samples to read. Default is %d" % (DEFAULT_NB_SAMPLES))
+	    		 type=int, help="Number of samples to read. \
+			Default is %d" % (DEFAULT_NB_SAMPLES))
     parser.add_argument('-select_port', help=select_port_help, action='store_true')
     args = parser.parse_args()
 
