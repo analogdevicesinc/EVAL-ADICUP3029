@@ -111,6 +111,9 @@ void cli_uart_callback(void *app_param, uint32_t event,
 		cli_parse(cli_ptr, uart_buff);
 		uart_read_nonblocking(cli_ptr->uart_device, &uart_buff, 1);
 		break;
+	case ERROR:
+		uart_read_nonblocking(cli_ptr->uart_device, &uart_buff, 1);
+		break;
 	default:
 		break;
 	}
