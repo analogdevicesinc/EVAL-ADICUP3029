@@ -34,7 +34,10 @@ ssize_t ad7799_iio_channel_read(void *device, char *buf, size_t len,
 
 	ad7799_get_channel(dev, channel->ch_num, &data);
 
-	ch = (data * 4.096) / (0xFFFF);
+	if(data >= 0x8000)
+		ch = ((data - 0x8000) * 4.096) / (0x7FFF);
+	else
+		ch = -(((0x8000 - data) * 4.096) / (0x7FFF));
 
 	return snprintf(buf, len, "%.5f", ch);
 }

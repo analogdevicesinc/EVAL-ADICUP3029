@@ -411,7 +411,7 @@ int32_t ad7799_init(struct ad7799_dev **device,
 		return FAILURE;
 
 	/* Enable unipolar coding */
-	ret = ad7799_set_polarity(dev, AD7799_UNIPOLAR);
+	ret = ad7799_set_polarity(dev, AD7799_BIPOLAR);
 	if (ret)
 		return FAILURE;
 
