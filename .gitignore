@@ -38,3 +38,6 @@ Release/
 
 # Build folder
 build/
+
+# Local build configuration
+local_variables.mk
