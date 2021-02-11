@@ -664,7 +664,7 @@ int32_t cn0401_setup(struct cn0401_dev **device,
 
 	ret = timer_start();
 	if(ret != 0)
-		return ret;
+		goto error;
 
 	ret = can_ctrl_setup(&dev->can_ctrl_handler, &init_param->can_ctrl_init);
 	if(ret != SUCCESS)
