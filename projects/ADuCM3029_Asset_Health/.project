@@ -23,6 +23,12 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>com.analog.crosscore.deviceprogrammer.deviceprogrammerbuilder</name>
+			<triggers>auto,full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.cdt.core.cnature</nature>
@@ -60,58 +66,52 @@
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_dma.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/dma/adi_dma.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/dma/adi_dma.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_gpio.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/gpio/adi_gpio.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/gpio/adi_gpio.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_pwr.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/pwr/adi_pwr.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/pwr/adi_pwr.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_rtc.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/rtc/adi_rtc.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/rtc/adi_rtc.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_spi.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/spi/adi_spi.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/spi/adi_spi.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_tmr.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/tmr/adi_tmr.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/tmr/adi_tmr.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_uart.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/uart/adi_uart.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/uart/adi_uart.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_wdt.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/wdt/adi_wdt.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/wdt/adi_wdt.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/adi_xint.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/drivers/xint/adi_xint.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/drivers/xint/adi_xint.c</locationURI>
 		</link>
 		<link>
 			<name>RTE/Device/ADuCM3029/common.c</name>
 			<type>1</type>
-			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.1.2/Source/common.c</locationURI>
+			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/common.c</locationURI>
 		</link>
 	</linkedResources>
-	<variableList>
-		<variable>
-			<name>CCES</name>
-			<value>file:/C:/Analog%20Devices/CrossCore%20Embedded%20Studio%202.8.0</value>
-		</variable>
-	</variableList>
 </projectDescription>
