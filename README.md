@@ -1,5 +1,7 @@
 # EVAL-ADICUP3029 Read Me
 
+[![Build Status](https://dev.azure.com/AnalogDevices/OpenSource/_apis/build/status/analogdevicesinc.EVAL-ADICUP3029?branchName=master)](https://dev.azure.com/AnalogDevices/OpenSource/_build/latest?definitionId=18&branchName=master)
+
 ## Overview ##
 The EVAL-ADICUP3029 is an open source prototyping platform that can be used in combination with hardware add-ons and software to achieve application level goals.  The platform is pin compatible with Arduino Uno Rev3 shields, I2C Grove connectors from Seeed Studio, and PMOD expansion modules.  The EVAL-ADICUP3029 is designed for ultra-low power applications with six analog input channels inside an ARM Cortex-M3, which has I2C, SPI, SPORT, and UART peripherals available on board.  Out of the box connectivity options include Low Energy Bluetooth(BLE) and WiFi, making the EVAL-ADICUP3029 ideal for Internet of Thing (IoT) applications where power and connectivity are paramount
 
