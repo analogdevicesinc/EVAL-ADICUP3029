@@ -65,19 +65,20 @@ struct uart_init_param uart_conf = {.baud_rate = CONFIG_UART_BAUDRATE,
 
 #ifndef DISABLE_SECURE_SOCKET
 struct secure_init_param tls_param = {
-		.ca_cert = NULL,
-		.ca_cert_len = 0,
-		.cli_cert = NULL,
-		.cli_cert_len = 0,
-		.cli_pk = NULL,
-		.cli_pk_len = 0,
-		.trng_init_param = NULL
+	.ca_cert = NULL,
+	.ca_cert_len = 0,
+	.cli_cert = NULL,
+	.cli_cert_len = 0,
+	.cli_pk = NULL,
+	.cli_pk_len = 0,
+	.trng_init_param = NULL
 };
 #endif /* DISABLE_SECURE_SOCKET */
 
 struct socket_address addr = {
-		.addr = MQTT_SERVER_ADDRESS,
-		.port = SERVER_PORT};
+	.addr = MQTT_SERVER_ADDRESS,
+	.port = SERVER_PORT
+};
 
 uint8_t send_buff[MQTT_BUFFER_SIZE];
 uint8_t read_buff[MQTT_BUFFER_SIZE];
@@ -106,7 +107,8 @@ static struct mqtt_desc		*mqtt;
 static struct tcp_socket_desc	*sock;
 static struct uart_desc		*udesc;
 
-bool init_mqtt(struct mqtt_desc **desc, struct irq_ctrl_desc *idesc) {
+bool init_mqtt(struct mqtt_desc **desc, struct irq_ctrl_desc *idesc)
+{
 	struct wifi_init_param		wifi_param;
 	struct tcp_socket_init_param	tcp_param;
 	int32_t				ret;
@@ -142,7 +144,7 @@ bool init_mqtt(struct mqtt_desc **desc, struct irq_ctrl_desc *idesc) {
 		goto fail;
 
 	mqtt_init_param.sock = sock;
- 	ret = mqtt_init(&mqtt, &mqtt_init_param);
+	ret = mqtt_init(&mqtt, &mqtt_init_param);
 	if (IS_ERR_VALUE(ret))
 		goto fail;
 
@@ -184,16 +186,16 @@ int32_t init_communication(struct uart_desc **desc, struct irq_ctrl_desc *idesc)
 }
 
 /* Send data over UART or to MQTT server */
-int32_t send_data(struct uart_desc *desc, char *data, int len) {
+int32_t send_data(struct uart_desc *desc, char *data, int len)
+{
 	if (use_mqtt) {
-	 	struct mqtt_message msg = {
-	 		.qos = MQTT_QOS0,
-	 		.retained = true,
-	 		.payload = (uint8_t *)data,
-	 		.len = len
-	 	};
-	 	return mqtt_publish(desc, (int8_t *)MQTT_PUBLISH_TOPIC, &msg);
-	}
-	else
+		struct mqtt_message msg = {
+			.qos = MQTT_QOS0,
+			.retained = true,
+			.payload = (uint8_t *)data,
+			.len = len
+		};
+		return mqtt_publish(desc, (int8_t *)MQTT_PUBLISH_TOPIC, &msg);
+	} else
 		return uart_write(desc, (uint8_t *)data, len);
 }
