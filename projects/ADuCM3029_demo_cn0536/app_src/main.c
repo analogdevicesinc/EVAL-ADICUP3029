@@ -71,7 +71,8 @@ int initPower()
 }
 
 /* Called each second by the inboard Real Time Clock and used to measure time */
-void rtc_callback(void *ctx, uint32_t data, void *extra) {
+void rtc_callback(void *ctx, uint32_t data, void *extra)
+{
 	static int	count = 0;
 	bool		*is_read = ctx;
 
@@ -95,8 +96,8 @@ bool is_mesurment_time(bool *is_ready)
 
 /* Initialize all strucures needed by the geiger_counter and for comunication */
 int32_t setup(struct geiger_counter **counter,struct uart_desc **comm_desc,
-		struct rtc_desc **rtc, struct irq_ctrl_desc **irq_ctrl,
-		bool *is_ready)
+	      struct rtc_desc **rtc, struct irq_ctrl_desc **irq_ctrl,
+	      bool *is_ready)
 {
 	struct irq_init_param 			irq_init_param;
 	struct gpio_init_param			gpio_counter_param;
@@ -108,9 +109,9 @@ int32_t setup(struct geiger_counter **counter,struct uart_desc **comm_desc,
 
 	/* Initialize interrupt controller */
 	irq_init_param = (struct irq_init_param) {
-				.irq_ctrl_id = 0,
-				.extra = NULL
-				};
+		.irq_ctrl_id = 0,
+		.extra = NULL
+	};
 	irq_ctrl_init(irq_ctrl, &irq_init_param);
 
 	/* Initialize communication over UART or over WIFI*/
@@ -119,38 +120,38 @@ int32_t setup(struct geiger_counter **counter,struct uart_desc **comm_desc,
 
 	/* Initialize geiger counter structure */
 	gpio_counter_param = (struct gpio_init_param) {
-				.number = CONFIG_COUNTER_GPIO,
-				.extra = NULL
-				};
-	init_param = (struct geiger_counter_init_parma){
-			.irq_desc = *irq_ctrl,
-			.irq_id = CONFIG_COUNTER_XINT_ID,
-			.irq_config = CONFIG_XINT_EVENT,
-			.gpio_init_param = &gpio_counter_param
-			};
+		.number = CONFIG_COUNTER_GPIO,
+		.extra = NULL
+	};
+	init_param = (struct geiger_counter_init_parma) {
+		.irq_desc = *irq_ctrl,
+		.irq_id = CONFIG_COUNTER_XINT_ID,
+		.irq_config = CONFIG_XINT_EVENT,
+		.gpio_init_param = &gpio_counter_param
+	};
 	ret = init_geiger_counter(counter, &init_param);
 	ON_ERR_PRINT_AND_RET("init_geiger_counter failed\n", ret);
 
 	/* Initialize real time clock to be used as time reference.
 	 * Will be set to generate a callback each second */
-	rtc_param = (struct rtc_init_param){
+	rtc_param = (struct rtc_init_param) {
 		.id = 1,
 		.load = 0,
 		.freq = AUDCM_1HZ,
 		.extra = NULL
-		};
+	};
 	ret = rtc_init(rtc, &rtc_param);
 	ON_ERR_PRINT_AND_RET("rtc_init failed\n", ret);
 
 	rtc_start(*rtc);
 	rtc_config = (struct rtc_irq_config) {
-			.rtc_handler = *rtc,
-			.active_interrupts = RTC_COUNT_INT
+		.rtc_handler = *rtc,
+		.active_interrupts = RTC_COUNT_INT
 	};
-	call = (struct callback_desc){
-			.callback = rtc_callback,
-			.config = &rtc_config,
-			.ctx = is_ready
+	call = (struct callback_desc) {
+		.callback = rtc_callback,
+		.config = &rtc_config,
+		.ctx = is_ready
 	};
 	ret = irq_register_callback(*irq_ctrl, ADUCM_RTC_INT_ID, &call);
 	ON_ERR_PRINT_AND_RET("RTC irq_register_callback failed\n", ret);
@@ -191,7 +192,7 @@ int main(int argc, char *argv[])
 		if (is_mesurment_time(&is_ready)) {
 			calculate_CPM(counter);
 			msg_len = serialize_data(counter, msg_buff,
-					DATA_BUFF_SIZE);
+						 DATA_BUFF_SIZE);
 			pr_debug("Sending measurement\n");
 			ret = send_data(comm_desc, msg_buff, msg_len);
 			if (IS_ERR_VALUE(ret))
