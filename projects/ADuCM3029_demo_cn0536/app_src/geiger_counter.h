@@ -97,7 +97,7 @@ struct geiger_counter_init_parma {
 };
 
 int32_t init_geiger_counter(struct geiger_counter **desc,
-		struct geiger_counter_init_parma *param);
+			    struct geiger_counter_init_parma *param);
 void delete_geiger_counter(struct geiger_counter *desc);
 void calculate_CPM(struct geiger_counter *desc);
 int serialize_data(struct geiger_counter *desc, char *buff, int32_t buff_size);

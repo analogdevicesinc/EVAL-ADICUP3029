@@ -56,7 +56,7 @@ void counter_callback(void *ctx, uint32_t event, void *extra)
 
 /* Initialize Geiger counter structure */
 int32_t init_geiger_counter(struct geiger_counter **desc,
-		struct geiger_counter_init_parma *param)
+			    struct geiger_counter_init_parma *param)
 {
 	struct callback_desc callback_desc;
 	struct geiger_counter *ldesc;
@@ -86,7 +86,7 @@ int32_t init_geiger_counter(struct geiger_counter **desc,
 	ldesc->irq_id = param->irq_id;
 	ldesc->irq_desc = param->irq_desc;
 	ret = irq_register_callback(ldesc->irq_desc, param->irq_id,
-			      &callback_desc);
+				    &callback_desc);
 	ON_ERR_PRINT_AND_RET("Counter irq_register_callback failed\n", ret);
 
 	ret = irq_enable(ldesc->irq_desc, param->irq_id);
@@ -135,7 +135,7 @@ void calculate_CPM(struct geiger_counter *desc)
 	desc->samples[NB_AVARGE_SAMPLES - 1] = new_sample;
 
 	desc->count_per_minute = ((float)sum / NB_AVARGE_SAMPLES) *
-			(60 / SAMPLING_PERIOD);
+				 (60 / SAMPLING_PERIOD);
 	desc->us_per_hour = (float)desc->count_per_minute * CONVERSION_FACTOR;
 }
 
