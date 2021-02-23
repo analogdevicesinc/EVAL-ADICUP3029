@@ -1,0 +1,27 @@
+trigger:
+- master
+- dev/*
+
+pr:
+- master
+
+variables:
+- group: noos_releases_group_variables
+
+jobs:
+- job: Projects
+  pool: LocalPool
+  steps:
+  - checkout: self
+    fetchDepth: 50
+    #Add recursive when noos ready
+    submodules: false
+    clean: true
+    persistCredentials: true
+  - script: 'python ./build_projects.py $(Build.Repository.LocalPath) $(RELEASE_DIR)'
+    displayName: 'Run projects build'
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.Repository.LocalPath)/$(RELEASE_DIR).zip'
+      artifact: '$(ARTIFACT_NAME)'
+      publishLocation: 'pipeline'
