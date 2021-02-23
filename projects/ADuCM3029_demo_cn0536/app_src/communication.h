@@ -49,8 +49,10 @@
 
 /* Configuration parameters */
 
+#ifndef COMUNICATION_METHOD
 #define COMUNICATION_METHOD	MQTT
 //#define COMUNICATION_METHOD	UART
+#endif
 
 /* UART configuration parameters */
 #define CONFIG_UART_PARITY	UART_NO_PARITY
