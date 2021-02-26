@@ -43,6 +43,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdio.h>
 #include "timer.h"
 #include "cn0414.h"
 #include "config.h"
@@ -1142,7 +1143,7 @@ static int32_t cn0414_status_update_rate(struct cn0414_dev *dev)
 				    (uint8_t*)"Channel update rate: ");
 	if(ret != CN0414_SUCCESS)
 		return ret;
-	cn0414_ftoa(buff, dev->adc_update_desc->f_update);
+	sprintf((char *)buff, "%f", dev->adc_update_desc->f_update);
 	ret = usr_uart_write_string(dev->uart_descriptor, buff);
 	if(ret != CN0414_SUCCESS)
 		return ret;
@@ -1424,9 +1425,7 @@ static int32_t cn0414_channel_display_helper(struct cn0414_dev *dev,
 	ret = usr_uart_write_string(dev->uart_descriptor, (uint8_t*)" is: ");
 	if(ret != CN0414_SUCCESS)
 		return ret;
-	ret = cn0414_ftoa(buffer, value);
-	if(ret != CN0414_SUCCESS)
-		return ret;
+	sprintf((char *)buffer, "%f", value);
 	ret = usr_uart_write_string(dev->uart_descriptor, buffer);
 	if(ret != CN0414_SUCCESS)
 		return ret;
@@ -2327,9 +2326,7 @@ static int32_t cn0414_adc_display_samples(struct cn0414_dev *dev,
 						       &calc_sample);
 		if(ret != CN0414_SUCCESS)
 			return ret;
-		ret = cn0414_ftoa(buff, calc_sample);
-		if(ret != CN0414_SUCCESS)
-			return ret;
+		sprintf((char *)buff, "%f", calc_sample);
 		ret = usr_uart_write_string(dev->uart_descriptor, buff);
 		if(ret != CN0414_SUCCESS)
 			return ret;
@@ -3386,47 +3383,6 @@ int32_t cn0414_compute_adc_value(struct cn0414_dev *dev, uint32_t code,
 		else
 			*result = (((float)code / pow(2,bit_rep_nr - 1) - 1) * vref) / 0.1;
 	}
-
-	return ret;
-}
-
-/**
- * Convert floating point value to ASCII. Maximum 4 decimals.
- *
- * @param [in] value   - The floating point value to be converted.
- * @param [out] buffer - ASCII buffer; output buffer.
- *
- * @return 0 in case of success, negative error code otherwise.
- */
-int32_t cn0414_ftoa(uint8_t *buffer, float value)
-{
-	int32_t ret = 0, fraction;
-	uint8_t local_buffer[20], i;
-	float subunit;
-
-	/* Initialize buffer */
-	strcpy((char *)buffer, "");
-
-	/* If between -1 and 0 place the '-' in front manually */
-	if((value < 0.0) && (value > -1.0))
-		strcat((char *)buffer, "-");
-
-	/* Convert integral part */
-	itoa((int32_t)value, (char*)local_buffer, 10);
-	strcat((char *)buffer, (char *)local_buffer);
-	strcat((char *)buffer, ".");
-	/* Display zeros after the decimal point. Else they would be eluded. */
-	subunit = value - (uint32_t)value;
-	i = 0;
-	while(fabs(subunit) < 0.1 && i < 7) {
-		strcat((char*)buffer, "0");
-		subunit *= 10;
-		i++;
-	}
-	/* Convert decimal part */
-	fraction = (int32_t)(subunit * 100000000);
-	itoa(fabs(fraction), (char*)local_buffer, 10);
-	strcat((char*)buffer, (char*)local_buffer);
 
 	return ret;
 }
