@@ -278,9 +278,6 @@ int32_t cn0414_read_channel(struct cn0414_dev *dev,
 int32_t cn0414_compute_adc_value(struct cn0414_dev *dev, uint32_t code,
 				 bool ncurr_or_volt, float *result);
 
-/* Convert floating point value to ASCII. Maximum 4 decimals. */
-int32_t cn0414_ftoa(uint8_t *buffer, float value);
-
 /* Discover the first EEPROM present on the board. */
 int32_t cn0414_mem_discover(struct cn0414_dev *dev, uint8_t start_addr,
 			    uint8_t* address);
