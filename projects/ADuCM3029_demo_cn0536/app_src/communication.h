@@ -79,8 +79,13 @@
 #define MQTT_CLIENT_NAME	"analog_client"
 #define MQTT_PUBLISH_TOPIC	"analog_test_topic"
 
-int32_t init_communication(struct uart_desc **desc,
+union comm_desc {
+	struct uart_desc *udesc;
+	struct mqtt_desc *mdesc;
+};
+
+int32_t init_communication(union comm_desc *desc,
 			   struct irq_ctrl_desc *idesc);
-int32_t send_data(struct uart_desc *desc, char *data, int len);
+int32_t send_data(union comm_desc desc, char *data, int len);
 
 #endif
