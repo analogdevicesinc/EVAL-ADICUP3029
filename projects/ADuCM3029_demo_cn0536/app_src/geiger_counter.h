@@ -45,7 +45,7 @@
 #include <stdint.h>
 
 /* Number of seconds between each measurement */
-#define SAMPLING_PERIOD		5//seconds
+#define SAMPLING_PERIOD		10//seconds
 /* Number of measurements used for average filtering */
 #define NB_AVARGE_SAMPLES	5
 /* Conversion factor from counts/minute -> microSieverts/minute */
