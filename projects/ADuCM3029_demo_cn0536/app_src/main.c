@@ -70,24 +70,25 @@ int initPower()
 	return 1;
 }
 
+volatile bool is_ready;
+
 /* Called each second by the inboard Real Time Clock and used to measure time */
 void rtc_callback(void *ctx, uint32_t data, void *extra)
 {
 	static int	count = 0;
-	bool		*is_read = ctx;
 
 	count++;
 	if (count == SAMPLING_PERIOD) {
-		*is_read = true;
+		is_ready = true;
 		count = 0;
 	}
 }
 
 /* Check if SAMPLING_PERIOD have passed */
-bool is_mesurment_time(bool *is_ready)
+bool is_mesurment_time()
 {
-	if (*is_ready) {
-		*is_ready = false;
+	if (is_ready) {
+		is_ready = false;
 		return true;
 	}
 
@@ -95,9 +96,8 @@ bool is_mesurment_time(bool *is_ready)
 }
 
 /* Initialize all strucures needed by the geiger_counter and for comunication */
-int32_t setup(struct geiger_counter **counter,struct uart_desc **comm_desc,
-	      struct rtc_desc **rtc, struct irq_ctrl_desc **irq_ctrl,
-	      bool *is_ready)
+int32_t setup(struct geiger_counter **counter,comm_desc_t *comm_desc,
+	      struct rtc_desc **rtc, struct irq_ctrl_desc **irq_ctrl)
 {
 	struct irq_init_param 			irq_init_param;
 	struct gpio_init_param			gpio_counter_param;
@@ -151,7 +151,7 @@ int32_t setup(struct geiger_counter **counter,struct uart_desc **comm_desc,
 	call = (struct callback_desc) {
 		.callback = rtc_callback,
 		.config = &rtc_config,
-		.ctx = is_ready
+		.ctx = NULL
 	};
 	ret = irq_register_callback(*irq_ctrl, ADUCM_RTC_INT_ID, &call);
 	ON_ERR_PRINT_AND_RET("RTC irq_register_callback failed\n", ret);
@@ -175,7 +175,6 @@ int main(int argc, char *argv[])
 	/* Initialization */
 	int			msg_len;
 	char			msg_buff[DATA_BUFF_SIZE];
-	bool 			is_ready;
 	int32_t			ret;
 	struct geiger_counter	*counter;
 	struct rtc_desc		*rtc;
@@ -183,13 +182,13 @@ int main(int argc, char *argv[])
 	struct uart_desc	*comm_desc;
 
 	is_ready = 0;
-	ret = setup(&counter, &comm_desc, &rtc, &irq_ctrl, &is_ready);
+	ret = setup(&counter, &comm_desc, &rtc, &irq_ctrl);
 	ON_ERR_PRINT_AND_RET("Unable to perform setup\n", ret);
 
 	/* Custom code */
 	while (1) {
 		/* Will become ready at each RTC 10 seconds alarm */
-		if (is_mesurment_time(&is_ready)) {
+		if (is_mesurment_time()) {
 			calculate_CPM(counter);
 			msg_len = serialize_data(counter, msg_buff,
 						 DATA_BUFF_SIZE);
