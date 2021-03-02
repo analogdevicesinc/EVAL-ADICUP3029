@@ -96,7 +96,7 @@ bool is_mesurment_time()
 }
 
 /* Initialize all strucures needed by the geiger_counter and for comunication */
-int32_t setup(struct geiger_counter **counter,comm_desc_t *comm_desc,
+int32_t setup(struct geiger_counter **counter,union comm_desc *comm_desc,
 	      struct rtc_desc **rtc, struct irq_ctrl_desc **irq_ctrl)
 {
 	struct irq_init_param 			irq_init_param;
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
 	struct geiger_counter	*counter;
 	struct rtc_desc		*rtc;
 	struct irq_ctrl_desc	*irq_ctrl;
-	struct uart_desc	*comm_desc;
+	union comm_desc		comm_desc;
 
 	is_ready = 0;
 	ret = setup(&counter, &comm_desc, &rtc, &irq_ctrl);

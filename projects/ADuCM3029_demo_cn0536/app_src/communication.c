@@ -165,19 +165,23 @@ fail:
  * If use_mqtt is set the program will try to connect to the mqtt server.
  * If it fails, UART will be initialized.
  */
-int32_t init_communication(struct uart_desc **desc, struct irq_ctrl_desc *idesc)
+int32_t init_communication(union comm_desc *desc, struct irq_ctrl_desc *idesc)
 {
+	union comm_desc ldesc;
+
 	if (use_mqtt) {
-		if (SUCCESS == init_mqtt(desc, idesc)) {
+		if (SUCCESS == init_mqtt(&ldesc.mdesc, idesc)) {
 			pr_debug("MQTT comunication initialized\n");
+			*desc = ldesc;
 
 			return SUCCESS;
 		}
 	}
 
 	use_mqtt = 0;
-	if (SUCCESS == uart_init(desc, &uart_conf)) {
+	if (SUCCESS == uart_init(&ldesc.udesc, &uart_conf)) {
 		pr_debug("UART comunication initialized\n");
+		*desc = ldesc;
 
 		return SUCCESS;
 	}
@@ -186,7 +190,7 @@ int32_t init_communication(struct uart_desc **desc, struct irq_ctrl_desc *idesc)
 }
 
 /* Send data over UART or to MQTT server */
-int32_t send_data(struct uart_desc *desc, char *data, int len)
+int32_t send_data(union comm_desc desc, char *data, int len)
 {
 	if (use_mqtt) {
 		struct mqtt_message msg = {
@@ -195,7 +199,7 @@ int32_t send_data(struct uart_desc *desc, char *data, int len)
 			.payload = (uint8_t *)data,
 			.len = len
 		};
-		return mqtt_publish(desc, (int8_t *)MQTT_PUBLISH_TOPIC, &msg);
+		return mqtt_publish(desc.mdesc, (int8_t *)MQTT_PUBLISH_TOPIC, &msg);
 	} else
-		return uart_write(desc, (uint8_t *)data, len);
+		return uart_write(desc.udesc, (uint8_t *)data, len);
 }
