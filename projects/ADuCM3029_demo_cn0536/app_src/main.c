@@ -47,6 +47,7 @@
 #include "rtc.h"
 #include "rtc_extra.h"
 #include "error.h"
+#include "gpio.h"
 #include "debug.h"
 #include "util.h"
 
@@ -55,6 +56,57 @@
 
 /* Size of the buffer used to send data */
 #define DATA_BUFF_SIZE		256
+
+#define GREEN_LED_NB		32
+#define BLUE_LED_NB		31
+#define LED_ON			GPIO_HIGH
+#define LED_OFF			GPIO_LOW
+
+enum status_e {
+	STATUS_SETUP,
+	STATUS_OK,
+	STATUS_ERR
+};
+
+struct gpio_desc *green_led;
+struct gpio_desc *blue_led;
+
+void update_led_status(enum status_e status)
+{
+	if (!green_led || !blue_led) {
+		struct gpio_init_param par = { 0 };
+		par.number = GREEN_LED_NB;
+		gpio_get(&green_led, &par);
+		gpio_direction_output(green_led, LED_OFF);
+		par.number = BLUE_LED_NB;
+		gpio_get(&blue_led, &par);
+		gpio_direction_output(blue_led, LED_OFF);
+	}
+
+	switch (status) {
+	case STATUS_SETUP:
+		gpio_set_value(green_led, LED_OFF);
+		gpio_set_value(blue_led, LED_ON);
+		break;
+	case STATUS_OK:
+		gpio_set_value(green_led, LED_ON);
+		gpio_set_value(blue_led, LED_OFF);
+		break;
+	case STATUS_ERR:
+		;
+		int32_t val = LED_ON;
+		while (true) {
+			gpio_set_value(green_led, val);
+			gpio_set_value(blue_led, !val);
+			val = !val;
+			mdelay(1000);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 
 int initPower()
 {
@@ -182,9 +234,13 @@ int main(int argc, char *argv[])
 	union comm_desc		comm_desc;
 
 	is_ready = 0;
+	update_led_status(STATUS_SETUP);
 	ret = setup(&counter, &comm_desc, &rtc, &irq_ctrl);
-	ON_ERR_PRINT_AND_RET("Unable to perform setup\n", ret);
-
+	if (IS_ERR_VALUE(ret)) {
+		printf("Unable to perform setup\n");
+		update_led_status(STATUS_ERR);
+	}
+	update_led_status(STATUS_OK);
 	/* Custom code */
 	while (1) {
 		/* Will become ready at each RTC 10 seconds alarm */
@@ -201,6 +257,7 @@ int main(int argc, char *argv[])
 
 	pr_debug("Program ended due to an error\n");
 	delete_geiger_counter(counter);
+	update_led_status(STATUS_ERR);
 
 	return 0;
 }
