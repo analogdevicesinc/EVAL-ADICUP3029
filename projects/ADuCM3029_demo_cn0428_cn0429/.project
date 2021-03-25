@@ -23,6 +23,12 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>com.analog.crosscore.deviceprogrammer.deviceprogrammerbuilder</name>
+			<triggers>auto,full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.cdt.core.cnature</nature>
@@ -74,10 +80,4 @@
 			<locationURI>$%7Bcmsis_pack_root%7D/AnalogDevices/ADuCM302x_DFP/3.2.0/Source/common.c</locationURI>
 		</link>
 	</linkedResources>
-	<variableList>
-		<variable>
-			<name>CCES</name>
-			<value>file:/opt/analog/cces/2.8.3</value>
-		</variable>
-	</variableList>
 </projectDescription>
