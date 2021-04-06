@@ -7,10 +7,9 @@ include ../../local_variables.mk
 endif
 
 PROJECT			?= $(realpath .)
-TARGET 			?= $(notdir $(realpath .))
 NO-OS			?= $(realpath ../../no-OS)
-BUILD_DIR_NAME		?= build
-WORKSPACE		?= $(PROJECT)/$(BUILD_DIR_NAME)
+BUILD_DIR		?= $(PROJECT)/build
+WORKSPACE		?= $(BUILD_DIR)
 
 INCLUDE			?= $(NO-OS)/include
 DRIVERS 		?= $(NO-OS)/drivers
