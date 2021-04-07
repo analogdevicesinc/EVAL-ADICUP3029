@@ -210,13 +210,13 @@ int init_and_configure_adxl362(struct adxl362_dev **accel,
 	uint8_t				reg;
 
 	spi_platform_init_param = (struct aducm_spi_init_param) {
-		.spi_channel = SPI_CONFIG_CHANNEL,
 		.master_mode = MASTER,
 		.continuous_mode = true,
 		.half_duplex = false,
 		.dma = false
 	};
 	accel_init_param.spi_init = (struct spi_init_param) {
+		.device_id = SPI_CONFIG_CHANNEL,
 		.max_speed_hz = SPI_CONFIG_MAX_SPEED,
 		.chip_select = SPI_CONFIG_CS,
 		.mode = SPI_MODE_0,

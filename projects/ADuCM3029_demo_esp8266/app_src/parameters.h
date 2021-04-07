@@ -104,7 +104,7 @@
 
 /* Adxl362 configuration */
 /* SPI arduino */
-#define SPI_CONFIG_CHANNEL	SPI0
+#define SPI_CONFIG_CHANNEL	0
 #define SPI_CONFIG_CS		1
 
 #define SPI_CONFIG_MAX_SPEED	1000000 //Hz

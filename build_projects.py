@@ -66,17 +66,17 @@ def build_cces_project(adicup_location, project, project_dir, export_dir):
 
 	print(TGREEN + "DONE" + TWHITE)
 
-def build_noos_project(build_file, project, projet_dir, export_dir):
-	CMD_TEMPLATE = 'make -C %s %s BUILD_DIR_NAME=%s BINARY=%s -j%d LOCAL_BUILD=n LINK_SRCS=n VERBOSE=y '
+def build_noos_project(build_file, project, project_dir, export_dir, build_dir):
+	CMD_TEMPLATE = 'make -C %s %s BUILD_DIR=%s BINARY=%s LOCAL_BUILD=n LINK_SRCS=n VERBOSE=y '
 	fp = open(build_file)
 	builds = json.loads(fp.read())
 	for (build_name, flags) in builds.items():
 		print_build(build_name, project)
-		build_dir_name = 'build_%s' % build_name
-		binary = os.path.join(build_dir_name, "%s_%s.elf" % (project, build_name))
-		export_file = os.path.join(projet_dir, binary)
-		cmd = CMD_TEMPLATE % (projet_dir, flags, build_dir_name, binary, multiprocessing.cpu_count() - 1)
-		run_cmd(cmd + 'ra')
+		binary = os.path.join(build_dir, "%s_%s.elf" % (project, build_name))
+		export_file = os.path.join(build_dir, binary)
+		cmd = CMD_TEMPLATE % (project_dir, flags, build_dir, binary)
+		run_cmd(cmd + 'update_srcs')
+		run_cmd(cmd + '-j%d re' % (multiprocessing.cpu_count() - 1))
 		export_file = export_file.replace('.elf', '.hex')
 		run_cmd("cp %s %s" % (export_file, export_dir))
 		print(TGREEN + "DONE" + TWHITE)
@@ -91,7 +91,8 @@ def main():
 		project_dir = os.path.join(projets, project)
 		build_file = os.path.join(project_dir, 'builds.json')
 		if os.path.isfile(build_file):
-			build_noos_project(build_file, project, project_dir, export_dir)
+			build_dir = os.path.join(adicup_location, 'build')
+			build_noos_project(build_file, project, project_dir, export_dir, build_dir)
 		else:
 			build_cces_project(adicup_location, project, project_dir, export_dir)
 main()
