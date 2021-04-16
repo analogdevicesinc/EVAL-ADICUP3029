@@ -46,15 +46,10 @@ import adi
 
 global ad7799
 while True:
-    port = input('Input COM port (e.g. if ADICUP3029 is connected to COM7, input \'7\' )\nCOM: ')
+    port = input('Input Serial line (e.g. if ADICUP3029 is connected to COM7, input \'COM7\' )\nSerial line:')
+
     try:
-        port = int(port)
-    except:
-        print("Error, please input an integer value\n")
-        continue
-        
-    try:
-        context = "serial:COM" + str(port) + ",115200"
+        context = "serial:" + port + ",115200"
         ad7799 = adi.ad7799(uri=context)
         print("\nCN0548 board detected.\nBegin setup query:\n")
         break
