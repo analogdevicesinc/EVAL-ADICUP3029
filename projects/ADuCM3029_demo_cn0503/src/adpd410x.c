@@ -76,11 +76,11 @@ int32_t adpd410x_reg_read(struct adpd410x_dev *dev, uint16_t address,
 }
 
 /**
- * @brief Read a single byte from device register.
+ * @brief Read a specified number of bytes from device register.
  * @param dev - Device handler.
  * @param address - Register address.
  * @param data - Pointer to the register value container.
- * @param num_bytes - number of bytes to read, max 255
+ * @param num_bytes - number of bytes to read. Max 255 for ADPD4101 (I2C).
  * @return SUCCESS in case of success, FAILURE otherwise.
  */
 int32_t adpd410x_reg_read_bytes(struct adpd410x_dev *dev, uint16_t address,
@@ -90,12 +90,9 @@ int32_t adpd410x_reg_read_bytes(struct adpd410x_dev *dev, uint16_t address,
 	uint8_t i;
 	uint8_t *buff;
 
-	if (num_bytes > 255)
-		return FAILURE;
-
 	switch (dev->dev_type) {
 	case ADPD4100:
-		buff = (uint8_t *) calloc(num_bytes + 2, 1);
+		buff = (uint8_t *) calloc(num_bytes + 2, sizeof(*buff));
 		buff[0] = field_get(ADPD410X_UPPDER_BYTE_SPI_MASK, address);
 		buff[1] = (address << 1) & ADPD410X_LOWER_BYTE_SPI_MASK;
 
@@ -109,7 +106,10 @@ int32_t adpd410x_reg_read_bytes(struct adpd410x_dev *dev, uint16_t address,
 		}
 		break;
 	case ADPD4101:
-		buff = (uint8_t *) calloc(2, 1);
+		// Number of bytes for an I2C read is an 8-bit number, or at most 255
+		if (num_bytes > 255)
+			return FAILURE;
+		buff = (uint8_t *) calloc(2, sizeof(*buff));
 		buff[0] = field_get(ADPD410X_UPPDER_BYTE_I2C_MASK, address);
 		buff[0] |= 0x80;
 		buff[1] = address & ADPD410X_LOWER_BYTE_I2C_MASK;
@@ -529,9 +529,8 @@ static int32_t adpd410x_get_data_packet(struct adpd410x_dev *dev,
 	sample_index = 0;
 	do {
 		ret = adpd410x_read_fifo(dev, data + sample_index, 1, slot_bytecount_tab[i]);
-		if (ret != SUCCESS) {
+		if (ret != SUCCESS)
 			goto error_slot;
-		}
 
 		sample_index++;
 		if(((dual_chan & (1 << i)) != 0) && (got_one == 0)) {
@@ -569,18 +568,18 @@ int32_t adpd410x_read_fifo(struct adpd410x_dev *dev, uint32_t *data,
 	uint8_t *data_byte_buff, i, j;
 	uint16_t next_packet_size, bytes_read = 0,
 				   total_bytes = num_samples * datawidth;
-	if (datawidth > 4 || total_bytes > ADPD410X_FIFO_DEPTH)
+	if (datawidth > 4 || total_bytes > ADPD410X_FIFO_DEPTH || data == NULL)
 		return FAILURE;
 
 	data_byte_buff = (uint8_t *) calloc(total_bytes, sizeof (*data_byte_buff));
-	if (!data_byte_buff) {
+	if (!data_byte_buff)
 		return -ENOMEM;
-	}
 
 	while (bytes_read < total_bytes) {
-		// Can read a maximum of 255 bytes at once
-		next_packet_size = (total_bytes - bytes_read > 255) ? 255 : total_bytes -
-				   bytes_read;
+		next_packet_size = total_bytes - bytes_read;
+		// Can read a maximum of 255 bytes at once for i2c
+		if (dev->dev_type == ADPD4101 && next_packet_size > 255)
+			next_packet_size = 255;
 		ret = adpd410x_reg_read_bytes(dev, ADPD410X_REG_FIFO_DATA,
 					      data_byte_buff + bytes_read,
 					      next_packet_size);
@@ -589,9 +588,6 @@ int32_t adpd410x_read_fifo(struct adpd410x_dev *dev, uint32_t *data,
 
 		bytes_read += next_packet_size;
 	}
-
-	if (data == NULL)
-		goto fifo_free_return;
 
 	i = 0;
 	for (j = 0; j < num_samples; j++) {
