@@ -121,10 +121,53 @@ static uint8_t *cn0503_rations_ascii_id[] = {
 	(uint8_t *)""
 };
 
+int8_t *impresp_method_tab[] = {
+	(int8_t *)"IMP",
+	(int8_t *)"TIA",
+	(int8_t *)"SSI",
+	(int8_t *)""
+};
+
+int8_t *fluo_preset_tab[] = {
+	(int8_t *)"IMPPRESET",
+	(int8_t *)"TIAPRESET",
+	(int8_t *)"SSIPRESET",
+	(int8_t *)"MAXRESPRESET",
+	(int8_t *)""
+};
+
 enum {
 	COLORIMETRY,
 	FLUORESCENCE,
 	TURBIDITY
+};
+
+enum cn0503_impulse_response_methods {
+	IMP,
+	TIA,
+	SSI
+};
+
+static uint8_t fluo_start_time_offset_per_method[] =
+{7, 1.5, 2};
+
+enum cn0503_fluo_presets {
+	IMPPRESET,
+	TIAPRESET,
+	SSIPRESET,
+	MAXRESPRESET
+};
+
+enum cn0503_impulse_response_args {
+	CHANN_NO,
+	LED_WIDTH,
+	NB_SAMPLES,
+	SAMPLE_PERIOD,
+	METHOD,
+	AVERAGE_LENGTH,
+	FIRST_SAMPLE_OFFSET,
+	ACQUISITION_WIDTH,
+	CALIB_SLOT
 };
 
 /******************************************************************************/
@@ -169,7 +212,8 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 		return ret;
 
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)" REG? XXX                        - Read an ADPD register.\n");
+			       (uint8_t*)
+			       " REG? XXX                        - Read an ADPD register.\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -178,7 +222,8 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)" REG XXX YYYY                    - Write an ADPD register.\n");
+			       (uint8_t*)
+			       " REG XXX YYYY                    - Write an ADPD register.\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -193,11 +238,12 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
 			       (uint8_t*)
-			       " MODE?                           - Read the data display mode. Return a 4 character code:\n");
+			       " MODE?                             Read the data display mode. Return a 4 character code:\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)"                                   CODE - raw data is displayed;\n");
+			       (uint8_t*)
+			       "                                   CODE - raw data is displayed;\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -221,7 +267,8 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)" MODE XXXX                       - Set the data display mode.\n");
+			       (uint8_t*)
+			       " MODE XXXX                       - Set the data display mode.\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -230,7 +277,8 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)"                                   CODE - raw data is displayed;\n");
+			       (uint8_t*)
+			       "                                   CODE - raw data is displayed;\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -264,7 +312,8 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)" IDLE?                           - Queries the idle condition.\n");
+			       (uint8_t*)
+			       " IDLE?                           - Queries the idle condition.\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -293,7 +342,8 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)" DEFn? XXXX                      - Query operation parameters.\n");
+			       (uint8_t*)
+			       " DEFn? XXXX                      - Query operation parameters.\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -398,7 +448,8 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)" BOOT                            - Perform a software reset.\n");
+			       (uint8_t*)
+			       " BOOT                            - Perform a software reset.\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -432,11 +483,13 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)" RATMASK XX                      - Set the active channels mask.\n");
+			       (uint8_t*)
+			       " RATMASK XX                      - Set the active channels mask.\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)"                                   XX = New optical path mask.\n");
+			       (uint8_t*)
+			       "                                   XX = New optical path mask.\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -455,7 +508,8 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 	if (ret != SUCCESS)
 		return FAILURE;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)"                                   n = LED ID from the PCB.\n");
+			       (uint8_t*)
+			       "                                   n = LED ID from the PCB.\n");
 	if (ret != SUCCESS)
 		return FAILURE;
 	ret = cli_write_string(dev->cli_handler,
@@ -480,19 +534,22 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
 			       (uint8_t*)
-			       "                                   XXXX = measurement option. The followong options exist:\n");
+			       "                                   XXXX = measurement option. The following options exist:\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)"                                   COLO = colorimetry;\n");
+			       (uint8_t*)
+			       "                                   COLO = colorimetry;\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)"                                   FLUO = fluorescence;\n");
+			       (uint8_t*)
+			       "                                   FLUO = fluorescence;\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
-			       (uint8_t*)"                                   TURB = turbidity.\n");
+			       (uint8_t*)
+			       "                                   TURB = turbidity.\n");
 	if(ret != SUCCESS)
 		return ret;
 	ret = cli_write_string(dev->cli_handler,
@@ -505,9 +562,266 @@ int32_t cn0503_help(struct cn0503_dev *dev, uint8_t *arg)
 			       "                                   RATB parameter is also defaulted to zero. The user needs to check the jumper positions on the board and consider running a PCB-LED command after.\n");
 	if(ret != SUCCESS)
 		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                      Example: CHANN1 COLO - set channel 1 up for colorimetry measurement.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       " IMPRESP N XX YY.YY ZZ.ZZ AAAA [BB] [CC]\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                 - Measure the impulse response of the specified channel channel.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   N = optical path (1, 2, 3, or 4);\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   XX = length of initial LED pulse, in microseconds;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   YY.YY = acquisition width, in microseconds;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   ZZ.ZZ = sample period, in microseconds. The sample period has the folowing lower bounds:\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   For impulse response mode (IMP), 2 microseconds;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   For TIA/ADC mode (TIA), 1 microsecond;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   For single-sided integration mode (SSI), 0.03125 microseconds.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   AAAA = sampling method. The following options exist:\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   IMP = impulse response mode;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   TIA = TIA/ADC mode;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   SSI = single-sided integration mode.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   BB [OPTIONAL] = number of trials to average over, default 40;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   CC [OPTIONAL] = Start of sampling, measured from the specified LED turnoff time.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   The default value is the empirically measured end of the LED pulse:\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   For IMP mode, 6 microseconds; For TIA, 0 microseconds; For SSI, 3 microseconds.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "  FLUO_CALIB                     - Perform calibration for the fluorescence decay measurement. \n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   For best results, emulate the experimental setup of subsequent decay measurements, removing any fluorophores.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   Data and parameters from the most recent calibration call are stored in flash memory.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   Two calibration curves can be stored in flash: one in calibration \"slot\" 1 and one in calibration \"slot\" 2.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   There are two options for the order of arguments: \n");
+	if(ret != SUCCESS)
+		return ret;
+
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "  FLUO_CALIB XXXX N M YY.YY [ZZ] - Use a preset set of parameters\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   XXX = preset option. The following options exist:\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   IMPPRESET = use impulse response mode, with a 50us LED pulse and 2us sample period;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   TIAPRESET = use TIA/ADC mode, with a 50us LED pulse and 1us sample period;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   SSIPRESET = use single-sided integration mode, with a 50us LED pulse and 0.25us sample period;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   MAXRESPRESET = use single-sided integration mode, with a 50us LED pulse and 0.03125us sample period.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   N = calibration slot to read from, 1 or 2;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   M = optical path, 1 or 4;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   YY.YY = Length of acquisition region, in microseconds.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   ZZ [OPTIONAL] Number of trials to average over.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       " FLUO_CALIB N M XX YY.YY ZZ.ZZ AAAA [BB] [CC]\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   N = calibration slot to read from, 1 or 2;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   M = optical path, 1 or 4;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                 - See the IMPRESP command for the definition of the subsequent arguments.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       " FLUO_DECAY                      - Measure the decay time of a fluorophore in the specified optical path.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   There are three options for the order of arguments:\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       " FLUO_DECAY XXXX N M YY.YY [ZZ]    - Use a preset set of parameters. See the FLUO_CALIB command for the definition of each argument.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       " FLUO_DECAY N M XX.XX YY.YY [AA] [BB] - Measure the decay time, subtracting out the calibration response.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   The LED pulse width and sampling method are automatically set to their values in the most recent calibration.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   N = calibration slot to read from, 1 or 2;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   M = optical path, 1 or 4;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   XX.XX = width of the acquisition region, in microseconds;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   YY.YY = sample period, with lower bounds specified in the IMPRESP command;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   AA [OPTIONAL] = number of trials to average over, default 40;\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                   BB [OPTIONAL] = start of sampling, offset from LED turnoff time. Defaults to the value set from the most recent calibration.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       " FLUO_DECAY NOCALIB N XX YY.YY ZZ.ZZ AAAA [BB] [CC]\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                 - Measure the decay response, skipping calibration.\n");
+	if(ret != SUCCESS)
+		return ret;
+	ret = cli_write_string(dev->cli_handler,
+			       (uint8_t*)
+			       "                                 - See the IMPRESP command for the definition of each argument listed after the NOCALIB keyword.\n");
+	if(ret != SUCCESS)
+		return ret;
+
 	return cli_write_string(dev->cli_handler,
 				(uint8_t*)
-				"                                   Exemple: CHANN1 COLO - set channel 1 up for colorimetry measurement.\n");
+				" FLUO_CALIB_DUMP                 - Dump the parameters and data from the most recent calibration call to the CLI.\n");
 }
 
 /**
@@ -3307,6 +3621,1398 @@ int32_t cn0503_prompt(struct cn0503_dev *dev)
 }
 
 /**
+ * @brief Rollback configuration changes made during impulse response measurement.
+ *        Free any malloc'd memory.
+ *        Helper function for cn0503_impulse_response.
+ * @param [in] dev - The device structure.
+ */
+void impulse_response_rollback(struct cn0503_dev *dev)
+{
+	int8_t i;
+	struct cn0503_impulse_response *impresp = dev->impulse_response;
+
+	if (impresp == NULL)
+		return;
+	if (impresp->timer != NULL)
+		timer_remove(impresp->timer);
+	adpd410x_set_opmode(dev->adpd4100_handler, ADPD410X_STANDBY);
+	/** Rollback register values */
+	struct reg_config *registers = impresp->registers;
+
+	/** Unregister callback */
+	if (impresp->interrupt_set) {
+		irq_register_callback(dev->irq_handler, ADUCM_GPIO_A_INT_ID, NULL);
+	}
+	if (impresp->irq_cb != NULL)
+		free(impresp->irq_cb->config);
+	free(impresp->irq_cb);
+
+	if (registers != NULL) {
+		for (i = impresp->nb_reg_writes-1; i >= 0; i--) {
+			// Write to rollback value register
+			adpd410x_reg_write(dev->adpd4100_handler, registers[i].addr,
+					   registers[i].rollback_value);
+		}
+	}
+
+	/** Rollback output data rate */
+	adpd410x_set_sampling_freq(dev->adpd4100_handler, CN0503_CODE_ODR_DEFAULT);
+
+	/** Rollback timeslot number */
+	adpd410x_set_last_timeslot(dev->adpd4100_handler, impresp->prev_active_slots);
+
+	/** Free malloc'd structures */
+	free(impresp->data);
+	free(impresp->averaged_data);
+	free(registers);
+	free(impresp);
+	dev->impulse_response = NULL;
+}
+
+/**
+ * @brief Set up and start a cycle of impulse response data collection.
+ *        Set integration offset, if necessary.
+ *        Clear FIFO, if necessary. Start data collection.
+ *        Helper function for cn0503_impulse_response.
+ * @param [in] dev - The device structure.
+ */
+int32_t impulse_response_start_collection(struct cn0503_dev *dev)
+{
+	struct cn0503_impulse_response *impresp = dev->impulse_response;
+	uint16_t integ_offset_lower, integ_offset_upper;
+	int32_t ret;
+
+	if (impresp->method != IMP) {
+		/** Set integration offset */
+		integ_offset_lower = impresp->data_cycle *
+				     (impresp->sample_period_lower +
+				      impresp->sample_period_upper * 32);
+
+		integ_offset_upper = integ_offset_lower / 32 + impresp->led_width +
+				     impresp->led_offset + impresp->first_sample_offset;
+		// Make sure an offset of 0 corresponds to the empirically-determined
+		// end of the LED pulse
+		integ_offset_upper += fluo_start_time_offset_per_method[impresp->method];
+		integ_offset_lower = integ_offset_lower % 32;
+
+		ret = adpd410x_reg_write(dev->adpd4100_handler, ADPD410X_REG_INTEG_OFFSET(0),
+					 integ_offset_upper << BITP_INTEG_OFFSET_A_INTEG_OFFSET_UPPER |
+					 integ_offset_lower);
+		if (ret != SUCCESS)
+			goto rollback;
+	}
+
+	/** Clear FIFO */
+	ret = adpd410x_reg_write_mask(dev->adpd4100_handler, ADPD410X_REG_FIFO_STATUS,
+				      1, BITM_INT_STATUS_FIFO_CLEAR_FIFO);
+	if (ret != SUCCESS)
+		goto rollback;
+
+	/* Start data collection */
+	ret = adpd410x_set_opmode(dev->adpd4100_handler, ADPD410X_GOMODE);
+	if (ret != SUCCESS)
+		goto rollback;
+	return SUCCESS;
+
+rollback:
+	impulse_response_rollback(dev);
+	return ret;
+}
+
+/**
+ * @brief Read data from the FIFO.
+ *        Called by impulse_response_fifo_callback
+ * @param [in] dev - The device structure.
+ */
+int32_t impulse_response_read_data(struct cn0503_dev *dev)
+{
+	struct cn0503_impulse_response *impresp = dev->impulse_response;
+	if (impresp == NULL)
+		return FAILURE;
+
+	uint16_t i;
+	int32_t ret;
+	float datapoint;
+	uint8_t buff[64];
+	ret = adpd410x_set_opmode(dev->adpd4100_handler, ADPD410X_STANDBY);
+	if (ret != SUCCESS)
+		goto rollback;
+
+	/** Read FIFO */
+	ret = adpd410x_read_fifo(dev->adpd4100_handler, impresp->data,
+				 impresp->nb_fifo_samples, impresp->data_size);
+	if (ret != SUCCESS)
+		goto rollback;
+
+	/** Average FIFO data */
+	for (i = 0; i < impresp->nb_fifo_samples; i++) {
+		datapoint = (float) impresp->data[i] / impresp->average_length;
+		if (impresp->method == IMP) {
+			impresp->averaged_data[i] += datapoint;
+		} else {
+			impresp->averaged_data[impresp->data_cycle] += datapoint;
+		}
+	}
+
+	if (++impresp->data_cycle >= impresp->nb_data_cycles) {
+		/** Data output */
+		timer_stop(impresp->timer);
+		snprintf((char *)buff, 64, "IMPULSE RESPONSE COLLECTION TIME (us) %ld\n",
+			 impresp->timer->load_value);
+		cli_write_string(dev->cli_handler, buff);
+		timer_counter_set(impresp->timer, 0);
+
+		snprintf((char *)buff, 64, "IMPULSE RESPONSE SAMPLE PERIOD %0.5f",
+			 impresp->sample_period);
+		cli_write_string(dev->cli_handler, buff);
+
+		for (i = 0; i < impresp->nb_samples; i++) {
+			snprintf((char *)buff, 64, "%0.4f", impresp->averaged_data[i]);
+
+			if (i % 10 == 0) {
+				cli_write_string(dev->cli_handler, (uint8_t *)"\nIMPULSE RESPONSE DATA ");
+			} else if (i != 0) {
+				cli_write_string(dev->cli_handler, (uint8_t *)" ");
+			}
+			cli_write_string(dev->cli_handler, buff);
+		}
+
+		cli_write_string(dev->cli_handler, (uint8_t *)"\n");
+		cli_write_string(dev->cli_handler, (uint8_t *)"IMPULSE RESPONSE DONE\n");
+
+		if (impresp->success_callback == NULL) {
+			impulse_response_rollback(dev);
+		} else {
+			impresp->success_callback(dev);
+			if (impresp != NULL)
+				impulse_response_rollback(dev);
+		}
+		return SUCCESS;
+	} else {
+		return impulse_response_start_collection(dev);
+	}
+rollback:
+	impulse_response_rollback(dev);
+	return ret;
+}
+
+/**
+ * @brief Called whenever a FIFO_TH interrupt is triggered.
+ *        Sets a flag in dev->impulse_response to read data.
+ *        (Data reads within the interrupt callback itself result in deadlock)
+ * @param [in] param - The device structure.
+ * @param [in] port - The GPIO port that triggered the interrupt.
+ * @param [in] pin_int_data - Pin data from the interrupt.
+ */
+void impulse_response_fifo_callback(void* param, uint32_t port,
+				    void* pin_int_data)
+{
+	struct cn0503_impulse_response *impresp = ((struct cn0503_dev *)
+			param)->impulse_response;
+	if (impresp != NULL)
+		impresp->data_ready = true;
+}
+
+/**
+ * @brief Parse a single argument of the impulse response or fluorescence decay command
+ *        Helper function for cn0503_impulse_response, cn0503_fluo_decay_calibrate/measure
+ * @param [in] impresp - The impulse response struct
+ * @param [in] arg - Argument, in ASCII
+ * @param [out] argval - The address at which the argument value will be stored
+ * @param [in] arg_type - Which argument we are parsing, from enum cn0503_impulse_response_args
+ */
+void impulse_response_parse_arg(struct cn0503_impulse_response *impresp,
+				uint8_t *arg, void *argval, uint8_t arg_type)
+{
+	uint8_t i;
+	if (arg_type == NB_SAMPLES) { // uint16_t
+		*((uint16_t *) argval) = atoi((char*) arg);
+	} else if (arg_type == FIRST_SAMPLE_OFFSET) { // int8_t
+		*((int8_t *) argval) = atoi((char*) arg);
+	} else if (arg_type == SAMPLE_PERIOD
+		   || arg_type == ACQUISITION_WIDTH) { // float
+		*((float *) argval) = strtof((char *) arg, NULL);
+	} else if (arg_type == METHOD) {
+		// Parse sampling method
+		i = 0;
+		while (arg[i] != 0) { // Make method name uppercase
+			arg[i] = toupper(arg[i]);
+			i++;
+		}
+		impresp->method = 0;
+		while (impresp_method_tab[impresp->method][0] != 0) {
+			if (strncmp((char *) arg,
+				    (char *) impresp_method_tab[impresp->method], 3) == 0) {
+				break;
+			}
+			impresp->method++;
+		}
+	} else {
+		*((uint8_t *) argval) = atoi((char*) arg);
+	}
+}
+
+/**
+ * @brief Parse a list of impulse response arguments
+ *        Helper function for cn0503_impulse_response, cn0503_fluo_decay_calibrate/measure
+ * @param [in] impresp - The impulse response struct
+ * @param [in] arg - Arguments, in ASCII, separated by spaces
+ * @param [out] argvals - The addresses at which the argument value will be stored
+ * @param [in] arg_types - Which arguments we are parsing, from enum cn0503_impulse_response_args
+ * @param [in] nb_args - number of arguments
+ * @param [in] nb_required_args - nb_args minus number of optional arguments
+ * @param [out] nb_args_parsed - number of args parsed. NULL to ignore.
+ * @return SUCCESS if success, FAILURE or an error code otherwise.
+ */
+int32_t impulse_response_parse_arg_list(struct cn0503_impulse_response *impresp,
+					uint8_t *arg, void **argvals, uint8_t *arg_types, uint8_t nb_args,
+					uint8_t nb_required_args, uint8_t *nb_args_parsed)
+{
+	uint8_t i, *space_ptr;
+	if (nb_args_parsed != NULL)
+		*nb_args_parsed = 0;
+	for (i = 0; i < nb_args; i++) {
+		space_ptr = (uint8_t *)strchr((char *)arg, ' ');
+		if (space_ptr)
+			*space_ptr = 0;
+
+		// If reading sampling method, must have at least three characters to read
+		if (arg_types[i] == METHOD && strnlen((char *) arg, 4) < 3)
+			return FAILURE;
+		impulse_response_parse_arg(impresp, arg, argvals[i], arg_types[i]);
+		if (nb_args_parsed != NULL)
+			*nb_args_parsed++;
+
+		if (space_ptr == NULL) {
+			if (i < nb_required_args - 1) // Required arguments
+				return FAILURE;
+			else
+				break;
+		}
+		arg = space_ptr + 1;
+	}
+	i++;
+	return SUCCESS;
+}
+
+/**
+ * @brief Validate impulse response commands, and modify their values if needed
+ *        Helper function for cn0503_impulse_response, cn0503_fluo_decay_calibrate/measure
+ * @param [in] dev - The device struct
+ * @return SUCCESS if success, FAILURE or an error code otherwise.
+ */
+int32_t impulse_response_validate_parameters(struct cn0503_dev * dev)
+{
+	// IMP, TIA, SSI
+	float min_sample_periods[] = {2, 1, 0.03125};
+	struct cn0503_impulse_response *impresp = dev->impulse_response;
+
+	if (impresp->method > 2) // Invalid method
+		return FAILURE;
+
+	// Validate channel number
+	if (impresp->chann_no > 3) { // Invalid optical path
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *) "ERROR: Invalid optical path. Must be 1-4.\n");
+		return FAILURE;
+	}
+
+	if (impresp->nb_samples > CN0503_IMPRESP_MAX_SAMPLES) {
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *) "ERROR: Number of samples must at most 1950.\n");
+		return FAILURE;
+	}
+
+	// Must start sampling after the LED has turned on
+	if (impresp->first_sample_offset < -impresp->led_width) {
+		impresp->first_sample_offset = -impresp->led_width;
+	}
+	/**
+	 * Ensure sample period lower bound, and
+	 * parse sample period to sample_period_upper, in one-microsecond steps
+	 * and sample_period_lower, in 32.25-nanosecond steps.
+	 * sample_period_lower is only used for single-sided mode.
+	 */
+	if (impresp->sample_period < min_sample_periods[impresp->method])
+		impresp->sample_period = min_sample_periods[impresp->method];
+	impresp->sample_period_upper = (uint16_t) impresp->sample_period;
+	impresp->sample_period_lower =
+		(uint16_t) round(impresp->sample_period * 32) % 32;
+	// Only SSI uses the lower sample period
+	if (impresp->method != SSI) {
+		impresp->sample_period_lower = 0;
+		impresp->sample_period = impresp->sample_period_upper;
+	}
+
+	if (impresp->method == IMP) {
+		// Make sure we don't go past the FIFO depth
+		if (impresp->nb_samples * impresp->data_size > ADPD410X_FIFO_DEPTH) {
+			impresp->nb_samples = ADPD410X_FIFO_DEPTH / impresp->data_size;
+		}
+		impresp->nb_fifo_samples = impresp->nb_samples;
+		impresp->nb_data_cycles = impresp->average_length;
+
+	} else {
+		// Make sure we don't go past the FIFO depth
+		if (impresp->average_length * impresp->data_size > ADPD410X_FIFO_DEPTH) {
+			impresp->average_length = ADPD410X_FIFO_DEPTH / impresp->data_size;
+		}
+		// Make sure the last sample time is not greater than the max integration offset
+		if (impresp->nb_samples * impresp->sample_period + impresp->led_offset +
+		    impresp->led_width + impresp->first_sample_offset > ADPD410X_MAX_INTEG_OS) {
+			impresp->nb_samples =
+				(uint16_t) ((ADPD410X_MAX_INTEG_OS - impresp->led_offset -
+					     impresp->led_width - impresp->first_sample_offset) / impresp->sample_period);
+		}
+		impresp->nb_fifo_samples = impresp->average_length;
+		impresp->nb_data_cycles = impresp->nb_samples;
+	}
+	return SUCCESS;
+}
+
+/**
+ * @brief Set up the device configuration, timeslot settings, and sampling frequency
+ *        Helper function for cn0503_impulse_response, cn0503_fluo_decay_calibrate/measure
+ * @param [in] dev - The device structure
+ * @return SUCCESS if success, FAILURE or an error code otherwise.
+ */
+int32_t impulse_response_setup(struct cn0503_dev *dev)
+{
+	int32_t ret;
+	uint16_t temp_data;
+	uint8_t i, j, nb_reg_writes;
+	struct gpio_irq_config *gpio_irq;
+
+	struct cn0503_impulse_response *impresp = dev->impulse_response;
+	if (impresp == NULL)
+		return FAILURE;
+	impresp->prev_active_slots = dev->active_slots;
+
+	struct reg_config *registers = calloc(24, sizeof(struct reg_config));
+	if (registers == NULL) {
+		ret = -ENOMEM;
+		return ret;
+	}
+	impresp->registers = registers;
+
+	/** Set device idle */
+	ret = adpd410x_set_opmode(dev->adpd4100_handler, ADPD410X_STANDBY);
+	if (ret != SUCCESS)
+		return ret;
+
+	ret = cn0503_update_ts_setting(dev);
+	if(ret != SUCCESS)
+		return ret;
+
+	// Setup timeslots: just A
+	ret = adpd410x_set_last_timeslot(dev->adpd4100_handler, ADPD410X_TS_A);
+	if (ret != SUCCESS)
+		return ret;
+
+	// Sampling frequency: 2 kHz
+	ret = adpd410x_set_sampling_freq(dev->adpd4100_handler, 2000);
+	if(ret != SUCCESS)
+		return ret;
+
+	// Move configuration of desired optical path to timeslot A
+	i = 0;
+	uint16_t ts_setup_registers[] = {
+		ADPD410X_REG_TS_CTRL(0), ADPD410X_REG_CATHODE(0),
+		ADPD410X_REG_AFE_TRIM(0), ADPD410X_REG_PATTERN(0), ADPD410X_REG_LED_POW12(0),
+		ADPD410X_REG_LED_POW34(0)
+	};
+	for (j = 0; j < sizeof(ts_setup_registers) / sizeof(ts_setup_registers[0]);
+	     j++) {
+		ret = adpd410x_reg_read(dev->adpd4100_handler,
+					ts_setup_registers[j] + 0x20 * impresp->chann_no,
+					&temp_data);
+		if (ret != SUCCESS)
+			return ret;
+
+		impresp->registers[i].addr = ts_setup_registers[j];
+		impresp->registers[i].value = temp_data;
+		impresp->registers[i++].bitmask = 0xffff;
+	}
+
+	/** Clear FIFO before setting up interrupt */
+	ret = adpd410x_reg_write_mask(dev->adpd4100_handler, ADPD410X_REG_FIFO_STATUS,
+				      1, BITM_INT_STATUS_FIFO_CLEAR_FIFO);
+	if (ret != SUCCESS)
+		return ret;
+
+	/** Setup interrupts */
+	// Set interrupt Y to GPIO 0, triggered by FIFO threshold
+	impresp->registers[i].addr = ADPD410X_REG_INT_ENABLE_YD;
+	impresp->registers[i].value = 1 << BITP_INT_ENABLE_YD_INTY_EN_FIFO_TH;
+	impresp->registers[i++].bitmask = 0xffff;
+
+	impresp->registers[i].addr = ADPD410X_REG_GPIO01;
+	impresp->registers[i].value = 0x3 << BITP_GPIO01_GPIOOUT0;
+	impresp->registers[i++].bitmask = BITM_GPIO01_GPIOOUT0;
+
+	impresp->registers[i].addr = ADPD410X_REG_GPIO_CFG;
+	impresp->registers[i].value = 0x2 << BITP_GPIO_CFG_GPIO_PIN_CFG0;
+	impresp->registers[i++].bitmask = BITM_GPIO_CFG_GPIO_PIN_CFG0;
+
+	// Set FIFO threshold
+	impresp->registers[i].addr = ADPD410X_REG_FIFO_TH;
+	impresp->registers[i].value = impresp->data_size * impresp->nb_fifo_samples - 1;
+	impresp->registers[i++].bitmask = BITM_FIFO_CTL_FIFO_TH;
+
+	// Interrupt parameters
+	impresp->irq_cb = (struct callback_desc *)
+			  calloc(1, sizeof(*(impresp->irq_cb)));
+	gpio_irq = (struct gpio_irq_config *) calloc(1, sizeof(*gpio_irq));
+	gpio_irq->gpio_handler = dev->adpd4100_handler->gpio0;
+	gpio_irq->mode = GPIO_GROUP_POSITIVE_EDGE;
+	impresp->irq_cb->callback = impulse_response_fifo_callback;
+	impresp->irq_cb->ctx = (void *) dev;
+	impresp->irq_cb->config = (void *) gpio_irq;
+
+	ret = gpio_direction_input(gpio_irq->gpio_handler);
+	if (ret != SUCCESS)
+		return ret;
+	ret = irq_register_callback(dev->irq_handler, ADUCM_GPIO_A_INT_ID,
+				    impresp->irq_cb);
+	if (ret != SUCCESS)
+		return ret;
+	ret = irq_enable(dev->irq_handler, ADUCM_GPIO_A_INT_ID);
+	if (ret != SUCCESS)
+		return ret;
+
+	impresp->interrupt_set = true;
+	/** End setup interrupts */
+
+	// Do not zero-adjust ADC
+	impresp->registers[i].addr = ADPD410X_REG_ADC_OFF2(0);
+	impresp->registers[i].value = 0;
+	impresp->registers[i++].bitmask = BITM_ADC_OFF2_A_ZERO_ADJUST;
+	// Timeslot path: TIA INT ADC
+	impresp->registers[i].addr = ADPD410X_REG_TS_PATH(0);
+	impresp->registers[i].value = 0x0E6;
+	impresp->registers[i++].bitmask = BITM_TS_PATH_A_AFE_PATH_CFG;
+	// LED pulse width: user set, LED offset: 16 us
+	impresp->registers[i].addr = ADPD410X_REG_LED_PULSE(0);
+	impresp->registers[i].value = impresp->led_width << BITP_LED_PULSE_A_LED_WIDTH |
+				      impresp->led_offset;
+	impresp->registers[i++].bitmask = 0xffff;
+	// Data1: dark size 0, update signal size
+	impresp->registers[i].addr = ADPD410X_REG_DATA1(0);
+	impresp->registers[i].value = impresp->data_size;
+	impresp->registers[i++].bitmask = 0xffff;
+	// Data2: lit size 0
+	impresp->registers[i].addr = ADPD410X_REG_DATA2(0);
+	impresp->registers[i].value = 0;
+	impresp->registers[i++].bitmask = BITM_DATA2_A_LIT_SIZE;
+
+	if (impresp->method != SSI) {
+		// Integ setup: setup integrator as a buffer, disable channel 2 power
+		impresp->registers[i].addr = ADPD410X_REG_INTEG_WIDTH(0);
+		impresp->registers[i].value = (0x1 << BITP_INTEG_WIDTH_A_AFE_INT_C_BUF) |
+					      (0x1 << BITP_INTEG_WIDTH_A_SINGLE_INTEG) | (0x7 <<
+							      BITP_INTEG_WIDTH_A_CH2_AMP_DISABLE);
+		impresp->registers[i++].bitmask = BITM_INTEG_WIDTH_A_AFE_INT_C_BUF |
+						  BITM_INTEG_WIDTH_A_SINGLE_INTEG | BITM_INTEG_WIDTH_A_CH2_AMP_DISABLE;
+	}
+	if (impresp->method == IMP) {
+		// Timeslot control: impulse response, disable channel 2
+		impresp->registers[i].addr = ADPD410X_REG_TS_CTRL(0);
+		impresp->registers[i].value = 0x3 << BITP_TS_CTRL_A_SAMPLE_TYPE;
+		impresp->registers[i++].bitmask = BITM_TS_CTRL_A_SAMPLE_TYPE |
+						  BITM_TS_CTRL_A_CH2_EN;
+		// Counts: acquisition width
+		impresp->registers[i].addr = ADPD410X_REG_COUNTS(0);
+		impresp->registers[i].value = 0x1 | impresp->nb_samples <<
+					      BITP_COUNTS_A_NUM_INT;
+		impresp->registers[i++].bitmask = 0xffff;
+		// Lit offset: Start of impulse response sampling
+		impresp->registers[i].addr = ADPD410X_REG_DIGINT_LIT(0);
+		impresp->registers[i].value = impresp->led_width + impresp->led_offset +
+					      impresp->first_sample_offset + fluo_start_time_offset_per_method[0];
+		impresp->registers[i++].bitmask = BITM_DIGINT_LIT_A_LIT_OFFSET;
+		// Integ offset: spacing between samples user set
+		impresp->registers[i].addr = ADPD410X_REG_INTEG_OFFSET(0);
+		impresp->registers[i].value = impresp->sample_period_upper <<
+					      BITP_INTEG_OFFSET_A_INTEG_OFFSET_UPPER;
+		impresp->registers[i++].bitmask = BITM_INTEG_OFFSET_A_INTEG_OFFSET_UPPER |
+						  BITM_INTEG_OFFSET_A_INTEG_OFFSET;
+	} else {
+		// Timeslot control: normal mode, disable channel 2
+		impresp->registers[i].addr = ADPD410X_REG_TS_CTRL(0);
+		impresp->registers[i].value = 0;
+		impresp->registers[i++].bitmask = BITM_TS_CTRL_A_SAMPLE_TYPE |
+						  BITM_TS_CTRL_A_CH2_EN;
+		// Counts: 1 ADC, 1 pulse
+		impresp->registers[i].addr = ADPD410X_REG_COUNTS(0);
+		impresp->registers[i].value = 0x1 | (0x1 << BITP_COUNTS_A_NUM_INT);
+		impresp->registers[i++].bitmask = 0xffff;
+		// Integ offset: will be overwritten, but adding to registers array
+		// so that this register value is automatically rolled back at the end
+		impresp->registers[i].addr = ADPD410X_REG_INTEG_OFFSET(0);
+		impresp->registers[i].value = 0;
+		impresp->registers[i++].bitmask = 0;
+		if (impresp->method == SSI) {
+			// Integ setup: Single integration pulse, disable channel 2 power
+			impresp->registers[i].addr = ADPD410X_REG_INTEG_WIDTH(0);
+			impresp->registers[i].value = (1 << BITP_INTEG_WIDTH_A_SINGLE_INTEG) |
+						      (0x7 << BITP_INTEG_WIDTH_A_CH2_AMP_DISABLE) | 0x8;
+			impresp->registers[i++].bitmask = BITM_INTEG_WIDTH_A_AFE_INT_C_BUF |
+							  BITM_INTEG_WIDTH_A_SINGLE_INTEG | BITM_INTEG_WIDTH_A_CH2_AMP_DISABLE |
+							  BITM_INTEG_WIDTH_A_INTEG_WIDTH;
+			// Pattern: Invert integral to match the configuration of the integrator
+			// in IMP and TIA as an inverting buffer amplifier
+			impresp->registers[i].addr = ADPD410X_REG_PATTERN(0);
+			impresp->registers[i].value = (1 << BITP_PATTERN_A_REVERSE_INTEG);
+			impresp->registers[i++].bitmask = BITM_PATTERN_A_REVERSE_INTEG;
+		}
+	}
+	nb_reg_writes = i;
+
+	for (i = 0; i < nb_reg_writes; i++) {
+		// Store previous reg value for cleanup
+		ret = adpd410x_reg_read(dev->adpd4100_handler, impresp->registers[i].addr,
+					&(impresp->registers[i].rollback_value));
+		if (ret != SUCCESS)
+			return ret;
+
+		impresp->registers[i].value = (impresp->registers[i].rollback_value &
+					       ~impresp->registers[i].bitmask) |
+					      (impresp->registers[i].value & impresp->registers[i].bitmask);
+		// Write to register
+		ret = adpd410x_reg_write(dev->adpd4100_handler, impresp->registers[i].addr,
+					 impresp->registers[i].value);
+		if (ret != SUCCESS)
+			return ret;
+
+		impresp->nb_reg_writes++;
+	}
+
+	/** Data collection */
+	// Array for reading samples from the FIFO
+	impresp->data = (uint32_t *) calloc(impresp->nb_fifo_samples, sizeof(uint32_t));
+	if (impresp->data == NULL)
+		return -ENOMEM;
+
+	// Impulse response, averaged over average_length trials
+	impresp->averaged_data = (float *) calloc(impresp->nb_samples, sizeof(float));
+	if (impresp->averaged_data == NULL)
+		return -ENOMEM;
+
+	return SUCCESS;
+}
+
+/**
+ * @brief Compute the impulse response of a channel
+ * @param [in] dev - The device structure
+ * @param [in] arg - Channel of interest
+ *                   Length of initial LED pulse, in us
+ *                   Acquisition region, in us
+ *                   Sample spacing, in us
+ *                   Method: IMP for regular impulse response mode,
+ *							 TIA for TIA-ADC mode,
+ *                           SSI for single-sided integration
+ *                   [optional] Average length (default 40)
+ *                   [optional] Integration start offset from end of LED pulse
+ *                   	(default 0)
+ * @return SUCCESS in case of success, FAILURE otherwise.
+ */
+int32_t cn0503_impulse_response(struct cn0503_dev *dev, uint8_t *arg)
+{
+	int32_t ret;
+	uint8_t buff[64];
+	float acquisition_width;
+	struct cn0503_impulse_response *impresp = calloc(1, sizeof(*impresp));
+	if (impresp == NULL)
+		return -ENOMEM;
+
+	struct timer_init_param timer_param;
+	timer_param.id = 0;
+	timer_param.freq_hz = 1000000u;
+	timer_param.load_value = 0;
+	timer_param.extra = NULL;
+	timer_init(&impresp->timer, &timer_param);
+	timer_start(impresp->timer);
+
+	dev->impulse_response = impresp;
+
+	impresp->data_size = 2;
+	impresp->led_offset = CN0503_FLUO_DEFAULT_LED_OFF;
+	impresp->success_callback = impulse_response_rollback;
+	impresp->average_length = 40;
+
+	/** Parse arguments */
+	void *argvals[] = {&impresp->chann_no, &impresp->led_width, &acquisition_width,
+			   &impresp->sample_period, &impresp->method, &impresp->average_length,
+			   &impresp->first_sample_offset
+			  };
+	uint8_t arg_types[] = {CHANN_NO, LED_WIDTH, ACQUISITION_WIDTH, SAMPLE_PERIOD, METHOD,
+			       AVERAGE_LENGTH, FIRST_SAMPLE_OFFSET
+			      };
+
+	ret = impulse_response_parse_arg_list(impresp, arg, argvals, arg_types, 7, 5,
+					      NULL);
+	if (ret != SUCCESS)
+		goto rollback_return;
+
+	// Convert acquisiton width to number of samples
+	if (acquisition_width < 0)
+		acquisition_width = 0;
+	impresp->nb_samples = ceil(acquisition_width / impresp->sample_period) + 1;
+	impresp->chann_no--;
+
+	ret = impulse_response_validate_parameters(dev);
+	if (ret != SUCCESS)
+		goto rollback_return;
+
+	ret = impulse_response_setup(dev);
+	if (ret != SUCCESS)
+		goto rollback_return;
+
+	timer_stop(impresp->timer);
+	snprintf((char *)buff, 64, "IMPULSE RESPONSE SETUP TIME (us) %ld\n",
+		 impresp->timer->load_value);
+	cli_write_string(dev->cli_handler, buff);
+	timer_counter_set(impresp->timer, 0);
+	timer_start(impresp->timer);
+
+	return impulse_response_start_collection(dev);
+
+rollback_return:
+	impulse_response_rollback(dev);
+	return ret;
+}
+
+/**
+ * @brief Solve Ax = b, where A is a 2x2 matrix and
+ *        b is a 2x1 vector.
+ * @param [in] A
+ * @param [in] b
+ * @param [out] x
+ */
+int32_t matsolve_2x2(float *A, float *b, float *x)
+{
+	float det = A[0] * A[3] - A[1] * A[2];
+	if (det == 0) // Singular matrix
+		return FAILURE;
+	x[0] = (A[3] * b[0] - A[1] * b[1]) / det;
+	x[1] = (A[0] * b[1] - A[2] * b[0]) / det;
+	return SUCCESS;
+}
+
+/**
+ * @brief Given a fluorescence decay impulse response measurement,
+ *        subtract out the calibration reference response and
+ *        compute the decay time constant.
+ *        Helper function for cn0503_fluo_decay_measure.
+ * @param [in] dev - the device structure
+ */
+void compute_decay_constant(struct cn0503_dev *dev)
+{
+	struct cn0503_impulse_response *impresp = dev->impulse_response;
+	float *data = impresp->averaged_data,
+	       t0 = (float) impresp->first_sample_offset,
+	       ref_response_i, t, t_ref, avg_error = 0,
+					 dc_offset, scaling_factor, tau, tau_inv, S_i = 0;
+	uint8_t buff[64], nb_flash_pages = 0;
+	uint16_t i, j, flash_idx, ref_idx_offset, last_complete_idx = 0;
+	uint32_t flash_addr;
+
+	// 2x2 matrices, flattened
+	float A[] = {0, 0, 0, 0};
+	float C[] = {0, 0, 0, 0};
+
+	// 2x1 matrices, flattened
+	float B[] = {0, 0};
+	float AinvB[] = {0, 0};
+	float D[] = {0, 0};
+	float CinvD[] = {0, 0};
+
+	timer_start(impresp->timer);
+
+	if (!impresp->skip_calib) {
+		// Read reference response from flash and subtract from decay response
+		flash_addr = dev->fluo_calib_flash_page_addr -
+			     impresp->calib_slot * 0x800 * CN0503_FLASH_FLUO_MAX_PAGES;
+
+		ref_idx_offset = (uint16_t) ((t0 - impresp->ref_start_time) /
+					     impresp->ref_sample_period);
+		t_ref = impresp->ref_start_time + ref_idx_offset * impresp->ref_sample_period;
+		flash_idx = CN0503_FLASH_FLUO_PARAM_SIZE + ref_idx_offset;
+
+		i = 0;
+		while (i < impresp->nb_samples ||
+		       last_complete_idx < impresp->nb_samples - 1) {
+			while (flash_idx >= CN0503_FLASH_BUFF_SIZE) {
+				flash_addr -= 0x800;
+				flash_idx -= CN0503_FLASH_BUFF_SIZE;
+				nb_flash_pages++;
+			}
+			flash_read(dev->flash_handler, flash_addr + flash_idx * 4,
+				   (uint32_t *) &ref_response_i, 1);
+
+			// Perform second half of linear interpolation on any indices where it is needed
+			for (j = last_complete_idx + 1; j < i; j++) {
+				t = t0 + j *  impresp->sample_period;
+				if (t_ref <= t)
+					break;
+				data[j] -= ref_response_i * (t - (t_ref-impresp->ref_sample_period)) /
+					   impresp->ref_sample_period;
+				last_complete_idx = j;
+			}
+			if (i == impresp->nb_samples)
+				break;
+
+			t = t0 + i *  impresp->sample_period;
+
+			if (abs(t_ref - t) < 0.015625) {
+				// Equal within half of the minimum timestep
+				data[i] -= ref_response_i;
+				last_complete_idx = i;
+			} else {
+				// Computation of ref response index rounds down, so t_ref < t
+				// Perform first half of linear interpolation on reference response
+				data[i] -= ref_response_i * (t_ref+impresp->ref_sample_period - t) /
+					   impresp->ref_sample_period;
+			}
+
+			// Compute next round of times and indices for the decay and reference responses
+			if (i == impresp->nb_samples - 1)
+				ref_idx_offset++;
+			else
+				ref_idx_offset = (uint16_t) ((t +  impresp->sample_period -
+							      impresp->ref_start_time) /
+							     impresp->ref_sample_period);
+
+			flash_idx = CN0503_FLASH_FLUO_PARAM_SIZE + ref_idx_offset - nb_flash_pages *
+				    CN0503_FLASH_BUFF_SIZE;
+			t_ref = impresp->ref_start_time + ref_idx_offset * impresp->ref_sample_period;
+			i++;
+		}
+	}
+	// Compute initial exponential fit
+	// Based on formulae from:
+	// https://fr.scribd.com/doc/14674814/Regressions-et-equations-integrales
+	for (i = 1; i < impresp->nb_samples; i++) {
+		S_i += (data[i] + data[i - 1]) / 2 *  impresp->sample_period;
+		A[0] += pow(i *  impresp->sample_period, 2);
+		A[1] += S_i * (i *  impresp->sample_period);
+		A[3] += pow(S_i, 2);
+
+		B[0] += (data[i] - data[0]) * i *  impresp->sample_period;
+		B[1] += (data[i] - data[0]) * S_i;
+	}
+	A[2] = A[1];
+
+	matsolve_2x2(A, B, AinvB);
+	tau_inv = -AinvB[1];
+
+	for (i = 0; i < impresp->nb_samples; i++) {
+		t = t0 + i *  impresp->sample_period;
+		C[1] += pow(M_E, -tau_inv * t);
+		C[3] += pow(M_E, -2 * tau_inv * t);
+		D[0] += data[i];
+		D[1] += data[i] * pow(M_E, -tau_inv * t);
+	}
+	C[0] = impresp->nb_samples;
+	C[2] = C[1];
+
+	matsolve_2x2(C, D, CinvD);
+
+	dc_offset = CinvD[0];
+	scaling_factor = CinvD[1];
+	tau = 1 / tau_inv;
+
+	// Compute average squared error of fit
+	for (i = 0; i < impresp->nb_samples; i++) {
+		t = t0 + i *  impresp->sample_period;
+		avg_error += abs(data[i] - (dc_offset + scaling_factor * pow(M_E,
+					    -t * tau_inv)));
+	}
+	avg_error /= impresp->nb_samples;
+
+	timer_stop(impresp->timer);
+	snprintf((char *)buff, 64, "FLUO DECAY PROCESSING TIME (us) %ld\n",
+		 impresp->timer->load_value);
+	cli_write_string(dev->cli_handler, buff);
+	timer_counter_set(impresp->timer, 0);
+
+	snprintf((char *)buff, 64, "FLUO DECAY START TIME %0.1f\n", t0);
+	cli_write_string(dev->cli_handler, buff);
+	cli_write_string(dev->cli_handler,
+			 (uint8_t *)"\nFLUO DECAY FIT (Code LSB vs. microseconds): A + B exp(-t/tau)\n");
+	snprintf((char *)buff, 64, "FLUO DECAY A %0.5f\n", dc_offset);
+	cli_write_string(dev->cli_handler, buff);
+	snprintf((char *)buff, 64, "FLUO DECAY B %0.5f\n", scaling_factor);
+	cli_write_string(dev->cli_handler, buff);
+	snprintf((char *)buff, 64, "FLUO DECAY TAU %0.5f\n", tau);
+	cli_write_string(dev->cli_handler, buff);
+	snprintf((char *)buff, 64, "FLUO DECAY AVG PER-SAMPLE ERROR %0.5f\n",
+		 avg_error);
+	cli_write_string(dev->cli_handler, buff);
+
+	for (i = 0; i < impresp->nb_samples; i++) {
+		snprintf((char *)buff, 64, "%0.4f", data[i]);
+
+		if (i % 10 == 0) {
+			cli_write_string(dev->cli_handler, (uint8_t *)"\nFLUO DECAY DATA ");
+		} else if (i != 0) {
+			cli_write_string(dev->cli_handler, (uint8_t *)" ");
+		}
+		cli_write_string(dev->cli_handler, buff);
+	}
+	cli_write_string(dev->cli_handler, (uint8_t *)"\n");
+	cli_write_string(dev->cli_handler, (uint8_t *)"FLUO DECAY DONE\n");
+
+	impulse_response_rollback(dev);
+}
+
+/**
+ * @brief Write fluorescence decay calibration data to flash.
+ *        Helper function for cn0503_fluo_decay_calibrate.
+ * @param [in] dev - the device structure
+ */
+void process_fluo_decay_calibration(struct cn0503_dev *dev)
+{
+	struct cn0503_impulse_response *impresp = dev->impulse_response;
+	uint16_t flash_idx = 0, i;
+	float end_time, *data = impresp->averaged_data;
+	uint32_t flash_data[64], flash_addr, flash_addr_offset = 0;
+	uint8_t buff[64];
+
+	flash_addr = dev->fluo_calib_flash_page_addr -
+		     impresp->calib_slot * 0x800 * CN0503_FLASH_FLUO_MAX_PAGES;
+	timer_start(impresp->timer);
+
+	flash_data[flash_idx] = impresp->chann_no & 0xFF;
+	flash_data[flash_idx] |= (impresp->led_width & 0xFF) << 8;
+	flash_data[flash_idx] |= (impresp->first_sample_offset & 0xFF) << 16;
+	flash_data[flash_idx++] |= impresp->method << 24;
+	end_time = impresp->first_sample_offset + impresp->sample_period *
+		   (impresp->nb_samples - 1);
+	memcpy((void *) (flash_data + flash_idx++), (void *) &end_time, 4);
+	memcpy((void *) (flash_data + flash_idx++),
+	       (void *) &impresp->sample_period,4);
+
+	for (i = 0; i < impresp->nb_samples; i++) {
+		if (flash_idx == 64) {
+			// Write back full flash page
+			if (flash_write(dev->flash_handler, flash_addr + flash_addr_offset * 4,
+					flash_data, 64) != SUCCESS)
+				goto rollback;
+			flash_addr_offset += 64;
+			flash_idx = 0;
+			if (flash_addr_offset == CN0503_FLASH_BUFF_SIZE) {
+				flash_addr -= 0x800;
+				flash_addr_offset = 0;
+			}
+		}
+		memcpy((void *) (flash_data + flash_idx++), (void *) (data + i), 4);
+	}
+	// Write back last flash page
+	flash_write(dev->flash_handler, flash_addr + flash_addr_offset * 4,
+		    flash_data, 64);
+
+	timer_stop(impresp->timer);
+	snprintf((char *)buff, 64, "FLUO CALIB PROCESSING TIME (us) %ld\n",
+		 impresp->timer->load_value);
+	cli_write_string(dev->cli_handler, buff);
+	timer_counter_set(impresp->timer, 0);
+
+rollback:
+	impulse_response_rollback(dev);
+	cli_write_string(dev->cli_handler, (uint8_t *)"FLUO CALIB DONE\n");
+}
+
+/**
+ * @brief Set preset parameters for fluorescence decay.
+ *        Helper function for cn0503_fluo_decay_measure/calibrate.
+ * @param [in] impresp - the impulse response structure
+ * @param [in] preset - which preset we are using, from enum cn0503_fluo_presets
+ */
+void cn0503_fluo_set_presets(struct cn0503_impulse_response *impresp,
+			     uint8_t preset)
+{
+	if (preset == IMPPRESET) {
+		impresp->sample_period = 2;
+		impresp->method = IMP;
+	} else if (preset == TIAPRESET) {
+		impresp->sample_period = 1;
+		impresp->method = TIA;
+	} else if (preset == SSIPRESET) {
+		impresp->sample_period = 0.25;
+		impresp->method = SSI;
+	} else if (preset == MAXRESPRESET) {
+		impresp->sample_period = 0.03125;
+		impresp->average_length = 25;
+		impresp->method = SSI;
+	}
+	impresp->first_sample_offset = 0;
+}
+
+/**
+ * @brief Perform calibration for the fluorescence decay measurement.
+ * @param [in] dev - The device structure
+ * @param [in] arg -
+ *		If using a preset:
+ *                   {IMPPRESET, TIAPRESET, SSIPRESET, MAXRESPRESET}
+ *                   Channel of interest
+ *                   Length of acquisition region
+ *                   [optional] Average length (default 60)
+ *		Otherwise:
+ *                   Calibration slot in flash to write to (1 or 2)
+ *			         Channel of interest (1 or 4),
+ *                   Length of initial LED pulse, in us
+ *                   Acquisition width
+ *                   Sample period, in us
+ *                   Method (IMP, TIA, SSI)
+ *                   [optional] Average length (default 60)
+ *                   [optional] Integration start offset from end of LED pulse
+ *                       (default 0)
+ * @return SUCCESS if success, FAILURE or error code otherwise.
+ */
+int32_t cn0503_fluo_decay_calibrate(struct cn0503_dev *dev, uint8_t *arg)
+{
+	int32_t ret;
+	uint8_t i, preset;
+	float acquisition_width;
+	uint8_t buff[64];
+
+	struct cn0503_impulse_response *impresp = calloc(1, sizeof(*impresp));
+	if (impresp == NULL)
+		return -ENOMEM;
+
+	struct timer_init_param timer_param;
+	timer_param.id = 0;
+	timer_param.freq_hz = 1000000u;
+	timer_param.load_value = 0;
+	timer_param.extra = NULL;
+	timer_init(&impresp->timer, &timer_param);
+	timer_start(impresp->timer);
+
+	dev->impulse_response = impresp;
+
+	// Default values of parameters
+	impresp->data_size = 2;
+	impresp->led_offset = CN0503_FLUO_DEFAULT_LED_OFF;
+	impresp->average_length = 60;
+	impresp->led_width = 50;
+	impresp->success_callback = process_fluo_decay_calibration;
+
+	// Read first argument to see if we're using a preset
+	uint8_t *space_ptr;
+	space_ptr = (uint8_t *)strchr((char *)arg, ' ');
+	if (space_ptr == NULL) {
+		ret = FAILURE;
+		goto rollback_return;
+	}
+	if (space_ptr - arg >= 9) { // Length of smallest preset keyword
+		*space_ptr = 0;
+		i = 0;
+		while (arg[i] != 0) { // Make keyword name uppercase
+			arg[i] = toupper(arg[i]);
+			i++;
+		}
+		preset = 0;
+		while (fluo_preset_tab[preset][0] != 0) {
+			if (strncmp((char *) arg, (char *) fluo_preset_tab[preset], 13) == 0) {
+				break;
+			}
+			preset++;
+		}
+		if (preset > 3) { // Invalid method
+			ret = FAILURE;
+			goto rollback_return;
+		}
+
+		cn0503_fluo_set_presets(impresp, preset);
+		void *argvals[] = {&impresp->calib_slot, &impresp->chann_no, &acquisition_width,
+				   &impresp->average_length
+				  };
+		uint8_t arg_types[] = {CALIB_SLOT, CHANN_NO, ACQUISITION_WIDTH, AVERAGE_LENGTH};
+		ret = impulse_response_parse_arg_list(impresp, space_ptr + 1, argvals,
+						      arg_types, 4, 3, NULL);
+		if (ret != SUCCESS)
+			goto rollback_return;
+	} else {
+		void *argvals[] = {&impresp->calib_slot, &impresp->chann_no, &impresp->led_width,
+				   &acquisition_width, &impresp->sample_period, &impresp->method,
+				   &impresp->average_length, &impresp->first_sample_offset
+				  };
+		uint8_t arg_types[] = {CALIB_SLOT, CHANN_NO, LED_WIDTH, ACQUISITION_WIDTH, SAMPLE_PERIOD,
+				       METHOD, AVERAGE_LENGTH, FIRST_SAMPLE_OFFSET
+				      };
+		ret = impulse_response_parse_arg_list(impresp, arg, argvals, arg_types, 8, 6,
+						      NULL);
+		if (ret != SUCCESS)
+			goto rollback_return;
+	}
+	// Convert acquisiton width to number of samples
+	if (acquisition_width < 0)
+		acquisition_width = 0;
+	impresp->nb_samples = ceil(acquisition_width / impresp->sample_period) + 1;
+	impresp->chann_no--;
+	ret = impulse_response_validate_parameters(dev);
+	if (ret != SUCCESS)
+		goto rollback_return;
+
+	if (impresp->calib_slot != 1 && impresp->calib_slot != 2) {
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *)
+				 "FLUO DECAY ERROR: Invalid calibration slot. Must be 1 or 2.\n");
+		goto rollback_return;
+	}
+	impresp->calib_slot--;
+
+	if (impresp->chann_no != 0 && impresp->chann_no != 3) {
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *)
+				 "ERROR: Can only use optical paths 1 or 4 for fluorescence decay.\n");
+		goto rollback_return;
+	}
+
+	// Check that all of the datapoints can fit into flash
+	if (impresp->nb_samples > CN0503_FLASH_BUFF_SIZE *
+	    CN0503_FLASH_FLUO_MAX_PAGES - CN0503_FLASH_FLUO_PARAM_SIZE) {
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *) "ERROR: Too many samples!\n");
+		goto rollback_return;
+	}
+
+	ret = impulse_response_setup(dev);
+	if (ret != SUCCESS)
+		goto rollback_return;
+
+	timer_stop(impresp->timer);
+	snprintf((char *)buff, 64, "FLUO CALIB SETUP TIME (us) %ld\n",
+		 impresp->timer->load_value);
+	cli_write_string(dev->cli_handler, buff);
+	timer_counter_set(impresp->timer, 0);
+	timer_start(impresp->timer);
+
+	return impulse_response_start_collection(dev);
+
+rollback_return:
+	impulse_response_rollback(dev);
+	return ret;
+}
+
+/**
+ * @brief Measure a fluorescence decay response.
+ * @param [in] dev - The device structure
+ * @param [in] arg -
+ *		If skipping calibration:
+ *                   NOCALIB
+ *                   Channel of interest (1 or 4)
+ *                   Length of LED pulse
+ *                   Acquisition width
+ *                   Sample period, in us
+ *                   Method (IMP, TIA, SSI)
+ *                   [optional] Average length (default 40)
+ *                   [optional] Integration start offset from end of LED pulse (default 0us)
+ *		If using a preset:
+ *                   {IMPPRESET, TIAPRESET, SSIPRESET, MAXRESPRESET}
+ *                   Channel of interest
+ *                   Length of acquisition region
+ *                   [optional] Average length (default 40)
+ *      Otherwise:
+ *                   Channel of interest
+ *                   Acquisition width
+ *                   Sample period, in us
+ *                   [optional] Average length (default 40)
+ *                   [optional] Integration start offset from end of LED pulse
+ *						(defaults to value from reference response)
+ * 					 @note: LED width and method will be read from calibration data in flash
+ * @return SUCCESS if success, FAILURE or an error code otherwise
+ */
+int32_t cn0503_fluo_decay_measure(struct cn0503_dev *dev, uint8_t *arg)
+{
+	int32_t ret;
+	uint32_t flash_data[4], flash_addr;
+	uint8_t i, preset;
+	float acquisition_width;
+	uint16_t flash_idx;
+	float end_time;
+	uint8_t buff[64], nb_args_parsed;
+	bool using_preset = false;
+
+	struct cn0503_impulse_response *impresp = calloc(1, sizeof(*impresp));
+	if (impresp == NULL) {
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *) "FLUO DECAY ERROR: Not enough memory.\n");
+		ret = -ENOMEM;
+		goto rollback_return;
+	}
+	struct timer_init_param timer_param;
+	timer_param.id = 0;
+	timer_param.freq_hz = 1000000u;
+	timer_param.load_value = 0;
+	timer_param.extra = NULL;
+	timer_init(&impresp->timer, &timer_param);
+	timer_start(impresp->timer);
+
+	dev->impulse_response = impresp;
+
+	impresp->data_size = 2;
+	impresp->led_offset = CN0503_FLUO_DEFAULT_LED_OFF;
+	impresp->success_callback = compute_decay_constant;
+	impresp->average_length = 40;
+
+	// Read first argument to see if we're skipping calibration or using a preset
+	uint8_t *space_ptr;
+	space_ptr = (uint8_t *)strchr((char *)arg, ' ');
+	if (space_ptr == NULL) {
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *) "FLUO DECAY ERROR: Invalid argument string.\n");
+		ret = FAILURE;
+		goto rollback_return;
+	}
+
+	if (space_ptr - arg >= 7) { // Length of smallest keyword
+		*space_ptr = 0;
+		i = 0;
+		while (arg[i] != 0) { // Make keyword name uppercase
+			arg[i] = toupper(arg[i]);
+			i++;
+		}
+		if (strncmp((char *) arg, "NOCALIB", 7) == 0) { // Skipping calibration
+			impresp->skip_calib = true;
+			void *argvals[] = {&impresp->chann_no, &impresp->led_width, &acquisition_width,
+					   &impresp->sample_period, &impresp->method, &impresp->average_length,
+					   &impresp->first_sample_offset
+					  };
+			uint8_t arg_types[] = {CHANN_NO, LED_WIDTH, ACQUISITION_WIDTH, SAMPLE_PERIOD, METHOD,
+					       AVERAGE_LENGTH, FIRST_SAMPLE_OFFSET
+					      };
+			ret = impulse_response_parse_arg_list(impresp, space_ptr + 1, argvals,
+							      arg_types, 7, 5, &nb_args_parsed);
+			if (ret != SUCCESS) {
+				cli_write_string(dev->cli_handler,
+						 (uint8_t *) "FLUO DECAY ERROR: Invalid argument string.\n");
+				goto rollback_return;
+			}
+
+		} else { // Preset parameters
+			preset = 0;
+			while (fluo_preset_tab[preset][0] != 0) {
+				if (strncmp((char *) arg, (char *) fluo_preset_tab[preset], 13) == 0) {
+					break;
+				}
+				preset++;
+			}
+			if (preset > 3) { // Invalid preset
+				ret = FAILURE;
+				cli_write_string(dev->cli_handler,
+						 (uint8_t *) "FLUO DECAY ERROR: Invalid preset string.\n");
+				goto rollback_return;
+			}
+			using_preset = true;
+			cn0503_fluo_set_presets(impresp, preset);
+			void *argvals[] = {&impresp->calib_slot, &impresp->chann_no, &acquisition_width,
+					   &impresp->average_length
+					  };
+			uint8_t arg_types[] = {CALIB_SLOT, CHANN_NO, ACQUISITION_WIDTH, AVERAGE_LENGTH};
+			ret = impulse_response_parse_arg_list(impresp, space_ptr + 1, argvals,
+							      arg_types, 4, 3, &nb_args_parsed);
+			if (ret != SUCCESS) {
+				cli_write_string(dev->cli_handler,
+						 (uint8_t *) "FLUO DECAY ERROR: Invalid argument string.\n");
+				goto rollback_return;
+			}
+			// Convert acquisiton width to number of samples
+			impresp->nb_samples = ceil(acquisition_width / impresp->sample_period) + 1;
+		}
+	} else {
+		void *argvals[] = {&impresp->calib_slot, &impresp->chann_no, &acquisition_width,
+				   &impresp->sample_period, &impresp->average_length,
+				   &impresp->first_sample_offset
+				  };
+		uint8_t arg_types[] = {CALIB_SLOT, CHANN_NO, ACQUISITION_WIDTH, SAMPLE_PERIOD,
+				       AVERAGE_LENGTH, FIRST_SAMPLE_OFFSET
+				      };
+		ret = impulse_response_parse_arg_list(impresp, arg, argvals, arg_types, 6, 4,
+						      &nb_args_parsed);
+		if (ret != SUCCESS) {
+			cli_write_string(dev->cli_handler,
+					 (uint8_t *) "FLUO DECAY ERROR: Invalid argument string.\n");
+			goto rollback_return;
+		}
+	}
+	// Convert acquisiton width to number of samples
+	if (acquisition_width < 0)
+		acquisition_width = 0;
+	impresp->nb_samples = ceil(acquisition_width / impresp->sample_period) + 1;
+	impresp->chann_no--;
+	if (!impresp->skip_calib) {
+		if (impresp->calib_slot != 1 && impresp->calib_slot != 2) {
+			cli_write_string(dev->cli_handler,
+					 (uint8_t *)
+					 "FLUO DECAY ERROR: Invalid calibration slot. Must be 1 or 2.\n");
+			goto rollback_return;
+		}
+		impresp->calib_slot--;
+		// Read from flash
+		flash_idx = 0;
+		flash_addr = dev->fluo_calib_flash_page_addr -
+			     impresp->calib_slot * 0x800 * CN0503_FLASH_FLUO_MAX_PAGES;
+		flash_read(dev->flash_handler, flash_addr, flash_data, 4);
+		impresp->ref_chann_no = flash_data[flash_idx] & 0xFF;
+		impresp->ref_led_width = (flash_data[flash_idx] >> 8) & 0xFF;
+		impresp->ref_start_time = (flash_data[flash_idx] >> 16) & 0xFF;
+		impresp->ref_method = flash_data[flash_idx++] >> 24;
+		memcpy((void *) &impresp->ref_end_time, (void *) (flash_data + flash_idx++), 4);
+		memcpy((void *) &impresp->ref_sample_period,
+		       (void *) (flash_data + flash_idx), 4);
+
+		impresp->led_width = impresp->ref_led_width;
+		if ((!using_preset && nb_args_parsed < 5) || !using_preset)
+			impresp->first_sample_offset = impresp->ref_start_time;
+		if (!using_preset)
+			impresp->method = impresp->ref_method;
+
+		if (flash_data[flash_idx] == 0xFFFFFFFF) {
+			cli_write_string(dev->cli_handler,
+					 (uint8_t *)
+					 "FLUO DECAY ERROR: No calibration data found. Run FLUO_CALIB to calibrate.\n");
+			goto rollback_return;
+		}
+		if (impresp->ref_chann_no != impresp->chann_no) {
+			cli_write_string(dev->cli_handler,
+					 (uint8_t *)
+					 "FLUO DECAY ERROR: Calibration performed different channel than decay measurement. "
+					 "Run FLUO_CALIB to calibrate.\n");
+			goto rollback_return;
+		}
+		if (impresp->ref_method != impresp->method) {
+			cli_write_string(dev->cli_handler,
+					 (uint8_t *)
+					 "FLUO DECAY ERROR: Calibration performed with different sampling method than decay measurement. "
+					 "Run FLUO_CALIB to calibrate.\n");
+			goto rollback_return;
+		}
+		end_time = (float) impresp->first_sample_offset + impresp->sample_period *
+			   (impresp->nb_samples - 1);
+		if (impresp->ref_start_time > impresp->first_sample_offset ||
+		    impresp->ref_end_time < end_time) {
+			cli_write_string(dev->cli_handler,
+					 (uint8_t *)
+					 "FLUO DECAY ERROR: Calibration region of support does not include full decay acquisition region. "
+					 "Run FLUO_CALIB to calibrate.\n");
+			goto rollback_return;
+		}
+	}
+	ret = impulse_response_validate_parameters(dev);
+	if (ret != SUCCESS)
+		goto rollback_return;
+
+	if (impresp->chann_no != 0 && impresp->chann_no != 3) {
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *)
+				 "FLUO DECAY ERROR: Can only use optical paths 1 or 4 for fluorescence decay.\n");
+		goto rollback_return;
+	}
+
+	ret = impulse_response_setup(dev);
+	if (ret != SUCCESS) {
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *) "FLUO DECAY ERROR: Setup.\n");
+		goto rollback_return;
+	}
+
+	timer_stop(impresp->timer);
+	snprintf((char *)buff, 64, "FLUO DECAY SETUP TIME (us) %ld\n",
+		 impresp->timer->load_value);
+	cli_write_string(dev->cli_handler, buff);
+	timer_counter_set(impresp->timer, 0);
+	timer_start(impresp->timer);
+	return impulse_response_start_collection(dev);
+
+rollback_return:
+	impulse_response_rollback(dev);
+	return ret;
+}
+
+/**
+ * @brief Dump fluorescence decay calibration data to the CLI.
+ * @param [in] dev - The device structure
+ * @param [in] arg - Which calibration slot to output (1 or 2)
+ * @return SUCCESS if success, error code otherwise
+ */
+int32_t cn0503_fluo_dump_calib(struct cn0503_dev *dev, uint8_t *arg)
+{
+	uint32_t *flash_data, flash_addr;
+	uint16_t flash_idx, nb_samples, i;
+	uint8_t buff[64];
+	int8_t start_time;
+	float end_time, sample_period, ref_response_i;
+	uint8_t calib_slot = atoi((char *) arg) - 1;
+
+	flash_data = calloc(CN0503_FLASH_BUFF_SIZE, sizeof(uint32_t));
+	if (flash_data == NULL)
+		return -ENOMEM;
+
+	flash_idx = 0;
+	flash_addr = dev->fluo_calib_flash_page_addr -
+		     calib_slot * 0x800 * CN0503_FLASH_FLUO_MAX_PAGES;
+	flash_read(dev->flash_handler, flash_addr, flash_data, CN0503_FLASH_BUFF_SIZE);
+
+	if (flash_data[flash_idx] == 0xFFFFFFFF) {
+		cli_write_string(dev->cli_handler,
+				 (uint8_t *) "FLUO DUMP CALIB ERROR: NO CALIBRATION DATA FOUND\n");
+		free(flash_data);
+		return SUCCESS;
+	}
+
+	snprintf((char *) buff, 64, "FLUO DUMP CALIB CHANNEL %d\n",
+		 (uint8_t) (flash_data[flash_idx] & 0xFF));
+	cli_write_string(dev->cli_handler, buff);
+
+	snprintf((char *)buff, 64, "FLUO DUMP CALIB LED WIDTH %d\n",
+		 (uint8_t) ((flash_data[flash_idx] >> 8) & 0xFF));
+	cli_write_string(dev->cli_handler, buff);
+
+	start_time = flash_data[flash_idx] >> 16;
+	snprintf((char *)buff, 64, "FLUO DUMP CALIB START TIME %d\n", start_time);
+	cli_write_string(dev->cli_handler, buff);
+
+	snprintf((char *)buff, 64, "FLUO DUMP CALIB METHOD %s\n",
+		 impresp_method_tab[flash_data[flash_idx++] >> 24]);
+	cli_write_string(dev->cli_handler, buff);
+
+	memcpy((void *) &end_time, (void *) (flash_data + flash_idx++), 4);
+	snprintf((char *)buff, 64, "FLUO DUMP CALIB END TIME %0.5f\n", end_time);
+	cli_write_string(dev->cli_handler, buff);
+
+	memcpy((void *) &sample_period, (void *) (flash_data + flash_idx++), 4);
+	snprintf((char *)buff, 64, "FLUO DUMP CALIB SAMPLE PERIOD %0.5f",
+		 sample_period);
+	cli_write_string(dev->cli_handler, buff);
+
+	nb_samples = (uint16_t) (end_time - start_time) / sample_period + 1;
+	for (i = 0; i < nb_samples; i++) {
+		if (flash_idx >= CN0503_FLASH_BUFF_SIZE) {
+			flash_addr -= 0x800;
+			flash_idx -= CN0503_FLASH_BUFF_SIZE;
+			// Read in next flash page
+			flash_read(dev->flash_handler, flash_addr, flash_data, CN0503_FLASH_BUFF_SIZE);
+		}
+		memcpy((void *) &ref_response_i, (void *) (flash_data + flash_idx++), 4);
+
+		snprintf((char *)buff, 64, "%0.4f", ref_response_i);
+		if (i % 10 == 0) {
+			cli_write_string(dev->cli_handler, (uint8_t *)"\nFLUO DUMP CALIB DATA ");
+		} else if (i != 0) {
+			cli_write_string(dev->cli_handler, (uint8_t *)" ");
+		}
+		cli_write_string(dev->cli_handler, buff);
+	}
+	cli_write_string(dev->cli_handler, (uint8_t *)"\n");
+	cli_write_string(dev->cli_handler, (uint8_t *)"FLUO DUMP CALIB DONE\n");
+
+	free(flash_data);
+	return SUCCESS;
+}
+
+/**
  * @brief Try to read a data sample for every channel.
  * @param [in] dev - The device structure.
  * @param [out] code_rdy - false if new data is not ready;
@@ -3755,10 +5461,21 @@ int32_t cn0503_process(struct cn0503_dev *dev)
 	bool data_rdy = false, code_rdy = false;
 	uint32_t odr_thresh;
 
+	if (dev->impulse_response != NULL) {
+		// Wait until an ongoing impulse response measurement has completed
+		// before proceeding
+		if (dev->impulse_response->data_ready) {
+			// New data has been written to the FIFO
+			dev->impulse_response->data_ready = false;
+			return impulse_response_read_data(dev);
+		}
+		return SUCCESS;
+	}
+
 	ret = cli_process(dev->cli_handler);
 	if(ret != SUCCESS) {
 		cli_write_string(dev->cli_handler,
-				 (uint8_t *)"ERROR CLI process.n");
+				 (uint8_t *)"ERROR CLI process.\n");
 		return FAILURE;
 	}
 
@@ -3841,6 +5558,10 @@ static int32_t cn0503_cli_load_init(struct cn0503_dev *dev)
 	dev->app_cmd_func_tab[23] = (cmd_func)cn0503_led;
 	dev->app_cmd_func_tab[24] = (cmd_func)cn0503_channel_preset;
 	dev->app_cmd_func_tab[25] = (cmd_func)cn0503_flash_swbuf_dump;
+	dev->app_cmd_func_tab[26] = (cmd_func)cn0503_impulse_response;
+	dev->app_cmd_func_tab[27] = (cmd_func)cn0503_fluo_decay_calibrate;
+	dev->app_cmd_func_tab[28] = (cmd_func)cn0503_fluo_decay_measure;
+	dev->app_cmd_func_tab[29] = (cmd_func)cn0503_fluo_dump_calib;
 
 	dev->app_cmd_calls = (uint8_t **)calloc((CN0503_CLI_CMD_NO + 1),
 						sizeof *dev->app_cmd_calls);
@@ -3872,6 +5593,10 @@ static int32_t cn0503_cli_load_init(struct cn0503_dev *dev)
 	dev->app_cmd_calls[23] = (uint8_t *)"pcb-led";
 	dev->app_cmd_calls[24] = (uint8_t *)"chann";
 	dev->app_cmd_calls[25] = (uint8_t *)"fl_dump";
+	dev->app_cmd_calls[26] = (uint8_t *)"impresp";
+	dev->app_cmd_calls[27] = (uint8_t *)"fluo_calib";
+	dev->app_cmd_calls[28] = (uint8_t *)"fluo_decay";
+	dev->app_cmd_calls[29] = (uint8_t *)"fluo_dump_calib";
 
 	dev->app_cmd_size = (uint8_t *)calloc((CN0503_CLI_CMD_NO + 1),
 					      sizeof *dev->app_cmd_size);
@@ -3903,6 +5628,10 @@ static int32_t cn0503_cli_load_init(struct cn0503_dev *dev)
 	dev->app_cmd_size[23] = 7;
 	dev->app_cmd_size[24] = 5;
 	dev->app_cmd_size[25] = 8;
+	dev->app_cmd_size[26] = 7;
+	dev->app_cmd_size[27] = 10;
+	dev->app_cmd_size[28] = 10;
+	dev->app_cmd_size[29] = 15;
 
 	return SUCCESS;
 
@@ -3964,6 +5693,7 @@ void cn0503_get_config(struct cn0503_init_param *init_param)
 	init_param->flash_param.id = 0;
 	init_param->md_flash_page_addr = CN0503_FLASH_MD_ADDR;
 	init_param->uu_flash_page_addr = CN0503_FLASH_UU_ADDR;
+	init_param->fluo_calib_flash_page_addr = CN0503_FLASH_FLUO_CALIB_ADDR;
 
 	init_param->irq_param.irq_ctrl_id = 0;
 	init_param->irq_param.extra = NULL;
@@ -4395,6 +6125,7 @@ int32_t cn0503_init(struct cn0503_dev **device,
 
 	dev->md_flash_page_addr = init_param->md_flash_page_addr;
 	dev->uu_flash_page_addr = init_param->uu_flash_page_addr;
+	dev->fluo_calib_flash_page_addr = init_param->fluo_calib_flash_page_addr;
 
 	cn0503_handler_init(dev, true);
 

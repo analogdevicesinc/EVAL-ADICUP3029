@@ -53,7 +53,7 @@
 /********************** Macros and Constants Definitions **********************/
 /******************************************************************************/
 
-#define CN0503_CLI_CMD_NO	26
+#define CN0503_CLI_CMD_NO	30
 #define CN0503_RAT_NO		8
 #define CN0503_BLOCK_FILT_SIZE	10
 #define CN0503_DLPF_DEFAULT	6
@@ -61,13 +61,19 @@
 #define HELP_SHORT_COMMAND	true
 #define HELP_LONG_COMMAND	false
 
-#define CN0503_FLASH_BUFF_SIZE	512
-#define CN0503_FLASH_REG_SIZE	256
-#define CN0503_FLASH_MODE_IDX	504
-#define CN0503_FLASH_ODR_IDX	505
-#define CN0503_FLASH_RATM_IDX	506
-#define CN0503_FLASH_MD_ADDR	0x3E000
-#define CN0503_FLASH_UU_ADDR	0x3E800
+#define CN0503_FLASH_BUFF_SIZE	     512
+#define CN0503_FLASH_REG_SIZE	     256
+#define CN0503_FLASH_MODE_IDX	     509
+#define CN0503_FLASH_ODR_IDX	     510
+#define CN0503_FLASH_RATM_IDX	     511
+#define CN0503_FLASH_MD_ADDR	     0x3E000
+#define CN0503_FLASH_UU_ADDR	     0x3E800
+#define CN0503_FLASH_FLUO_CALIB_ADDR 0x3D800
+#define CN0503_FLASH_FLUO_PARAM_SIZE 3
+#define CN0503_FLASH_FLUO_MAX_PAGES  5
+
+#define CN0503_FLUO_DEFAULT_LED_OFF  52
+#define CN0503_IMPRESP_MAX_SAMPLES   1950
 
 /******************************************************************************/
 /*************************** Types Declarations *******************************/
@@ -107,6 +113,8 @@ struct cn0503_init_param {
 	uint32_t md_flash_page_addr;
 	/** User default flash page start address */
 	uint32_t uu_flash_page_addr;
+	/** User default flash page address for fluorescence calibration data */
+	uint32_t fluo_calib_flash_page_addr;
 };
 
 /**
@@ -128,6 +136,8 @@ struct cn0503_dev {
 	uint8_t **app_cmd_calls;
 	/** Pointer to the CLI command sizes vector */
 	uint8_t *app_cmd_size;
+	/** Pointer to an impulse response parameters and data */
+	struct cn0503_impulse_response *impulse_response;
 
 	/** Rations */
 	/** Active ratios mask */
@@ -224,7 +234,71 @@ struct cn0503_dev {
 	uint32_t md_flash_page_addr;
 	/** User default flash page address */
 	uint32_t uu_flash_page_addr;
+	/** User default flash page address */
+	uint32_t fluo_calib_flash_page_addr;
 };
+
+struct cn0503_impulse_response {
+	struct timer_desc *timer;
+	/** Parameters */
+	uint8_t chann_no;
+
+	uint8_t nb_fifo_samples;
+	uint8_t average_length;
+	uint8_t method;
+	uint16_t nb_data_cycles;
+	uint16_t nb_samples;
+
+	uint8_t led_width;
+	uint8_t led_offset;
+	int8_t first_sample_offset;
+
+	uint8_t data_size;
+
+	float sample_period;
+	uint8_t sample_period_lower;
+	uint8_t sample_period_upper;
+
+	/** Interrupts */
+	struct callback_desc* irq_cb;
+
+	/** Configuration */
+	struct reg_config *registers;
+	uint8_t nb_reg_writes;
+
+	/** For rollback */
+	uint8_t prev_active_slots;
+	bool interrupt_set;
+
+	/** Data arrays */
+	uint32_t *data;
+	float *averaged_data;
+
+	/** Counters */
+	uint16_t data_cycle;
+	bool data_ready;
+
+	/** Callback */
+	void (*success_callback)(struct cn0503_dev*);
+
+	/** For fluorescence decay measurement, unused otherwise */
+	bool skip_calib;
+	uint8_t calib_slot;
+	uint8_t ref_chann_no;
+	uint8_t ref_led_width;
+	int8_t ref_start_time;
+	uint8_t ref_method;
+	float ref_end_time;
+	float ref_sample_period;
+};
+
+struct reg_config {
+	uint16_t addr;
+	uint16_t value;
+	uint16_t bitmask;
+	uint16_t rollback_value;
+};
+
 
 /**
  * @enum cn0503_code_id
@@ -409,6 +483,9 @@ int32_t cn0503_channel_preset(struct cn0503_dev *dev, uint8_t *arg);
 
 /** CLI command to dump flash software buffer data. */
 int32_t cn0503_flash_swbuf_dump(struct cn0503_dev *dev, uint8_t *arg);
+
+/** CLI command to measure a channel's impulse response. */
+int32_t cn0503_impulse_response(struct cn0503_dev *dev, uint8_t *arg);
 
 /** Application CLI prompt at the beginning of the program. */
 int32_t cn0503_prompt(struct cn0503_dev *dev);
