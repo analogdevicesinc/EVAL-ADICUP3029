@@ -235,7 +235,8 @@ int32_t irq_register_callback(struct irq_ctrl_desc *desc, uint32_t irq_id,
 		adi_gpio_SetGroupInterruptPins(gpio_port, id, gpio_pin);
 		adi_gpio_GetGroupInterruptPolarity(gpio_port, &gpio_pin);
 		gpio_pin &= ~BIT((gpio_desc->number & 0xF));
-		gpio_pin |= BIT(aducm_desc->conf[irq_id].gpio_conf->mode);
+		gpio_pin |= aducm_desc->conf[irq_id].gpio_conf->mode <<
+			    (gpio_desc->number & 0xF);
 		adi_gpio_SetGroupInterruptPolarity(gpio_port, gpio_pin);
 		break;
 	default:
