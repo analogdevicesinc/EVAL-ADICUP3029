@@ -112,7 +112,7 @@ static int32_t flash_write_page(struct flash_dev *dev, uint32_t flash_addr,
 		   FLASH_PAGE_SIZE_WORDS);
 
 	for(i = 0; i < array_size; i++)
-		temp_ptr[(i + (flash_addr & 0x7FF))] = array[i];
+		temp_ptr[(i + (flash_addr & 0x7FF) / 4)] = array[i];
 
 	transaction.bUseDma = true;
 	transaction.nSize = FLASH_PAGE_SIZE_BYTES;
@@ -148,7 +148,7 @@ int32_t flash_write(struct flash_dev *dev, uint32_t flash_addr,
 	int32_t ret;
 
 	do {
-		temp = (FLASH_PAGE_SIZE_BYTES / 4) - (flash_addr & 0x7FF);
+		temp = (FLASH_PAGE_SIZE_BYTES - (flash_addr & 0x7FF)) / 4;
 		if (temp > array_size)
 			temp = array_size;
 		ret = flash_write_page(dev, flash_addr, (array + data_index),
