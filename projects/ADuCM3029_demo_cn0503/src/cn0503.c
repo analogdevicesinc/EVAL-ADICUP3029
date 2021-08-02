@@ -54,6 +54,8 @@
 #include "uart_extra.h"
 #include "power.h"
 #include "irq_extra.h"
+#include "spi_extra.h"
+#include "app_config.h"
 
 /******************************************************************************/
 /************************** Variable Definitions ******************************/
@@ -5667,19 +5669,41 @@ void cn0503_get_config(struct cn0503_init_param *init_param)
 {
 	struct aducm_uart_init_param *aducm_uart_ini;
 
+#ifdef ADPD4100_SUPPORT
+	struct aducm_spi_init_param aducm_spi_init = {
+		.continuous_mode = true,
+		.dma = false,
+		.half_duplex = false,
+		.master_mode = MASTER,
+		.spi_channel = SPI0
+	};
+#endif
+
 	aducm_uart_ini = init_param->cli_param.uart_init.extra;
 	aducm_uart_ini->parity = UART_NO_PARITY;
 	aducm_uart_ini->stop_bits = UART_ONE_STOPBIT;
 	aducm_uart_ini->word_length = UART_WORDLEN_8BITS;
 
+#ifdef ADPD4100_SUPPORT
+	init_param->adpd4100_param.dev_ops_init.spi_phy_init.extra = &aducm_spi_init;
+	init_param->adpd4100_param.dev_ops_init.spi_phy_init.max_speed_hz = 1000000;
+	init_param->adpd4100_param.dev_ops_init.spi_phy_init.chip_select = 1;
+	init_param->adpd4100_param.dev_ops_init.spi_phy_init.mode = SPI_MODE_0;
+	init_param->adpd4100_param.dev_type = ADPD4100;
+#else
 	init_param->adpd4100_param.dev_ops_init.i2c_phy_init.extra = NULL;
 	init_param->adpd4100_param.dev_ops_init.i2c_phy_init.max_speed_hz = 400000;
 	init_param->adpd4100_param.dev_ops_init.i2c_phy_init.slave_address = 0x24;
 	init_param->adpd4100_param.dev_type = ADPD4101;
+#endif
 
 	init_param->adpd4100_param.clk_opt = ADPD410X_INTLFO_INTHFO;
 	init_param->adpd4100_param.ext_lfo_freq = 0;
+#ifdef ADPD4100_SUPPORT
+	init_param->adpd4100_param.gpio0.number = 0x08;
+#else
 	init_param->adpd4100_param.gpio0.number = 0x0F;
+#endif
 	init_param->adpd4100_param.gpio0.extra = NULL;
 	init_param->adpd4100_param.gpio1.number = 0x0D;
 	init_param->adpd4100_param.gpio1.extra = NULL;
