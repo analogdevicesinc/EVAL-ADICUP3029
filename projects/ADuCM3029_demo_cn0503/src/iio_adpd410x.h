@@ -1,8 +1,9 @@
 /***************************************************************************//**
- *   @file   app_config.h
+ *   @file   iio_adpd410x.h
+ *   @brief  Header file of adpd410x iio.
  *   @author Antoniu Miclaus (antoniu.miclaus@analog.com)
 ********************************************************************************
- * Copyright 2021(c) Analog Devices, Inc.
+ * Copyright 2020(c) Analog Devices, Inc.
  *
  * All rights reserved.
  *
@@ -35,13 +36,21 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
-#ifndef APP_CONFIG_H_
-#define APP_CONFIG_H_
 
-//#define IIO_SUPPORT
+#ifndef IIO_ADPD410X_H
+#define IIO_ADPD410X_H
 
-//#define ADPD4100_SUPPORT
-//#define ADPD4101_SUPPORT
+/******************************************************************************/
+/***************************** Include Files **********************************/
+/******************************************************************************/
 
-#endif // APP_CONFIG_H_
+#include "iio_types.h"
 
+/******************************************************************************/
+/********************** Macros and Constants Definitions **********************/
+/******************************************************************************/
+
+/** IIO Descriptor */
+extern struct iio_device const adpd410x_iio_descriptor;
+
+#endif //IIO_ADPD410X_H
