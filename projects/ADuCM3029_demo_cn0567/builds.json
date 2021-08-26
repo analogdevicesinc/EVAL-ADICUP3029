@@ -1,0 +1,4 @@
+{
+    "demo_adpd4100": "NEW_CFLAGS=-DADPD4100_SUPPORT",
+    "demo_adpd4101": "NEW_CFLAGS=-DADPD4101_SUPPORT"
+}
