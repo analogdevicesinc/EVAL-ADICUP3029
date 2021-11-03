@@ -168,25 +168,20 @@ fail:
 int32_t init_communication(union comm_desc *desc, struct irq_ctrl_desc *idesc)
 {
 	union comm_desc ldesc;
+	int32_t ret;
 
-	if (use_mqtt) {
-		if (SUCCESS == init_mqtt(&ldesc.mdesc, idesc)) {
-			pr_debug("MQTT comunication initialized\n");
-			*desc = ldesc;
+	if (use_mqtt)
+		ret = init_mqtt(&ldesc.mdesc, idesc);
+	else
+		ret = uart_init(&ldesc.udesc, &uart_conf);
 
-			return SUCCESS;
-		}
-	}
+	if (IS_ERR_VALUE(ret))
+		return ret;
 
-	use_mqtt = 0;
-	if (SUCCESS == uart_init(&ldesc.udesc, &uart_conf)) {
-		pr_debug("UART comunication initialized\n");
-		*desc = ldesc;
+	pr_debug("%s communication initialized\n", use_mqtt ? "MQTT" : "UART");
+	*desc = ldesc;
 
-		return SUCCESS;
-	}
-
-	return FAILURE;
+	return SUCCESS;
 }
 
 /* Send data over UART or to MQTT server */
