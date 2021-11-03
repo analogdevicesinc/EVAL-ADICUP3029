@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 		.extra = &aducm_param,
 		.max_speed_hz = 1000000,
 		.mode = SPI_MODE_3,
-		.platform_ops = NULL
+		.platform_ops = &aducm_spi_ops,
 	};
 
 	struct ad7799_init_param ad7799_param = {

@@ -45,6 +45,7 @@
 #include "cn0567_config.h"
 #include "error.h"
 #include "gpio.h"
+#include "aducm3029_gpio.h"
 #include "delay.h"
 #include "util.h"
 
@@ -201,6 +202,7 @@ static int32_t cn0567_calibrate_lfo(struct cn0567_dev *dev)
 
 	/** Setup platform GPIO for time stamp trigger */
 	ts_param.number = 15;
+	ts_param.platform_ops = &aducm_gpio_ops;
 	ts_param.extra = NULL;
 
 	ret = gpio_get(&ts_gpio, &ts_param);

@@ -7,6 +7,7 @@
 #include <drivers/pwr/adi_pwr.h>
 #include "ADuCM3029_no_os_test_project.h"
 #include "gpio.h"
+#include "aducm3029_gpio.h"
 #include "delay.h"
 
 int initPower()
@@ -45,10 +46,12 @@ int main(int argc, char *argv[])
 
 	struct gpio_init_param init_blue = {
 		.number = 31,
+		.platform_ops = &aducm_gpio_ops,
 		.extra = NULL
 	};
 	struct gpio_init_param init_green = {
 		.number = 32,
+		.platform_ops = &aducm_gpio_ops,
 		.extra = NULL
 	};
 	struct gpio_desc *blue;

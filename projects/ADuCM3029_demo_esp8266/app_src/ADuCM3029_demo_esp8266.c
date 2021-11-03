@@ -43,6 +43,7 @@
 #include "delay.h"
 #include "error.h"
 #include "gpio.h"
+#include "aducm3029_gpio.h"
 #include "irq.h"
 #include "irq_extra.h"
 #include "mqtt_client.h"
@@ -72,6 +73,7 @@ int32_t init_and_connect_wifi(struct wifi_desc **wifi)
 	/* Initialize irq controller */
 	irq_par = (struct irq_init_param) {
 		.irq_ctrl_id = 0,
+		.platform_ops = &aducm_irq_ops,
 		.extra = 0
 	};
 	ret = irq_ctrl_init(&irq_ctrl, &irq_par);
@@ -220,7 +222,7 @@ int init_and_configure_adxl362(struct adxl362_dev **accel,
 		.max_speed_hz = SPI_CONFIG_MAX_SPEED,
 		.chip_select = SPI_CONFIG_CS,
 		.mode = SPI_MODE_0,
-		.platform_ops = NULL,
+		.platform_ops = &aducm_spi_ops,
 		.extra = &spi_platform_init_param
 	};
 
@@ -257,6 +259,7 @@ int init_and_configure_adxl362(struct adxl362_dev **accel,
 	/* Configure adxl interrupt gpio */
 	gpio_init_param = (struct gpio_init_param) {
 		.number = ACCEL_INT_GPIO_NB,
+		.platform_ops = &aducm_gpio_ops,
 		.extra = NULL
 	};
 	ret = gpio_get(accel_int, &gpio_init_param);
