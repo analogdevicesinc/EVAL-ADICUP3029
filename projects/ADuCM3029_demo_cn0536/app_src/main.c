@@ -41,6 +41,7 @@
 #include "adi_initialize.h"
 #include <drivers/pwr/adi_pwr.h>
 #include "gpio.h"
+#include "aducm3029_gpio.h"
 #include "delay.h"
 #include "geiger_counter.h"
 #include "communication.h"
@@ -74,7 +75,9 @@ struct gpio_desc *blue_led;
 void update_led_status(enum status_e status)
 {
 	if (!green_led || !blue_led) {
-		struct gpio_init_param par = { 0 };
+		struct gpio_init_param par = {
+			.platform_ops = &aducm_gpio_ops
+		};
 		par.number = GREEN_LED_NB;
 		gpio_get(&green_led, &par);
 		gpio_direction_output(green_led, LED_OFF);
@@ -162,6 +165,7 @@ int32_t setup(struct geiger_counter **counter,union comm_desc *comm_desc,
 	/* Initialize interrupt controller */
 	irq_init_param = (struct irq_init_param) {
 		.irq_ctrl_id = 0,
+		.platform_ops = &aducm_irq_ops,
 		.extra = NULL
 	};
 	irq_ctrl_init(irq_ctrl, &irq_init_param);
@@ -173,6 +177,7 @@ int32_t setup(struct geiger_counter **counter,union comm_desc *comm_desc,
 	/* Initialize geiger counter structure */
 	gpio_counter_param = (struct gpio_init_param) {
 		.number = CONFIG_COUNTER_GPIO,
+		.platform_ops = &aducm_gpio_ops,
 		.extra = NULL
 	};
 	init_param = (struct geiger_counter_init_parma) {
