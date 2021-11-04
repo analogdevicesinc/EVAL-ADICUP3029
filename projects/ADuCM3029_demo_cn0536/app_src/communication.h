@@ -65,7 +65,7 @@
 #define WIFI_PASS		"12345678"
 
 /* MQTT Server */
-#define MQTT_SERVER_ADDRESS	"test.mosquitto.org"
+#define MQTT_SERVER_ADDRESS	"broker.hivemq.com"
 #ifndef DISABLE_SECURE_SOCKET
 #define SERVER_PORT		8883
 #else
