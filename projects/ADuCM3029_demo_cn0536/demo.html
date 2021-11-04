@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>mqtt-demo: A simple web application that can subscribe to topics from an MQTT broker over websockets</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.2/mqttws31.min.js" type="text/javascript"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+  <div>
+    Connection status:
+    <div id="conn_stat" style = "background-color: red; color: white;"></div>
+  </div>
+  <div id="myPlot" style="width:100%;max-width:700px"></div>
+  <script>
+
+    graph_samples = 20;
+    radiation_treshold = 0.2;
+
+    ltime = 0;
+    // Define Data
+    var data = [{
+      y: [],
+      x: [],
+      mode: "lines",
+      name: "Data",
+      line: {color: '#0000ff'}
+    },
+    {
+      y: [],
+      x: [],
+      mode: "lines",
+      name: "Safe threshold",
+      line: {color: '#ff0000'}
+    }];
+
+    // Define Layout
+    var layout = {
+      xaxis: { domain: [0, 1], title: "Seconds" },
+      yaxis: { range: [0, 0.7], title: "us/hour"},
+      title: "MQTT geiger counter data"
+    };
+
+    // Display using Plotly
+    Plotly.newPlot("myPlot", data, layout);
+
+
+    clientID = "ADI-" + parseInt(Math.random() * 100);
+    host = "broker.hivemq.com"
+    port = 8000
+    client = new Paho.MQTT.Client(host, port, clientID);
+    client.onMessageArrived = onMessageArrived;
+    client.onConnectionLost = onConnectionLost;
+
+    client.connect({
+      onSuccess: onConnect,
+      cleanSession: true
+    });
+
+    function onConnect() {
+      client.subscribe("analog_test_topic");
+      conn_stat = document.getElementById("conn_stat");
+      conn_stat.style.backgroundColor = "green";
+      conn_stat.innerHTML = "Connected";
+
+    }
+
+    function onConnectionLost(responseObject) {
+      //console.log("con lost: ")
+      //console.log(responseObject)
+      conn_stat = document.getElementById("conn_stat");
+      conn_stat.innerHTML = "Disconnected";
+      conn_stat.style.backgroundColor = "red";
+    };
+
+    function onMessageArrived(message) {
+      //console.log("new msg:");
+      payload = message.payloadString;
+      uh_per_sec = parseFloat(payload.match(/\d+(\.\d+){1}/g)[0])
+      ltime += 10;
+      //console.log(payload);
+      ext_data = {
+        y : [[uh_per_sec], [radiation_treshold]],
+        x : [[ltime], [ltime]]
+      };
+      Plotly.extendTraces('myPlot', ext_data, [0, 1], graph_samples)
+    }
+
+  </script>
+
+</body>
+
+</html>
