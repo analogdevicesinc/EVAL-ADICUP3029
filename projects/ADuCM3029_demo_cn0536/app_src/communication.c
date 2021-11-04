@@ -107,7 +107,7 @@ static struct mqtt_desc		*mqtt;
 static struct tcp_socket_desc	*sock;
 static struct uart_desc		*udesc;
 
-bool init_mqtt(struct mqtt_desc **desc, struct irq_ctrl_desc *idesc)
+int32_t init_mqtt(struct mqtt_desc **desc, struct irq_ctrl_desc *idesc)
 {
 	struct wifi_init_param		wifi_param;
 	struct tcp_socket_init_param	tcp_param;
