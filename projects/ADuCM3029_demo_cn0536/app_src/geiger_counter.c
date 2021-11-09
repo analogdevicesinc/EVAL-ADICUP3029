@@ -144,6 +144,6 @@ int serialize_data(struct geiger_counter *desc, char *buff, int32_t buff_size)
 {
 	return snprintf(buff, buff_size,
 			"Total count:%6" PRIu64 "; CPM: %5" PRIu32"; "
-			"us_per_hour: %3.2f\r\n",
+			"uSv_per_hour: %3.2f\r\n",
 			desc->count, desc->count_per_minute, desc->us_per_hour);
 }
