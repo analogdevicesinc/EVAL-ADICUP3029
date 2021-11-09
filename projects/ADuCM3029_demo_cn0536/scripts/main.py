@@ -43,7 +43,7 @@ def on_message(client, userdata, msg):
     try:
         data = msg.payload.decode('utf-8')
         print(data)
-        values = parse('Total count:{}; CPM:{} us_per_hour:{}\r\n', data)
+        values = parse('Total count:{}; CPM:{} uSv_per_hour:{}\r\n', data)
         new_data = values.fixed[2]
         q.put(float(new_data))
     except Exception as e:
@@ -60,7 +60,7 @@ def animate(i):
         ax1.clear()
         ax1.axis([t[0], t[len(t) - 1], 0, MAX_RADIATION])
         plt.xlabel("Seconds")
-        plt.ylabel("us/hour")
+        plt.ylabel("uSv/hour")
         plt.title("MQTT geiger counter data")
         ax1.plot(t, thres, label = 'Safe threshold')
         ax1.plot(t, d, label = 'Data')
