@@ -122,7 +122,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led1 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x70,
+				.let_current_select = 0x40,
 			},
 		},
 		.led2 = {
@@ -170,7 +170,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led2 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x70,
+				.let_current_select = 0x40,
 			},
 		},
 		.led3 = {
@@ -218,7 +218,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led3 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x70,
+				.let_current_select = 0x40,
 			},
 		},
 		.led4 = {
@@ -266,7 +266,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led4 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x70,
+				.let_current_select = 0x40,
 			},
 		},
 		.enable_ch2 = false,
@@ -290,7 +290,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led1 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x70,
+				.let_current_select = 0x40,
 			},
 		},
 		.led2 = {
@@ -338,7 +338,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led2 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x70,
+				.let_current_select = 0x40,
 			},
 		},
 		.led3 = {
@@ -386,7 +386,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led3 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x70,
+				.let_current_select = 0x40,
 			},
 		},
 		.led4 = {
@@ -434,7 +434,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led4 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x70,
+				.let_current_select = 0x40,
 			},
 		},
 		.enable_ch2 = false,
