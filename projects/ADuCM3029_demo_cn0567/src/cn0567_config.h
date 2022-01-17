@@ -163,14 +163,14 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		},
 		.led1 = {
 			.fields = {
-				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x00,
+				.led_output_select = ADPD410X_OUTPUT_B,
+				.let_current_select = 0x40,
 			},
 		},
 		.led2 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x40,
+				.let_current_select = 0x00,
 			},
 		},
 		.led3 = {
@@ -212,13 +212,13 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led2 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x00,
+				.let_current_select = 0x40,
 			},
 		},
 		.led3 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x40,
+				.let_current_select = 0x00,
 			},
 		},
 		.led4 = {
@@ -253,8 +253,8 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		},
 		.led2 = {
 			.fields = {
-				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x00,
+				.led_output_select = ADPD410X_OUTPUT_B,
+				.let_current_select = 0x40,
 			},
 		},
 		.led3 = {
@@ -266,7 +266,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led4 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_A,
-				.let_current_select = 0x40,
+				.let_current_select = 0x00,
 			},
 		},
 		.enable_ch2 = false,
@@ -290,7 +290,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led1 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x40,
+				.let_current_select = 0x00,
 			},
 		},
 		.led2 = {
@@ -301,8 +301,8 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		},
 		.led3 = {
 			.fields = {
-				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x00,
+				.led_output_select = ADPD410X_OUTPUT_A,
+				.let_current_select = 0x30,
 			},
 		},
 		.led4 = {
@@ -338,13 +338,13 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led2 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x40,
+				.let_current_select = 0x00,
 			},
 		},
 		.led3 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x00,
+				.let_current_select = 0x40,
 			},
 		},
 		.led4 = {
@@ -386,13 +386,13 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 		.led3 = {
 			.fields = {
 				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x40,
+				.let_current_select = 0x00,
 			},
 		},
 		.led4 = {
 			.fields = {
-				.led_output_select = ADPD410X_OUTPUT_B,
-				.let_current_select = 0x00,
+				.led_output_select = ADPD410X_OUTPUT_A,
+				.let_current_select = 0x40,
 			},
 		},
 		.enable_ch2 = false,
@@ -454,7 +454,7 @@ static struct adpd410x_timeslot_init ts_init_tab[] = {
 };
 
 /* Register Configuration (address + data) */
-uint16_t reg_config_default[63][2] = {
+uint16_t reg_config_default[47][2] = {
 	/** General configuration */
 	{0x000f, 0x8000},
 	{0x000f, 0x0006},

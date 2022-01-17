@@ -405,7 +405,7 @@ int32_t cn0567_init(struct cn0567_dev **device)
 	if (IS_ERR_VALUE(ret))
 		goto error_cn;
 
-	for (i = 0; i < 63; i++) {
+	for (i = 0; i < 47; i++) {
 		ret = adpd410x_reg_write(dev->adpd4100_handler, reg_config_default[i][0],
 					 reg_config_default[i][1]);
 		if (IS_ERR_VALUE(ret))
