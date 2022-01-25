@@ -50,6 +50,12 @@
 #include "iio_app.h"
 #include "no-os/util.h"
 
+#define MAX_SIZE_BASE_ADDR		1000
+
+static uint32_t in_buff[MAX_SIZE_BASE_ADDR];
+
+#define ADPD410X_BASEADDR		((uint32_t)in_buff)
+
 int main(int argc, char *argv[])
 {
 	int32_t ret;
@@ -64,10 +70,15 @@ int main(int argc, char *argv[])
 	if (IS_ERR_VALUE(ret))
 		return ret;
 
+	struct iio_data_buffer rd_buf = {
+		.buff = (void *)ADPD410X_BASEADDR,
+		.size = MAX_SIZE_BASE_ADDR
+	};
+
 	struct iio_app_device devices[] = {
 		IIO_APP_DEVICE("adpd410x", cn0567->adpd4100_handler,
 			       &adpd410x_iio_descriptor,
-			       NULL, NULL),
+			       &rd_buf, NULL),
 	};
 
 	return iio_app_run(devices, ARRAY_SIZE(devices));
