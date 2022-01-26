@@ -40,11 +40,11 @@
 #include <stdio.h>
 
 #include "adxl362.h"
-#include "delay.h"
-#include "error.h"
-#include "gpio.h"
+#include "no-os/delay.h"
+#include "no-os/error.h"
+#include "no-os/gpio.h"
 #include "aducm3029_gpio.h"
-#include "irq.h"
+#include "no-os/irq.h"
 #include "irq_extra.h"
 #include "mqtt_client.h"
 #include "parameters.h"

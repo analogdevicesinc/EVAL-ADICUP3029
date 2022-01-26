@@ -39,15 +39,15 @@
 
 #include <sys/platform.h>
 #include "adi_initialize.h"
-#include "spi.h"
+#include "no-os/spi.h"
 #include "spi_extra.h"
 #include "ad7799.h"
 #include "iio_ad7799.h"
 #include "parameters.h"
-#include "error.h"
+#include "no-os/error.h"
 #include "iio_app.h"
 #include "platform_init.h"
-#include "util.h"
+#include "no-os/util.h"
 
 int main(int argc, char *argv[])
 {

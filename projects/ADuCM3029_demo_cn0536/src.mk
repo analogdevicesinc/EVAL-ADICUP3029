@@ -5,7 +5,6 @@ SRC_DIRS += $(PLATFORM_DRIVERS)
 SRC_DIRS += $(INCLUDE)
 SRC_DIRS += $(NO-OS)/util
 SRC_DIRS += $(NO-OS)/network
-SRC_DIRS += $(NO-OS)/drivers/irq
-SRC_DIRS += $(NO-OS)/drivers/gpio
+SRC_DIRS += $(NO-OS)/drivers/api
 
 LIBRARIES += mqtt

@@ -40,17 +40,17 @@
 #include <sys/platform.h>
 #include "adi_initialize.h"
 #include <drivers/pwr/adi_pwr.h>
-#include "gpio.h"
+#include "no-os/gpio.h"
 #include "aducm3029_gpio.h"
-#include "delay.h"
+#include "no-os/delay.h"
 #include "geiger_counter.h"
 #include "communication.h"
-#include "rtc.h"
+#include "no-os/rtc.h"
 #include "rtc_extra.h"
-#include "error.h"
-#include "gpio.h"
+#include "no-os/error.h"
+#include "no-os/gpio.h"
 #include "debug.h"
-#include "util.h"
+#include "no-os/util.h"
 
 /* Event which triggers the counting interrupt */
 #define CONFIG_XINT_EVENT	IRQ_RISING_EDGE

@@ -40,8 +40,8 @@
 #ifndef COMUNICATION_H
 #define COMUNICATION_H
 
-#include "irq.h"
-#include "uart.h"
+#include "no-os/irq.h"
+#include "no-os/uart.h"
 #include "mqtt_client.h"
 
 #define MQTT 1

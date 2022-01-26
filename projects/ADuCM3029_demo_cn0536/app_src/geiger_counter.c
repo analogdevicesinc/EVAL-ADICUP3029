@@ -42,8 +42,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
-#include "gpio.h"
-#include "error.h"
+#include "no-os/gpio.h"
+#include "no-os/error.h"
 #include "debug.h"
 
 /* Called at each geiger pulse */

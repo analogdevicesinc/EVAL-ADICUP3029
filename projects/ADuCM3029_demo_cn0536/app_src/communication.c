@@ -42,8 +42,8 @@
 #endif
 
 #include "communication.h"
-#include "uart.h"
-#include "irq.h"
+#include "no-os/uart.h"
+#include "no-os/irq.h"
 #include "irq_extra.h"
 #include "uart_extra.h"
 #include "wifi.h"
