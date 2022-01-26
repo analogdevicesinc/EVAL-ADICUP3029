@@ -43,11 +43,11 @@
 
 #include "cn0567.h"
 #include "cn0567_config.h"
-#include "error.h"
-#include "gpio.h"
+#include "no-os/error.h"
+#include "no-os/gpio.h"
 #include "aducm3029_gpio.h"
-#include "delay.h"
-#include "util.h"
+#include "no-os/delay.h"
+#include "no-os/util.h"
 
 /******************************************************************************/
 /************************ Functions Definitions *******************************/

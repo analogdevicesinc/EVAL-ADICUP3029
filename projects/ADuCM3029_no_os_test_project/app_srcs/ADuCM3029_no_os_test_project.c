@@ -6,9 +6,9 @@
 #include "adi_initialize.h"
 #include <drivers/pwr/adi_pwr.h>
 #include "ADuCM3029_no_os_test_project.h"
-#include "gpio.h"
+#include "no-os/gpio.h"
 #include "aducm3029_gpio.h"
-#include "delay.h"
+#include "no-os/delay.h"
 
 int initPower()
 {

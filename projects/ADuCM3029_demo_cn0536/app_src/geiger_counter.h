@@ -40,7 +40,7 @@
 #ifndef GEIGER_COUNTER_H
 #define GEIGER_COUNTER_H
 
-#include "irq.h"
+#include "no-os/irq.h"
 #include "irq_extra.h"
 #include <stdint.h>
 

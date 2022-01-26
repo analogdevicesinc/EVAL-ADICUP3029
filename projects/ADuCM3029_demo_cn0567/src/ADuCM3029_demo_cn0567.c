@@ -45,10 +45,10 @@
 #include "adi_initialize.h"
 
 #include "cn0567.h"
-#include "error.h"
+#include "no-os/error.h"
 #include "iio_adpd410x.h"
 #include "iio_app.h"
-#include "util.h"
+#include "no-os/util.h"
 
 int main(int argc, char *argv[])
 {
