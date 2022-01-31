@@ -1,3 +1,4 @@
 {
-    "demo": ""
+    "demo_unipolar": "NEW_CFLAGS=-DCN0548_UNIPOLAR",
+    "demo_bipolar": "NEW_CFLAGS=-DCN0548_BIPOLAR"
 }
