@@ -1,4 +1,6 @@
 {
     "demo_adpd4100": "NEW_CFLAGS=-DADPD4100_SUPPORT",
-    "demo_adpd4101": "NEW_CFLAGS=-DADPD4101_SUPPORT"
+    "demo_adpd4101": "NEW_CFLAGS=-DADPD4101_SUPPORT",
+    "demo_adpd4100_waterquality": "NEW_CFLAGS=-DADPD4100_SUPPORT\\-DCN0567_DEMO_WQ",
+    "demo_adpd4101_waterquality": "NEW_CFLAGS=-DADPD4101_SUPPORT\\-DCN0567_DEMO_WQ"
 }

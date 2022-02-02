@@ -43,5 +43,8 @@
 //#define ADPD4100_SUPPORT
 //#define ADPD4101_SUPPORT
 
+/** Choose between CN0567 Water Quality Demo */
+//#define CN0567_DEMO_WQ
+
 #endif // APP_CONFIG_H_
 
