@@ -1,5 +1,5 @@
 /***************************************************************************//**
- *   @file   ADuCM3029_demo_cn0567.c
+ *   @file   main.c
  *   @brief  Main Application.
  *   @author Antoniu Miclaus (antoniu.miclaus@analog.com)
 ********************************************************************************
@@ -44,7 +44,7 @@
 #include <stdint.h>
 #include "adi_initialize.h"
 
-#include "cn0567.h"
+#include "adpd410x_app.h"
 #include "no-os/error.h"
 #include "iio_adpd410x.h"
 #include "iio_app.h"
@@ -59,14 +59,14 @@ static uint32_t in_buff[MAX_SIZE_BASE_ADDR];
 int main(int argc, char *argv[])
 {
 	int32_t ret;
-	struct cn0567_dev *cn0567;
+	struct adpd410x_app_dev *adpd410x_app;
 	uint32_t data[8];
 
 	ret = platform_init();
 	if (IS_ERR_VALUE(ret))
 		return ret;
 
-	ret = cn0567_init(&cn0567);
+	ret = adpd410x_app_init(&adpd410x_app);
 	if (IS_ERR_VALUE(ret))
 		return ret;
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 	};
 
 	struct iio_app_device devices[] = {
-		IIO_APP_DEVICE("adpd410x", cn0567->adpd4100_handler,
+		IIO_APP_DEVICE("adpd410x", adpd410x_app->adpd4100_handler,
 			       &adpd410x_iio_descriptor,
 			       &rd_buf, NULL),
 	};

@@ -1,6 +1,6 @@
 /***************************************************************************//**
- *   @file   cn0567.c
- *   @brief  CN0567 Source file
+ *   @file   adpd410x_app.c
+ *   @brief  ADPD410x Application Source file
  *   @author Antoniu Miclaus (antoniu.miclaus@analog.com)
 ********************************************************************************
  * Copyright 2021(c) Analog Devices, Inc.
@@ -41,8 +41,8 @@
 /***************************** Include Files **********************************/
 /******************************************************************************/
 
-#include "cn0567.h"
-#include "cn0567_config.h"
+#include "adpd410x_app.h"
+#include "adpd410x_app_config.h"
 #include "no-os/error.h"
 #include "no-os/gpio.h"
 #include "aducm3029_gpio.h"
@@ -58,7 +58,7 @@
  * @param [in] dev - The device structure.
  * @return SUCCESS in case of success, FAILURE otherwise.
  */
-static int32_t cn0567_calibrate_lfo_set_ts(struct cn0567_dev *dev)
+static int32_t adpd410x_app_calibrate_lfo_set_ts(struct adpd410x_app_dev *dev)
 {
 	int32_t ret;
 	uint16_t reg_data;
@@ -107,8 +107,9 @@ static int32_t cn0567_calibrate_lfo_set_ts(struct cn0567_dev *dev)
  * @param [in] ts_gpio - Descriptor for the counter start/stop GPIO.
  * @return SUCCESS in case of success, FAILURE otherwise.
  */
-static int32_t cn0567_calibrate_lfo_get_timestamp(struct cn0567_dev *dev,
-		uint32_t *ts_val, struct gpio_desc *ts_gpio)
+static int32_t adpd410x_app_calibrate_lfo_get_timestamp(
+	struct adpd410x_app_dev *dev,
+	uint32_t *ts_val, struct gpio_desc *ts_gpio)
 {
 	int32_t ret;
 	uint16_t reg_data;
@@ -187,7 +188,7 @@ static int32_t cn0567_calibrate_lfo_get_timestamp(struct cn0567_dev *dev,
  * @param [in] dev - The device structure.
  * @return SUCCESS in case of success, FAILURE otherwise.
  */
-static int32_t cn0567_calibrate_lfo(struct cn0567_dev *dev)
+static int32_t adpd410x_app_calibrate_lfo(struct adpd410x_app_dev *dev)
 {
 	int32_t ret;
 	uint32_t ts_val_current, ts_val_last = 0, ts_val;
@@ -196,7 +197,7 @@ static int32_t cn0567_calibrate_lfo(struct cn0567_dev *dev)
 	struct gpio_desc *ts_gpio;
 	struct gpio_init_param ts_param;
 
-	ret = cn0567_calibrate_lfo_set_ts(dev);
+	ret = adpd410x_app_calibrate_lfo_set_ts(dev);
 	if (IS_ERR_VALUE(ret))
 		return ret;
 
@@ -217,7 +218,7 @@ static int32_t cn0567_calibrate_lfo(struct cn0567_dev *dev)
 	mdelay(1);
 
 	while (1) {
-		ret = cn0567_calibrate_lfo_get_timestamp(dev, &ts_val_current,
+		ret = adpd410x_app_calibrate_lfo_get_timestamp(dev, &ts_val_current,
 				ts_gpio);
 		if (IS_ERR_VALUE(ret))
 			return ret;
@@ -271,7 +272,7 @@ static int32_t cn0567_calibrate_lfo(struct cn0567_dev *dev)
  * @param [in] dev - The device structure.
  * @return SUCCESS in case of success, FAILURE otherwise.
  */
-int32_t cn0567_calibrate_hfo(struct cn0567_dev *dev)
+int32_t adpd410x_app_calibrate_hfo(struct adpd410x_app_dev *dev)
 {
 	int32_t ret;
 	uint16_t reg_data;
@@ -308,14 +309,14 @@ int32_t cn0567_calibrate_hfo(struct cn0567_dev *dev)
  * @param [in] init_param - Pointer to the application initialization structure.
  * @return SUCCESS in case of success, FAILURE otherwise.
  */
-int32_t cn0567_init(struct cn0567_dev **device)
+int32_t adpd410x_app_init(struct adpd410x_app_dev **device)
 {
 	int32_t ret;
-	struct cn0567_dev *dev;
+	struct adpd410x_app_dev *dev;
 	int8_t i;
 	uint16_t data;
 
-	dev = (struct cn0567_dev *)calloc(1, sizeof *dev);
+	dev = (struct adpd410x_app_dev *)calloc(1, sizeof *dev);
 	if(!dev)
 		return FAILURE;
 
@@ -330,7 +331,7 @@ int32_t cn0567_init(struct cn0567_dev **device)
 		goto error_cn;
 
 	ret = adpd410x_set_sampling_freq(dev->adpd4100_handler,
-					 CN0567_CODE_ODR_DEFAULT);
+					 ADPD410X_APP_CODE_ODR_DEFAULT);
 	if (IS_ERR_VALUE(ret))
 		goto error_cn;
 
@@ -397,11 +398,11 @@ int32_t cn0567_init(struct cn0567_dev **device)
 			goto error_cn;
 	}
 
-	ret = cn0567_calibrate_lfo(dev);
+	ret = adpd410x_app_calibrate_lfo(dev);
 	if (IS_ERR_VALUE(ret))
 		goto error_cn;
 
-	ret = cn0567_calibrate_hfo(dev);
+	ret = adpd410x_app_calibrate_hfo(dev);
 	if (IS_ERR_VALUE(ret))
 		goto error_cn;
 
@@ -423,11 +424,11 @@ error_cn:
 }
 
 /**
- * @brief Free memory allocated by cn0567_init().
+ * @brief Free memory allocated by adpd410x_app_init().
  * @param [in] dev - The device structure.
  * @return SUCCESS in case of success, FAILURE otherwise.
  */
-int32_t cn0567_remove(struct cn0567_dev *dev)
+int32_t adpd410x_app_remove(struct adpd410x_app_dev *dev)
 {
 	int32_t ret;
 
