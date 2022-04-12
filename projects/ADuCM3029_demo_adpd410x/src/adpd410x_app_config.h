@@ -1,6 +1,6 @@
 /***************************************************************************//**
- *   @file   cn0567_config.h
- *   @brief  CN0567 Configuration File
+ *   @file   adpd410x_app_config.h
+ *   @brief  ADPD410x Application Configuration File
  *   @author Antoniu Miclaus (antoniu.miclaus@analog.com)
 ********************************************************************************
  * Copyright 2021(c) Analog Devices, Inc.
@@ -37,8 +37,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef CN0567_CONFIG_H_
-#define CN0567_CONFIG_H_
+#ifndef ADPD410X_APP_CONFIG_H_
+#define ADPD410X_APP_CONFIG_H_
 
 /******************************************************************************/
 /***************************** Include Files **********************************/
@@ -50,14 +50,14 @@
 /******************************************************************************/
 /********************** Macros and Constants Definitions **********************/
 /******************************************************************************/
-#ifndef CN0567_DEMO_WQ
+#ifndef ADPD410X_APP_DEMO_WQ
 #define ADPD410X_ACTIVE_TIMESLOTS 8
 #define ADPD410X_REG_DEFAULT_NR   31
 #else
 #define ADPD410X_ACTIVE_TIMESLOTS 4
 #define ADPD410X_REG_DEFAULT_NR   13
 #endif
-#define CN0567_CODE_ODR_DEFAULT	50
+#define ADPD410X_APP_CODE_ODR_DEFAULT	50
 
 /******************************************************************************/
 /*************************** Types Declarations *******************************/
@@ -118,7 +118,7 @@ static struct adpd410x_init_param adpd4100_param = {
 	},
 };
 
-#ifndef CN0567_DEMO_WQ
+#ifndef ADPD410X_APP_DEMO_WQ
 /* Timeslots Configuration */
 static struct adpd410x_timeslot_init ts_init_tab[] = {
 	{
@@ -694,4 +694,4 @@ uint16_t reg_config_default[13][2] = {
 
 #endif
 
-#endif /* CN0567_CONFIG_H_ */
+#endif /* ADPD410X_APP_CONFIG_H_ */

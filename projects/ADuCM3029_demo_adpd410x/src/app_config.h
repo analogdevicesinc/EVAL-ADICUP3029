@@ -1,6 +1,6 @@
 /***************************************************************************//**
- *   @file   parameters.h
- *   @brief  CN0567 Parameters Definitions.
+ *   @file   app_config.h
+ *   @brief  Application Configuration file.
  *   @author Antoniu Miclaus (antoniu.miclaus@analog.com)
 ********************************************************************************
  * Copyright 2021(c) Analog Devices, Inc.
@@ -36,17 +36,15 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
+#ifndef APP_CONFIG_H_
+#define APP_CONFIG_H_
 
-#ifndef PARAMETERS_H_
-#define PARAMETERS_H_
+/** Choose between ADPD4100/ADPD410x support */
+//#define ADPD4100_SUPPORT
+//#define ADPD4101_SUPPORT
 
-/******************************************************************************/
-/********************** Macros and Constants Definitions **********************/
-/******************************************************************************/
+/** Choose ADPD410x Apllication Water Quality Demo */
+//#define ADPD410x_APP_DEMO_WQ
 
-#define UART_DEVICE_ID	0
-#define INTC_DEVICE_ID	0
-#define UART_IRQ_ID		ADUCM_UART_INT_ID
-#define UART_BAUDRATE	115200
+#endif // APP_CONFIG_H_
 
-#endif /* PARAMETERS_H_ */

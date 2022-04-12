@@ -1,6 +1,6 @@
 /***************************************************************************//**
- *   @file   cn0567.h
- *   @brief  CN0567 Header file
+ *   @file   adpd410x_app.h
+ *   @brief  ADPD410x Application Header file
  *   @author Antoniu Miclaus (antoniu.miclaus@analog.com)
 ********************************************************************************
  * Copyright 2021(c) Analog Devices, Inc.
@@ -37,8 +37,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
-#ifndef CN0567_H_
-#define CN0567_H_
+#ifndef ADPD410X_APP_H_
+#define ADPD410X_APP_H_
 
 /******************************************************************************/
 /***************************** Include Files **********************************/
@@ -52,10 +52,10 @@
 /******************************************************************************/
 
 /**
- * @struct cn0567_dev
+ * @struct adpd410x_app_dev
  * @brief Application handler structure
  */
-struct cn0567_dev {
+struct adpd410x_app_dev {
 	/** ADPD device handler */
 	struct adpd410x_dev *adpd4100_handler;
 	/** Chip id */
@@ -67,9 +67,9 @@ struct cn0567_dev {
 /******************************************************************************/
 
 /** Initial process of the application. */
-int32_t cn0567_init(struct cn0567_dev **device);
+int32_t adpd410x_app_init(struct adpd410x_app_dev **device);
 
-/** Free memory allocated by cn0567_init(). */
-int32_t cn0567_remove(struct cn0567_dev *dev);
+/** Free memory allocated by adpd410x_app_init(). */
+int32_t adpd410x_app_remove(struct adpd410x_app_dev *dev);
 
-#endif /* CN0567_H_ */
+#endif /* ADPD410X_APP_H_ */
