@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import multiprocessing
+import subprocess
 import sys
 
 TGREEN =  '\033[32m' # Green Text	
@@ -28,6 +29,25 @@ def parse_input():
 
 VERBOSE = 0
 ERR = 0
+
+def shell_source(script):
+	"""
+	Sometime you want to emulate the action of "source" in bash,
+	settings some environment variables. Here is a way to do it.
+	"""
+
+	pipe = subprocess.Popen(". %s && env -0" % script, stdout=subprocess.PIPE, shell=True, executable="/bin/bash")
+	output = pipe.communicate()[0].decode('utf-8')
+	output = output[:-1] # fix for index out for range in 'env[ line[0] ] = line[1]'
+
+	env = {}
+	# split using null char
+	for line in output.split('\x00'):
+		line = line.split( '=', 1)
+		#print(line)
+		env[ line[0] ] = line[1]
+
+	os.environ.update(env)
 
 def run_cmd(cmd):
 	log_file = 'log.txt'
@@ -83,6 +103,7 @@ def build_noos_project(build_file, project, project_dir, export_dir, build_dir):
 	fp.close()
 
 def main():
+	shell_source(("~/.aducm3029_environment.sh"))
 	(adicup_location, export_dir) = parse_input()
 	projets = os.path.join(adicup_location,'projects')
 	run_cmd("test -d {0} || mkdir -p {0}".format(export_dir))
