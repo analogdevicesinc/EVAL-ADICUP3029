@@ -40,17 +40,17 @@
 #include <sys/platform.h>
 #include "adi_initialize.h"
 #include <drivers/pwr/adi_pwr.h>
-#include "no-os/gpio.h"
+#include "no_os_gpio.h"
 #include "aducm3029_gpio.h"
-#include "no-os/delay.h"
+#include "no_os_delay.h"
 #include "geiger_counter.h"
 #include "communication.h"
-#include "no-os/rtc.h"
+#include "no_os_rtc.h"
 #include "rtc_extra.h"
-#include "no-os/error.h"
-#include "no-os/gpio.h"
+#include "no_os_error.h"
+#include "no_os_gpio.h"
 #include "debug.h"
-#include "no-os/util.h"
+#include "no_os_util.h"
 
 /* Event which triggers the counting interrupt */
 #define CONFIG_XINT_EVENT	IRQ_RISING_EDGE
@@ -60,8 +60,8 @@
 
 #define GREEN_LED_NB		32
 #define BLUE_LED_NB		31
-#define LED_ON			GPIO_HIGH
-#define LED_OFF			GPIO_LOW
+#define LED_ON			NO_OS_GPIO_HIGH
+#define LED_OFF			NO_OS_GPIO_LOW
 
 enum status_e {
 	STATUS_SETUP,
@@ -69,40 +69,40 @@ enum status_e {
 	STATUS_ERR
 };
 
-struct gpio_desc *green_led;
-struct gpio_desc *blue_led;
+struct no_os_gpio_desc *green_led;
+struct no_os_gpio_desc *blue_led;
 
 void update_led_status(enum status_e status)
 {
 	if (!green_led || !blue_led) {
-		struct gpio_init_param par = {
+		struct no_os_gpio_init_param par = {
 			.platform_ops = &aducm_gpio_ops
 		};
 		par.number = GREEN_LED_NB;
-		gpio_get(&green_led, &par);
-		gpio_direction_output(green_led, LED_OFF);
+		no_os_gpio_get(&green_led, &par);
+		no_os_gpio_direction_output(green_led, LED_OFF);
 		par.number = BLUE_LED_NB;
-		gpio_get(&blue_led, &par);
-		gpio_direction_output(blue_led, LED_OFF);
+		no_os_gpio_get(&blue_led, &par);
+		no_os_gpio_direction_output(blue_led, LED_OFF);
 	}
 
 	switch (status) {
 	case STATUS_SETUP:
-		gpio_set_value(green_led, LED_OFF);
-		gpio_set_value(blue_led, LED_ON);
+		no_os_gpio_set_value(green_led, LED_OFF);
+		no_os_gpio_set_value(blue_led, LED_ON);
 		break;
 	case STATUS_OK:
-		gpio_set_value(green_led, LED_ON);
-		gpio_set_value(blue_led, LED_OFF);
+		no_os_gpio_set_value(green_led, LED_ON);
+		no_os_gpio_set_value(blue_led, LED_OFF);
 		break;
 	case STATUS_ERR:
 		;
 		int32_t val = LED_ON;
 		while (true) {
-			gpio_set_value(green_led, val);
-			gpio_set_value(blue_led, !val);
+			no_os_gpio_set_value(green_led, val);
+			no_os_gpio_set_value(blue_led, !val);
 			val = !val;
-			mdelay(1000);
+			no_os_mdelay(1000);
 		}
 		break;
 	default:
@@ -152,35 +152,35 @@ bool is_mesurment_time()
 
 /* Initialize all strucures needed by the geiger_counter and for comunication */
 int32_t setup(struct geiger_counter **counter,union comm_desc *comm_desc,
-	      struct rtc_desc **rtc, struct irq_ctrl_desc **irq_ctrl)
+	      struct no_os_rtc_desc **rtc, struct no_os_irq_ctrl_desc **irq_ctrl)
 {
-	struct irq_init_param 			irq_init_param;
-	struct gpio_init_param			gpio_counter_param;
-	struct geiger_counter_init_parma 	init_param;
-	struct rtc_init_param			rtc_param;
+	struct no_os_irq_init_param 		irq_init_param;
+	struct no_os_gpio_init_param		gpio_counter_param;
+	struct geiger_counter_init_param 	init_param;
+	struct no_os_rtc_init_param		rtc_param;
 	struct rtc_irq_config			rtc_config;
-	struct callback_desc			call;
+	struct no_os_callback_desc		call;
 	int32_t					ret;
 
 	/* Initialize interrupt controller */
-	irq_init_param = (struct irq_init_param) {
+	irq_init_param = (struct no_os_irq_init_param) {
 		.irq_ctrl_id = 0,
 		.platform_ops = &aducm_irq_ops,
 		.extra = NULL
 	};
-	irq_ctrl_init(irq_ctrl, &irq_init_param);
+	no_os_irq_ctrl_init(irq_ctrl, &irq_init_param);
 
 	/* Initialize communication over UART or over WIFI*/
 	ret = init_communication(comm_desc, *irq_ctrl);
 	ON_ERR_PRINT_AND_RET("Init communication failed\n", ret);
 
 	/* Initialize geiger counter structure */
-	gpio_counter_param = (struct gpio_init_param) {
+	gpio_counter_param = (struct no_os_gpio_init_param) {
 		.number = CONFIG_COUNTER_GPIO,
 		.platform_ops = &aducm_gpio_ops,
 		.extra = NULL
 	};
-	init_param = (struct geiger_counter_init_parma) {
+	init_param = (struct geiger_counter_init_param) {
 		.irq_desc = *irq_ctrl,
 		.irq_id = CONFIG_COUNTER_XINT_ID,
 		.irq_config = CONFIG_XINT_EVENT,
@@ -191,28 +191,28 @@ int32_t setup(struct geiger_counter **counter,union comm_desc *comm_desc,
 
 	/* Initialize real time clock to be used as time reference.
 	 * Will be set to generate a callback each second */
-	rtc_param = (struct rtc_init_param) {
+	rtc_param = (struct no_os_rtc_init_param) {
 		.id = 1,
 		.load = 0,
 		.freq = AUDCM_1HZ,
 		.extra = NULL
 	};
-	ret = rtc_init(rtc, &rtc_param);
+	ret = no_os_rtc_init(rtc, &rtc_param);
 	ON_ERR_PRINT_AND_RET("rtc_init failed\n", ret);
 
-	rtc_start(*rtc);
+	no_os_rtc_start(*rtc);
 	rtc_config = (struct rtc_irq_config) {
 		.rtc_handler = *rtc,
 		.active_interrupts = RTC_COUNT_INT
 	};
-	call = (struct callback_desc) {
-		.callback = rtc_callback,
-		.config = &rtc_config,
+	call = (struct no_os_callback_desc) {
+		.legacy_callback = rtc_callback,
+		.legacy_config = &rtc_config,
 		.ctx = NULL
 	};
-	ret = irq_register_callback(*irq_ctrl, ADUCM_RTC_INT_ID, &call);
+	ret = no_os_irq_register_callback(*irq_ctrl, ADUCM_RTC_INT_ID, &call);
 	ON_ERR_PRINT_AND_RET("RTC irq_register_callback failed\n", ret);
-	ret = irq_enable(*irq_ctrl, ADUCM_RTC_INT_ID);
+	ret = no_os_irq_enable(*irq_ctrl, ADUCM_RTC_INT_ID);
 	ON_ERR_PRINT_AND_RET("RTC irq_enable failed\n", ret);
 
 	return SUCCESS;
@@ -230,18 +230,18 @@ int main(int argc, char *argv[])
 		return 1;
 
 	/* Initialization */
-	int			msg_len;
-	char			msg_buff[DATA_BUFF_SIZE];
-	int32_t			ret;
-	struct geiger_counter	*counter;
-	struct rtc_desc		*rtc;
-	struct irq_ctrl_desc	*irq_ctrl;
-	union comm_desc		comm_desc;
+	int				msg_len;
+	char				msg_buff[DATA_BUFF_SIZE];
+	int32_t				ret;
+	struct geiger_counter		*counter;
+	struct no_os_rtc_desc		*rtc;
+	struct no_os_irq_ctrl_desc	*irq_ctrl;
+	union comm_desc			comm_desc;
 
 	is_ready = 0;
 	update_led_status(STATUS_SETUP);
 	ret = setup(&counter, &comm_desc, &rtc, &irq_ctrl);
-	if (IS_ERR_VALUE(ret)) {
+	if (NO_OS_IS_ERR_VALUE(ret)) {
 		printf("Unable to perform setup\n");
 		update_led_status(STATUS_ERR);
 	}
@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
 						 DATA_BUFF_SIZE);
 			pr_debug("Sending measurement\n");
 			ret = send_data(comm_desc, msg_buff, msg_len);
-			if (IS_ERR_VALUE(ret))
+			if (NO_OS_IS_ERR_VALUE(ret))
 				break;
 		}
 	}

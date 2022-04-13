@@ -45,10 +45,10 @@
 #include "adi_initialize.h"
 
 #include "adpd410x_app.h"
-#include "no-os/error.h"
+#include "no_os_error.h"
 #include "iio_adpd410x.h"
 #include "iio_app.h"
-#include "no-os/util.h"
+#include "no_os_util.h"
 
 #define MAX_SIZE_BASE_ADDR		1000
 
@@ -63,11 +63,11 @@ int main(int argc, char *argv[])
 	uint32_t data[8];
 
 	ret = platform_init();
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	ret = adpd410x_app_init(&adpd410x_app);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	struct iio_data_buffer rd_buf = {
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 			       &rd_buf, NULL),
 	};
 
-	return iio_app_run(devices, ARRAY_SIZE(devices));
+	return iio_app_run(devices, NO_OS_ARRAY_SIZE(devices));
 
 	return 0;
 }

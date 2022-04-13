@@ -39,15 +39,15 @@
 
 #include <sys/platform.h>
 #include "adi_initialize.h"
-#include "no-os/spi.h"
+#include "no_os_spi.h"
 #include "spi_extra.h"
 #include "ad7799.h"
 #include "iio_ad7799.h"
 #include "parameters.h"
-#include "no-os/error.h"
+#include "no_os_error.h"
 #include "iio_app.h"
 #include "platform_init.h"
-#include "no-os/util.h"
+#include "no_os_util.h"
 #include "app_config.h"
 
 int main(int argc, char *argv[])
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 	int32_t ret;
 
 	ret = platform_init();
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	struct aducm_spi_init_param aducm_param = {
@@ -66,12 +66,12 @@ int main(int argc, char *argv[])
 		.master_mode = MASTER,
 	};
 
-	struct spi_init_param init_param = {
+	struct no_os_spi_init_param init_param = {
 		.device_id = 0,
 		.chip_select = 1,
 		.extra = &aducm_param,
 		.max_speed_hz = 1000000,
-		.mode = SPI_MODE_3,
+		.mode = NO_OS_SPI_MODE_3,
 		.platform_ops = &aducm_spi_ops,
 	};
 
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 	struct ad7799_dev *ad7799_device;
 
 	ret = ad7799_init(&ad7799_device, &ad7799_param);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	struct iio_app_device devices[] = {
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 			       NULL, NULL)
 	};
 
-	return iio_app_run(devices, ARRAY_SIZE(devices));
+	return iio_app_run(devices, NO_OS_ARRAY_SIZE(devices));
 
 	return 0;
 }

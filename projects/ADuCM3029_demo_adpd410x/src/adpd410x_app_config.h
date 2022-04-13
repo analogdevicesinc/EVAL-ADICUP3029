@@ -78,7 +78,7 @@ static struct adpd410x_init_param adpd4100_param = {
 			.device_id = 0,
 			.max_speed_hz = 1000000,
 			.chip_select = 1,
-			.mode = SPI_MODE_0,
+			.mode = NO_OS_SPI_MODE_0,
 			.extra = &aducm_spi_init,
 			.platform_ops = NULL
 		},

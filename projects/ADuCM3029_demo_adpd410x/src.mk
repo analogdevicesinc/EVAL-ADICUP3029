@@ -7,8 +7,8 @@ SRC_DIRS += $(DRIVERS)/photo-electronic/adpd410x
 SRC_DIRS += $(NO-OS)/drivers/api
 
 
-SRCS += $(NO-OS)/util/list.c
-SRCS += $(NO-OS)/util/util.c
+SRCS += $(NO-OS)/util/no_os_list.c
+SRCS += $(NO-OS)/util/no_os_util.c
 
 IGNORED_FILES += $(PLATFORM_DRIVERS)/uart_stdio.c
 IGNORED_FILES += $(PLATFORM_DRIVERS)/uart_stdio.h

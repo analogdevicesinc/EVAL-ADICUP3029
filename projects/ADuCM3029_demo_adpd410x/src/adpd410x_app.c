@@ -43,11 +43,11 @@
 
 #include "adpd410x_app.h"
 #include "adpd410x_app_config.h"
-#include "no-os/error.h"
-#include "no-os/gpio.h"
+#include "no_os_error.h"
+#include "no_os_gpio.h"
 #include "aducm3029_gpio.h"
-#include "no-os/delay.h"
-#include "no-os/util.h"
+#include "no_os_delay.h"
+#include "no_os_util.h"
 
 /******************************************************************************/
 /************************ Functions Definitions *******************************/
@@ -67,7 +67,7 @@ static int32_t adpd410x_app_calibrate_lfo_set_ts(struct adpd410x_app_dev *dev)
 	if(dev->chip_id == 0x02c2) {
 		ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_OSC1M,
 					&reg_data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			return ret;
 		reg_data |= BITM_OSC1M_OSC_CLK_CAL_ENA;
 		ret = adpd410x_reg_write(dev->adpd4100_handler, ADPD410X_REG_OSC1M,
@@ -77,20 +77,20 @@ static int32_t adpd410x_app_calibrate_lfo_set_ts(struct adpd410x_app_dev *dev)
 	/** Enable GPIO0 input */
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_GPIO_CFG,
 				&reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	reg_data |= (1 & BITM_GPIO_CFG_GPIO_PIN_CFG0);
 
 	ret = adpd410x_reg_write(dev->adpd4100_handler, ADPD410X_REG_GPIO_CFG,
 				 reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	/** Enable GPIO0 as time stamp input */
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_GPIO_EXT,
 				&reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	reg_data |= ((0 << BITP_GPIO_EXT_TIMESTAMP_GPIO) &
@@ -117,49 +117,49 @@ static int32_t adpd410x_app_calibrate_lfo_get_timestamp(
 	/** Start time stamp calibration */
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_OSC32K,
 				&reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 	reg_data |= BITM_OSC32K_CAPTURE_TIMESTAMP;
 	ret = adpd410x_reg_write(dev->adpd4100_handler, ADPD410X_REG_OSC32K,
 				 reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	/** Give first time stamp trigger */
-	ret = gpio_set_value(ts_gpio, GPIO_HIGH);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_gpio_set_value(ts_gpio, NO_OS_GPIO_HIGH);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
-	mdelay(1);
-	ret = gpio_set_value(ts_gpio, GPIO_LOW);
-	if (IS_ERR_VALUE(ret))
+	no_os_mdelay(1);
+	ret = no_os_gpio_set_value(ts_gpio, NO_OS_GPIO_LOW);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	/** Start time stamp calibration */
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_OSC32K,
 				&reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 	reg_data |= BITM_OSC32K_CAPTURE_TIMESTAMP;
 	ret = adpd410x_reg_write(dev->adpd4100_handler, ADPD410X_REG_OSC32K,
 				 reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
-	mdelay(10);
+	no_os_mdelay(10);
 
-	ret = gpio_set_value(ts_gpio, GPIO_HIGH);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_gpio_set_value(ts_gpio, NO_OS_GPIO_HIGH);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
-	mdelay(1);
+	no_os_mdelay(1);
 
-	ret = gpio_set_value(ts_gpio, GPIO_LOW);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_gpio_set_value(ts_gpio, NO_OS_GPIO_LOW);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_OSC32K,
 				&reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	if(reg_data & BITM_OSC32K_CAPTURE_TIMESTAMP)
@@ -167,14 +167,14 @@ static int32_t adpd410x_app_calibrate_lfo_get_timestamp(
 
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_STAMP_H,
 				&reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	*ts_val = (reg_data << 16) & 0xFFFF0000;
 
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_STAMP_L,
 				&reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	*ts_val |= reg_data;
@@ -194,11 +194,11 @@ static int32_t adpd410x_app_calibrate_lfo(struct adpd410x_app_dev *dev)
 	uint32_t ts_val_current, ts_val_last = 0, ts_val;
 	uint16_t reg_data, cal_value;
 	int8_t rdy = 0;
-	struct gpio_desc *ts_gpio;
-	struct gpio_init_param ts_param;
+	struct no_os_gpio_desc *ts_gpio;
+	struct no_os_gpio_init_param ts_param;
 
 	ret = adpd410x_app_calibrate_lfo_set_ts(dev);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	/** Setup platform GPIO for time stamp trigger */
@@ -206,21 +206,21 @@ static int32_t adpd410x_app_calibrate_lfo(struct adpd410x_app_dev *dev)
 	ts_param.platform_ops = &aducm_gpio_ops;
 	ts_param.extra = NULL;
 
-	ret = gpio_get(&ts_gpio, &ts_param);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_gpio_get(&ts_gpio, &ts_param);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
-	ret = gpio_direction_output(ts_gpio, GPIO_LOW);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_gpio_direction_output(ts_gpio, NO_OS_GPIO_LOW);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	/** Delay to correctly initialize GPIO circuitry in device. */
-	mdelay(1);
+	no_os_mdelay(1);
 
 	while (1) {
 		ret = adpd410x_app_calibrate_lfo_get_timestamp(dev, &ts_val_current,
 				ts_gpio);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			return ret;
 
 		if(ts_val_current < ts_val_last) {
@@ -232,7 +232,7 @@ static int32_t adpd410x_app_calibrate_lfo(struct adpd410x_app_dev *dev)
 
 		ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_OSC1M,
 					&reg_data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			return ret;
 
 		cal_value = reg_data & BITM_OSC1M_OSC_1M_FREQ_ADJ;
@@ -252,12 +252,12 @@ static int32_t adpd410x_app_calibrate_lfo(struct adpd410x_app_dev *dev)
 
 		ret = adpd410x_reg_write(dev->adpd4100_handler, ADPD410X_REG_OSC1M,
 					 reg_data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			return ret;
 	};
 
-	ret = gpio_remove(ts_gpio);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_gpio_remove(ts_gpio);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	if(rdy == 1)
@@ -279,7 +279,7 @@ int32_t adpd410x_app_calibrate_hfo(struct adpd410x_app_dev *dev)
 
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_OSC32M_CAL,
 				&reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	reg_data |= BITM_OSC32M_CAL_OSC_32M_CAL_START;
@@ -287,14 +287,14 @@ int32_t adpd410x_app_calibrate_hfo(struct adpd410x_app_dev *dev)
 	do {
 		ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_OSC32M_CAL,
 					&reg_data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			return ret;
 	} while(reg_data & BITM_OSC32M_CAL_OSC_32M_CAL_START);
 
 	/** Disable clock calibration circuitry */
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_OSC1M,
 				&reg_data);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	reg_data &= ~BITM_OSC1M_OSC_CLK_CAL_ENA;
@@ -322,53 +322,53 @@ int32_t adpd410x_app_init(struct adpd410x_app_dev **device)
 
 	ret = adpd410x_setup(&dev->adpd4100_handler,
 			     &adpd4100_param);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto error_cn;
 
 	ret = adpd410x_reg_read(dev->adpd4100_handler, ADPD410X_REG_CHIP_ID,
 				&dev->chip_id);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto error_cn;
 
 	ret = adpd410x_set_sampling_freq(dev->adpd4100_handler,
 					 ADPD410X_APP_CODE_ODR_DEFAULT);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto error_cn;
 
 	ret = adpd410x_set_last_timeslot(dev->adpd4100_handler,
 					 ADPD410X_ACTIVE_TIMESLOTS - 1);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto error_cn;
 
 	for (i = 0; i < ADPD410X_ACTIVE_TIMESLOTS; i++) {
 		ret = adpd410x_timeslot_setup(dev->adpd4100_handler, i,
 					      ts_init_tab + i);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			goto error_cn;
 
 		/** Precondition VC1 and VC2 to TIA_VREF+250mV */
 		ret = adpd410x_reg_read(dev->adpd4100_handler,
 					ADPD410X_REG_CATHODE(i), &data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			goto error_cn;
 		data &= ~(BITM_CATHODE_A_VC2_SEL | BITM_CATHODE_A_VC1_SEL);
 		data |= (2 << BITP_CATHODE_A_VC2_SEL) & BITM_CATHODE_A_VC2_SEL;
 		data |= (2 << BITP_CATHODE_A_VC1_SEL) & BITM_CATHODE_A_VC1_SEL;
 		ret = adpd410x_reg_write(dev->adpd4100_handler,
 					 ADPD410X_REG_CATHODE(i), data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			goto error_cn;
 
 		/** Set the two channels trim option */
 		ret = adpd410x_reg_read(dev->adpd4100_handler,
 					ADPD410X_REG_AFE_TRIM(i), &data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			goto error_cn;
 		data |= (1 << BITP_AFE_TRIM_A_CH1_TRIM_INT |
 			 1 << BITP_AFE_TRIM_A_CH2_TRIM_INT);
 		ret = adpd410x_reg_write(dev->adpd4100_handler,
 					 ADPD410X_REG_AFE_TRIM(i), data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			goto error_cn;
 
 		/**
@@ -378,38 +378,38 @@ int32_t adpd410x_app_init(struct adpd410x_app_dev **device)
 		ret = adpd410x_reg_read(dev->adpd4100_handler,
 					ADPD410X_REG_INTEG_OFFSET(i),
 					&data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			goto error_cn;
 		data = 0x03FC & BITM_INTEG_OFFSET_A_INTEG_OFFSET;
 		ret = adpd410x_reg_write(dev->adpd4100_handler,
 					 ADPD410X_REG_INTEG_OFFSET(i), data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			goto error_cn;
 
 		/** Set to ~32us LED offset */
 		ret = adpd410x_reg_read(dev->adpd4100_handler,
 					ADPD410X_REG_LED_PULSE(i), &data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			goto error_cn;
 		data = 0x0220;
 		ret = adpd410x_reg_write(dev->adpd4100_handler,
 					 ADPD410X_REG_LED_PULSE(i), data);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			goto error_cn;
 	}
 
 	ret = adpd410x_app_calibrate_lfo(dev);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto error_cn;
 
 	ret = adpd410x_app_calibrate_hfo(dev);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto error_cn;
 
 	for (i = 0; i < ADPD410X_REG_DEFAULT_NR; i++) {
 		ret = adpd410x_reg_write(dev->adpd4100_handler, reg_config_default[i][0],
 					 reg_config_default[i][1]);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			return ret;
 	}
 
@@ -436,7 +436,7 @@ int32_t adpd410x_app_remove(struct adpd410x_app_dev *dev)
 		return FAILURE;
 
 	ret = adpd410x_remove(dev->adpd4100_handler);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	free(dev);

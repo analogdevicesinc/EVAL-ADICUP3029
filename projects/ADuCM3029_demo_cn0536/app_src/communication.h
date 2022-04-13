@@ -40,8 +40,8 @@
 #ifndef COMUNICATION_H
 #define COMUNICATION_H
 
-#include "no-os/irq.h"
-#include "no-os/uart.h"
+#include "no_os_irq.h"
+#include "no_os_uart.h"
 #include "mqtt_client.h"
 
 #define MQTT 1
@@ -80,12 +80,12 @@
 #define MQTT_PUBLISH_TOPIC	"analog_test_topic"
 
 union comm_desc {
-	struct uart_desc *udesc;
+	struct no_os_uart_desc *udesc;
 	struct mqtt_desc *mdesc;
 };
 
 int32_t init_communication(union comm_desc *desc,
-			   struct irq_ctrl_desc *idesc);
+			   struct no_os_irq_ctrl_desc *idesc);
 int32_t send_data(union comm_desc desc, char *data, int len);
 
 #endif
