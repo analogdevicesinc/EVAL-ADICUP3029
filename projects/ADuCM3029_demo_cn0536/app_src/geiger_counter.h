@@ -40,7 +40,7 @@
 #ifndef GEIGER_COUNTER_H
 #define GEIGER_COUNTER_H
 
-#include "no-os/irq.h"
+#include "no_os_irq.h"
 #include "irq_extra.h"
 #include <stdint.h>
 
@@ -74,30 +74,31 @@
 
 
 struct geiger_counter {
-	uint64_t		count;
-	uint64_t		last_count;
-	uint64_t		samples[NB_AVARGE_SAMPLES];
-	uint32_t		count_per_minute;
-	float			us_per_hour;
-	bool			ready;
-	struct gpio_desc	*counter_gpio;
-	struct irq_ctrl_desc	*irq_desc;
-	uint32_t		irq_id;
+	uint64_t			count;
+	uint64_t			last_count;
+	uint64_t			samples[NB_AVARGE_SAMPLES];
+	uint32_t			count_per_minute;
+	float				us_per_hour;
+	bool				ready;
+	struct no_os_gpio_desc		*counter_gpio;
+	struct no_os_irq_ctrl_desc	*irq_desc;
+	uint32_t			irq_id;
+	struct no_os_callback_desc	*callback_desc;
 };
 
-struct geiger_counter_init_parma {
+struct geiger_counter_init_param {
 	/* Irq controller descriptor */
-	struct irq_ctrl_desc	*irq_desc;
+	struct no_os_irq_ctrl_desc	*irq_desc;
 	/* Id of the interrupts that is used for counting pulses */
-	uint32_t		irq_id;
+	uint32_t			irq_id;
 	/* Event that triggers the interrupt */
-	enum irq_mode		irq_config;
+	enum irq_mode			irq_config;
 	/* Gpio init parameter used for the generated interrupt */
-	struct gpio_init_param	*gpio_init_param;
+	struct no_os_gpio_init_param	*gpio_init_param;
 };
 
 int32_t init_geiger_counter(struct geiger_counter **desc,
-			    struct geiger_counter_init_parma *param);
+			    struct geiger_counter_init_param *param);
 void delete_geiger_counter(struct geiger_counter *desc);
 void calculate_CPM(struct geiger_counter *desc);
 int serialize_data(struct geiger_counter *desc, char *buff, int32_t buff_size);

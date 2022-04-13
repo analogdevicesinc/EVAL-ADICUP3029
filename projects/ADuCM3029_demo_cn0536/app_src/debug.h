@@ -44,7 +44,7 @@
 #include <stdio.h>
 
 #define ON_ERR_PRINT_AND_RET(msg, ret) do {\
-	if (IS_ERR_VALUE(ret)) {\
+	if (NO_OS_IS_ERR_VALUE(ret)) {\
 		printf(msg);\
 		return ret;\
 	}\

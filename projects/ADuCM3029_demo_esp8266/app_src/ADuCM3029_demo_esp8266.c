@@ -40,11 +40,11 @@
 #include <stdio.h>
 
 #include "adxl362.h"
-#include "no-os/delay.h"
-#include "no-os/error.h"
-#include "no-os/gpio.h"
+#include "no_os_delay.h"
+#include "no_os_error.h"
+#include "no_os_gpio.h"
 #include "aducm3029_gpio.h"
-#include "no-os/irq.h"
+#include "no_os_irq.h"
 #include "irq_extra.h"
 #include "mqtt_client.h"
 #include "parameters.h"
@@ -61,23 +61,23 @@
 
 int32_t init_and_connect_wifi(struct wifi_desc **wifi)
 {
-	static struct irq_ctrl_desc	*irq_ctrl;
-	static struct uart_desc		*udesc;
+	static struct no_os_irq_ctrl_desc	*irq_ctrl;
+	static struct no_os_uart_desc		*udesc;
 
-	struct irq_init_param		irq_par;
-	struct wifi_init_param		wifi_param;
-	struct uart_init_param		uart_param;
-	struct aducm_uart_init_param	uart_platform_param;
+	struct no_os_irq_init_param		irq_par;
+	struct wifi_init_param			wifi_param;
+	struct no_os_uart_init_param		uart_param;
+	struct aducm_uart_init_param		uart_platform_param;
 	int32_t				ret;
 
 	/* Initialize irq controller */
-	irq_par = (struct irq_init_param) {
+	irq_par = (struct no_os_irq_init_param) {
 		.irq_ctrl_id = 0,
 		.platform_ops = &aducm_irq_ops,
 		.extra = 0
 	};
-	ret = irq_ctrl_init(&irq_ctrl, &irq_par);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_irq_ctrl_init(&irq_ctrl, &irq_par);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error irq_ctrl_init", ret);
 
 	/* Initialize uart device */
@@ -86,13 +86,13 @@ int32_t init_and_connect_wifi(struct wifi_desc **wifi)
 		.stop_bits = UART_CONFIG_STOP_BITS,
 		.word_length = UART_CONFIG_WORD_LEN
 	};
-	uart_param = (struct uart_init_param) {
+	uart_param = (struct no_os_uart_init_param) {
 		.device_id = UART_DEVICE_ID,
 		.baud_rate = UART_CONFIG_BAUDRATE,
 		.extra = &uart_platform_param
 	};
-	ret = uart_init(&udesc, &uart_param);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_uart_init(&udesc, &uart_param);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error uart_init", ret);
 
 	/* Initialize wifi descriptor */
@@ -103,12 +103,12 @@ int32_t init_and_connect_wifi(struct wifi_desc **wifi)
 		.uart_irq_id = UART_CONFIG_IRQ_ID
 	};
 	ret = wifi_init(wifi, &wifi_param);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error wifi_init", ret);
 
 	/* Connect to wifi network */
 	ret = wifi_connect(*wifi, WIFI_SSID, WIFI_PASS);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error wifi_connect", ret);
 
 	printf("Connected to: %s\n", WIFI_SSID);
@@ -145,11 +145,11 @@ int init_and_connect_to_mqtt_broker(struct mqtt_desc **mqtt,
 	/* Initialize socket structure */
 	socket_init_param.max_buff_size = 0; //Default buffer size
 	ret = wifi_get_network_interface(wifi, &socket_init_param.net);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error wifi_get_network_interface", ret);
 
 	ret = socket_init(&sock, &socket_init_param);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error socket_init", ret);
 
 	/* Connect socket to mqtt borker server */
@@ -158,7 +158,7 @@ int init_and_connect_to_mqtt_broker(struct mqtt_desc **mqtt,
 		.port = SERVER_PORT
 	};
 	ret = socket_connect(sock, &mqtt_broker_addr);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error socket_connect", ret);
 
 	printf("Connection with \"%s\" established\n", SERVER_ADDR);
@@ -176,7 +176,7 @@ int init_and_connect_to_mqtt_broker(struct mqtt_desc **mqtt,
 		.message_handler = mqtt_message_handler
 	};
 	ret = mqtt_init(mqtt, &mqtt_init_param);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error mqtt_init", ret);
 
 	/* Connect to mqtt broker */
@@ -188,14 +188,14 @@ int init_and_connect_to_mqtt_broker(struct mqtt_desc **mqtt,
 		.password = MQTT_CONFIG_CLI_PASS
 	};
 	ret = mqtt_connect(*mqtt, &conn_config, NULL);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error mqtt_connect", ret);
 
 	printf("Connected to mqtt broker\n");
 
 	/* Subscribe for a topic */
 	ret = mqtt_subscribe(*mqtt, MQTT_SUBSCRIBE_TOPIC, MQTT_QOS0, NULL);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error mqtt_subscribe", ret);
 	printf("Subscribed to topic: %s\n", MQTT_SUBSCRIBE_TOPIC);
 
@@ -207,7 +207,7 @@ int init_and_configure_adxl362(struct adxl362_dev **accel,
 {
 	struct adxl362_init_param	accel_init_param;
 	struct aducm_spi_init_param	spi_platform_init_param;
-	struct gpio_init_param		gpio_init_param;
+	struct no_os_gpio_init_param	gpio_init_param;
 	int32_t				ret;
 	uint8_t				reg;
 
@@ -217,21 +217,21 @@ int init_and_configure_adxl362(struct adxl362_dev **accel,
 		.half_duplex = false,
 		.dma = false
 	};
-	accel_init_param.spi_init = (struct spi_init_param) {
+	accel_init_param.spi_init = (struct no_os_spi_init_param) {
 		.device_id = SPI_CONFIG_CHANNEL,
 		.max_speed_hz = SPI_CONFIG_MAX_SPEED,
 		.chip_select = SPI_CONFIG_CS,
-		.mode = SPI_MODE_0,
+		.mode = NO_OS_SPI_MODE_0,
 		.platform_ops = &aducm_spi_ops,
 		.extra = &spi_platform_init_param
 	};
 
 	ret = adxl362_init(accel, accel_init_param);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error adxl362_init", ret);
 
 	adxl362_software_reset(*accel);
-	mdelay(100); /* Wait at least 0.5 ms */
+	no_os_mdelay(100); /* Wait at least 0.5 ms */
 
 	/* Activity select set to referenced mode */
 	adxl362_setup_activity_detection(*accel, 1, ACCEL_CFG_ACT_TRESH,
@@ -257,17 +257,17 @@ int init_and_configure_adxl362(struct adxl362_dev **accel,
 #endif
 
 	/* Configure adxl interrupt gpio */
-	gpio_init_param = (struct gpio_init_param) {
+	gpio_init_param = (struct no_os_gpio_init_param) {
 		.number = ACCEL_INT_GPIO_NB,
 		.platform_ops = &aducm_gpio_ops,
 		.extra = NULL
 	};
-	ret = gpio_get(accel_int, &gpio_init_param);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_gpio_get(accel_int, &gpio_init_param);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error gpio_get", ret);
 
-	ret = gpio_direction_input(*accel_int);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_gpio_direction_input(*accel_int);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error gpio_direction_input", ret);
 
 	printf("Adxl362 Configured\n");
@@ -306,48 +306,48 @@ int main(int argc, char *argv[])
 	struct wifi_desc	*wifi;
 	struct mqtt_desc	*mqtt;
 	struct adxl362_dev 	*accel;
-	struct gpio_desc	*accel_int;
+	struct no_os_gpio_desc	*accel_int;
 	int32_t			ret;
 	uint8_t			value;
 	uint8_t			old_value;
 
 	ret = platform_init();
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error platform_init", ret);
 
 	ret = init_and_connect_wifi(&wifi);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error init_and_connect_wifi", ret);
 
 	ret = init_and_connect_to_mqtt_broker(&mqtt, wifi);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error init_and_connect_to_mqtt_broker", ret);
 
 	ret = init_and_configure_adxl362(&accel, &accel_int);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error init_and_configure_adxl362", ret);
 
 	/* Start measurment */
 	adxl362_set_power_mode(accel, 1);
 
-	old_value = GPIO_LOW;
+	old_value = NO_OS_GPIO_LOW;
 	while (true) {
 		/* Wait until new measurement is ready */
 		do {
-			ret = gpio_get_value(accel_int, &value);
-			if (IS_ERR_VALUE(ret))
+			ret = no_os_gpio_get_value(accel_int, &value);
+			if (NO_OS_IS_ERR_VALUE(ret))
 				PRINT_ERR_AND_RET("Error read_and_send", ret);
 		} while (value != old_value);
 		old_value = value;
 
 		ret = read_and_send(mqtt, accel);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			PRINT_ERR_AND_RET("Error read_and_send", ret);
 		printf("Data sent to broker\n");
 
 		/* Dispatch new mqtt mesages if any during SCAN_SENSOR_TIME */
 		ret = mqtt_yield(mqtt, SCAN_SENSOR_TIME);
-		if (IS_ERR_VALUE(ret))
+		if (NO_OS_IS_ERR_VALUE(ret))
 			PRINT_ERR_AND_RET("Error mqtt_yield", ret);
 	}
 

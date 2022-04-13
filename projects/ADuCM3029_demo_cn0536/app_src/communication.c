@@ -42,8 +42,8 @@
 #endif
 
 #include "communication.h"
-#include "no-os/uart.h"
-#include "no-os/irq.h"
+#include "no_os_uart.h"
+#include "no_os_irq.h"
 #include "irq_extra.h"
 #include "uart_extra.h"
 #include "wifi.h"
@@ -58,7 +58,7 @@ struct aducm_uart_init_param extra_uart = {.parity = CONFIG_UART_PARITY,
 	       .stop_bits = CONFIG_UART_STOPBITS,
 	       .word_length = CONFIG_UART_WORD_LEN
 };
-struct uart_init_param uart_conf = {.baud_rate = CONFIG_UART_BAUDRATE,
+struct no_os_uart_init_param uart_conf = {.baud_rate = CONFIG_UART_BAUDRATE,
 	       .device_id = 0,
 	       .extra = &extra_uart
 };
@@ -105,16 +105,16 @@ static bool use_mqtt = COMUNICATION_METHOD;
 static struct wifi_desc		*wifi;
 static struct mqtt_desc		*mqtt;
 static struct tcp_socket_desc	*sock;
-static struct uart_desc		*udesc;
+static struct no_os_uart_desc	*udesc;
 
-int32_t init_mqtt(struct mqtt_desc **desc, struct irq_ctrl_desc *idesc)
+int32_t init_mqtt(struct mqtt_desc **desc, struct no_os_irq_ctrl_desc *idesc)
 {
 	struct wifi_init_param		wifi_param;
 	struct tcp_socket_init_param	tcp_param;
 	int32_t				ret;
 
-	ret = uart_init(&udesc, &uart_conf);
-	if (IS_ERR_VALUE(ret))
+	ret = no_os_uart_init(&udesc, &uart_conf);
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto fail;
 
 	wifi_param.irq_desc = idesc;
@@ -123,10 +123,10 @@ int32_t init_mqtt(struct mqtt_desc **desc, struct irq_ctrl_desc *idesc)
 	wifi_param.uart_irq_id = ADUCM_UART_INT_ID;
 
 	ret = wifi_init(&wifi, &wifi_param);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto fail;
 	ret = wifi_connect(wifi, WIFI_SSID, WIFI_PASS);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto fail;
 
 	wifi_get_network_interface(wifi, &tcp_param.net);
@@ -136,20 +136,20 @@ int32_t init_mqtt(struct mqtt_desc **desc, struct irq_ctrl_desc *idesc)
 	tcp_param.secure_init_param = &tls_param;
 #endif /* DISABLE_SECURE_SOCKET */
 	ret = socket_init(&sock, &tcp_param);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto fail;
 
 	ret = socket_connect(sock, &addr);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto fail;
 
 	mqtt_init_param.sock = sock;
 	ret = mqtt_init(&mqtt, &mqtt_init_param);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto fail;
 
 	ret = mqtt_connect(mqtt, &conn_config, NULL);
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		goto fail;
 
 	*desc = mqtt;
@@ -157,7 +157,7 @@ int32_t init_mqtt(struct mqtt_desc **desc, struct irq_ctrl_desc *idesc)
 	return SUCCESS;
 
 fail:
-	uart_remove(udesc);
+	no_os_uart_remove(udesc);
 	return FAILURE;
 }
 
@@ -165,7 +165,8 @@ fail:
  * If use_mqtt is set the program will try to connect to the mqtt server.
  * If it fails, UART will be initialized.
  */
-int32_t init_communication(union comm_desc *desc, struct irq_ctrl_desc *idesc)
+int32_t init_communication(union comm_desc *desc,
+			   struct no_os_irq_ctrl_desc *idesc)
 {
 	union comm_desc ldesc;
 	int32_t ret;
@@ -173,9 +174,9 @@ int32_t init_communication(union comm_desc *desc, struct irq_ctrl_desc *idesc)
 	if (use_mqtt)
 		ret = init_mqtt(&ldesc.mdesc, idesc);
 	else
-		ret = uart_init(&ldesc.udesc, &uart_conf);
+		ret = no_os_uart_init(&ldesc.udesc, &uart_conf);
 
-	if (IS_ERR_VALUE(ret))
+	if (NO_OS_IS_ERR_VALUE(ret))
 		return ret;
 
 	pr_debug("%s communication initialized\n", use_mqtt ? "MQTT" : "UART");
@@ -196,5 +197,5 @@ int32_t send_data(union comm_desc desc, char *data, int len)
 		};
 		return mqtt_publish(desc.mdesc, (int8_t *)MQTT_PUBLISH_TOPIC, &msg);
 	} else
-		return uart_write(desc.udesc, (uint8_t *)data, len);
+		return no_os_uart_write(desc.udesc, (uint8_t *)data, len);
 }

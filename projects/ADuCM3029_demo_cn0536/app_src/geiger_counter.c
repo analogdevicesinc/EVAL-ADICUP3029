@@ -42,8 +42,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
-#include "no-os/gpio.h"
-#include "no-os/error.h"
+#include "no_os_gpio.h"
+#include "no_os_error.h"
 #include "debug.h"
 
 /* Called at each geiger pulse */
@@ -56,9 +56,9 @@ void counter_callback(void *ctx, uint32_t event, void *extra)
 
 /* Initialize Geiger counter structure */
 int32_t init_geiger_counter(struct geiger_counter **desc,
-			    struct geiger_counter_init_parma *param)
+			    struct geiger_counter_init_param *param)
 {
-	struct callback_desc callback_desc;
+	struct no_os_callback_desc callback_desc;
 	struct geiger_counter *ldesc;
 	int32_t			ret;
 
@@ -72,24 +72,25 @@ int32_t init_geiger_counter(struct geiger_counter **desc,
 	}
 
 	/* Config counter gpio */
-	ret = gpio_get(&ldesc->counter_gpio, param->gpio_init_param);
+	ret = no_os_gpio_get(&ldesc->counter_gpio, param->gpio_init_param);
 	ON_ERR_PRINT_AND_RET("Unable to get gpio\n", ret);
-	ret = gpio_direction_input(ldesc->counter_gpio);
+	ret = no_os_gpio_direction_input(ldesc->counter_gpio);
 	ON_ERR_PRINT_AND_RET("Unable to set gpio\n", ret);
 
 	/* Config counter IRQ */
-	callback_desc = (struct callback_desc) {
-		.callback = counter_callback,
+	callback_desc = (struct no_os_callback_desc) {
+		.legacy_callback = counter_callback,
 		.ctx = ldesc,
-		.config = (void *)param->irq_config
+		.legacy_config = (void *)param->irq_config
 	};
 	ldesc->irq_id = param->irq_id;
 	ldesc->irq_desc = param->irq_desc;
-	ret = irq_register_callback(ldesc->irq_desc, param->irq_id,
-				    &callback_desc);
+	ldesc->callback_desc = &callback_desc;
+	ret = no_os_irq_register_callback(ldesc->irq_desc, param->irq_id,
+					  ldesc->callback_desc);
 	ON_ERR_PRINT_AND_RET("Counter irq_register_callback failed\n", ret);
 
-	ret = irq_enable(ldesc->irq_desc, param->irq_id);
+	ret = no_os_irq_enable(ldesc->irq_desc, param->irq_id);
 	ON_ERR_PRINT_AND_RET("Counter irq_enable failed\n", ret);
 
 	/* Fill geiger_counter descriptor */
@@ -104,9 +105,10 @@ int32_t init_geiger_counter(struct geiger_counter **desc,
 
 void delete_geiger_counter(struct geiger_counter *desc)
 {
-	gpio_remove(desc->counter_gpio);
-	irq_unregister(desc->irq_desc, desc->irq_id);
-	irq_disable(desc->irq_desc, desc->irq_id);
+	no_os_gpio_remove(desc->counter_gpio);
+	no_os_irq_unregister_callback(desc->irq_desc, desc->irq_id,
+				      desc->callback_desc);
+	no_os_irq_disable(desc->irq_desc, desc->irq_id);
 	free(desc);
 }
 
