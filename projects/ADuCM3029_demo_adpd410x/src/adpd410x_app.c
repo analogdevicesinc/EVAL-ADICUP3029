@@ -56,7 +56,7 @@
 /**
  * @brief Set device to get timestamp for low frequency oscillator calibration.
  * @param [in] dev - The device structure.
- * @return SUCCESS in case of success, FAILURE otherwise.
+ * @return 0 in case of success, negative code otherwise.
  */
 static int32_t adpd410x_app_calibrate_lfo_set_ts(struct adpd410x_app_dev *dev)
 {
@@ -105,7 +105,7 @@ static int32_t adpd410x_app_calibrate_lfo_set_ts(struct adpd410x_app_dev *dev)
  * @param [in] dev - The device structure.
  * @param [out] ts_val - Pointer to the timestamp value container.
  * @param [in] ts_gpio - Descriptor for the counter start/stop GPIO.
- * @return SUCCESS in case of success, FAILURE otherwise.
+ * @return 0 in case of success, negative code otherwise.
  */
 static int32_t adpd410x_app_calibrate_lfo_get_timestamp(
 	struct adpd410x_app_dev *dev,
@@ -179,14 +179,14 @@ static int32_t adpd410x_app_calibrate_lfo_get_timestamp(
 
 	*ts_val |= reg_data;
 
-	return SUCCESS;
+	return 0;
 }
 
 /**
  * @brief Do low frequency oscillator calibration with respect to an external
  *        reference.
  * @param [in] dev - The device structure.
- * @return SUCCESS in case of success, FAILURE otherwise.
+ * @return 0 in case of success, negative code otherwise.
  */
 static int32_t adpd410x_app_calibrate_lfo(struct adpd410x_app_dev *dev)
 {
@@ -261,7 +261,7 @@ static int32_t adpd410x_app_calibrate_lfo(struct adpd410x_app_dev *dev)
 		return ret;
 
 	if(rdy == 1)
-		return SUCCESS;
+		return 0;
 	else
 		return ret;
 }
@@ -270,7 +270,7 @@ static int32_t adpd410x_app_calibrate_lfo(struct adpd410x_app_dev *dev)
  * @brief Do high frequency oscillator calibration with respect to the low
  *        frequency oscillator.
  * @param [in] dev - The device structure.
- * @return SUCCESS in case of success, FAILURE otherwise.
+ * @return 0 in case of success, negative code otherwise.
  */
 int32_t adpd410x_app_calibrate_hfo(struct adpd410x_app_dev *dev)
 {
@@ -307,7 +307,7 @@ int32_t adpd410x_app_calibrate_hfo(struct adpd410x_app_dev *dev)
  * @brief Initial process of the application.
  * @param [out] device - Pointer to the application handler.
  * @param [in] init_param - Pointer to the application initialization structure.
- * @return SUCCESS in case of success, FAILURE otherwise.
+ * @return 0 in case of success, negative code otherwise.
  */
 int32_t adpd410x_app_init(struct adpd410x_app_dev **device)
 {
@@ -318,7 +318,7 @@ int32_t adpd410x_app_init(struct adpd410x_app_dev **device)
 
 	dev = (struct adpd410x_app_dev *)calloc(1, sizeof *dev);
 	if(!dev)
-		return FAILURE;
+		return -ENOMEM;
 
 	ret = adpd410x_setup(&dev->adpd4100_handler,
 			     &adpd4100_param);
@@ -420,20 +420,20 @@ int32_t adpd410x_app_init(struct adpd410x_app_dev **device)
 error_cn:
 	free(dev);
 
-	return FAILURE;
+	return -1;
 }
 
 /**
  * @brief Free memory allocated by adpd410x_app_init().
  * @param [in] dev - The device structure.
- * @return SUCCESS in case of success, FAILURE otherwise.
+ * @return 0 in case of success, negative code otherwise.
  */
 int32_t adpd410x_app_remove(struct adpd410x_app_dev *dev)
 {
 	int32_t ret;
 
 	if(!dev)
-		return FAILURE;
+		return -EINVAL;
 
 	ret = adpd410x_remove(dev->adpd4100_handler);
 	if (NO_OS_IS_ERR_VALUE(ret))
@@ -441,5 +441,5 @@ int32_t adpd410x_app_remove(struct adpd410x_app_dev *dev)
 
 	free(dev);
 
-	return SUCCESS;
+	return 0;
 }
