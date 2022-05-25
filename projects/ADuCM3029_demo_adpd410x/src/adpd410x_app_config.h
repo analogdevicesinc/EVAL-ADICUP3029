@@ -43,9 +43,15 @@
 /******************************************************************************/
 /***************************** Include Files **********************************/
 /******************************************************************************/
+#include <stddef.h>
 #include "adpd410x.h"
 #include "app_config.h"
+#ifndef ADPD4101_SUPPORT
 #include "spi_extra.h"
+#else
+#include "i2c_extra.h"
+#endif
+#include "aducm3029_gpio.h"
 
 /******************************************************************************/
 /********************** Macros and Constants Definitions **********************/
@@ -80,7 +86,7 @@ static struct adpd410x_init_param adpd4100_param = {
 			.chip_select = 1,
 			.mode = NO_OS_SPI_MODE_0,
 			.extra = &aducm_spi_init,
-			.platform_ops = NULL
+			.platform_ops = &aducm_spi_ops
 		},
 	},
 	.dev_type = ADPD4100,
@@ -90,6 +96,7 @@ static struct adpd410x_init_param adpd4100_param = {
 			.max_speed_hz = 400000,
 			.slave_address = 0x24,
 			.extra = NULL,
+			.platform_ops = &aducm_i2c_ops
 		},
 	},
 	.dev_type = ADPD4101,
@@ -103,18 +110,22 @@ static struct adpd410x_init_param adpd4100_param = {
 		.number = 0x0F,
 #endif
 		.extra = NULL,
+		.platform_ops = &aducm_gpio_ops
 	},
 	.gpio1 = {
 		.number = 0x0D,
 		.extra = NULL,
+		.platform_ops = &aducm_gpio_ops
 	},
 	.gpio2 = {
 		.number = 0x09,
 		.extra = NULL,
+		.platform_ops = &aducm_gpio_ops
 	},
 	.gpio3 = {
 		.number = 0x21,
 		.extra = NULL,
+		.platform_ops = &aducm_gpio_ops
 	},
 };
 
