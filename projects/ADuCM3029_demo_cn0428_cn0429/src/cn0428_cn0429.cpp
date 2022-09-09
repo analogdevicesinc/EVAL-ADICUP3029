@@ -816,7 +816,7 @@ void CN0429_RdEIS(uint8_t *args)
 		return;
 	}
 
-	snprintf((char*) TXbuff, 256, "Frequency, Magnitude, Phase, Real Mag, Imag Mag%s", _EOS);
+	snprintf((char*) TXbuff, 256, "Frequency, Magnitude, Phase%s", _EOS);
 	UART_TX((const char*) TXbuff);
 	for (int j = 0; j < 12; j++) {
 		int2binString(EISresults[0 + (j * 5)], gBuff, 32);
@@ -831,9 +831,8 @@ void CN0429_RdEIS(uint8_t *args)
 		EISpartialresult[4] = Ieee754ConvertToDouble(gBuff);
 
 		flushBuff(TXbuff, sizeof(TXbuff));
-		snprintf((char*) TXbuff, 256, "%f, %f, %f, %f, %f%s", EISpartialresult[0],
-			EISpartialresult[1], EISpartialresult[2], EISpartialresult[3],
-			EISpartialresult[4], _EOS);
+		snprintf((char*) TXbuff, 256, "%f, %f, %f%s", EISpartialresult[0],
+			EISpartialresult[1], EISpartialresult[2], _EOS);
 		UART_TX((const char*) TXbuff);
 	}
 
@@ -869,7 +868,7 @@ void CN0429_RdEISfull(uint8_t *args)
 	}
 
 	snprintf((char*) TXbuff, 256,
-		"Frequency, Rload+Rsens_real, Rload+Rsens_img, Rload_real, Rload_imag, Rcal_real, Rcal_imag, Mag_Rsens+Rload, Mag_Rload, Mag_Rcal, Mag_Rsens, MAG, PHASE, Real_Mag, Imag_Mag%s",
+		"Frequency, Rload+Rsens_real, Rload+Rsens_img, Rload_real, Rload_imag, Rcal_real, Rcal_imag, Mag_Rsens+Rload, Mag_Rload, Mag_Rcal, Mag_Rsens, MAG, PHASE%s",
 		_EOS);
 	UART_TX((const char*) TXbuff);
 	for (int j = 0; j < 12; j++) {
@@ -889,7 +888,7 @@ void CN0429_RdEISfull(uint8_t *args)
 
 		flushBuff(TXbuff, sizeof(TXbuff));
 		snprintf((char*) TXbuff, 256,
-			"%f, %ld, %ld, %ld, %ld, %ld, %ld, %f, %f, %f, %f, %f, %f, %f, %f%s",
+			"%f, %ld, %ld, %ld, %ld, %ld, %ld, %f, %f, %f, %f, %f, %f%s",
 			EISpartialresult[0], EISpartialDFTresult[0],
 			EISpartialDFTresult[1], EISpartialDFTresult[2],
 			EISpartialDFTresult[3], EISpartialDFTresult[4],
