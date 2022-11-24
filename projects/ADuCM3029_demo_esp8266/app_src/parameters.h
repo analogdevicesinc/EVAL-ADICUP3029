@@ -61,7 +61,7 @@
 #define SERVER_TO_USE		TEST_MOSQUITTO
 
 #if SERVER_TO_USE==TEST_MOSQUITTO
-#define SERVER_ADDR		"test.mosquitto.org"
+#define SERVER_ADDR		"10.76.84.240"
 #elif SERVER_TO_USE==MQTT_ECLIPSE
 #define SERVER_ADDR		"mqtt.eclipse.org"
 #else //local
@@ -74,8 +74,8 @@
 #define BUFF_LEN		200
 
 /* Wifi network parameters */
-#define WIFI_SSID		"analog_hotspot"
-#define WIFI_PASS		"12345678"
+#define WIFI_SSID		"AnalogDevices"
+#define WIFI_PASS		"Analog123!"
 
 
 /* Default UART parameters for esp8266 */

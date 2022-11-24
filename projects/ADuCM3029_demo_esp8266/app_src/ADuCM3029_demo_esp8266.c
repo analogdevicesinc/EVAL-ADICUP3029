@@ -39,11 +39,8 @@
 
 #include <stdio.h>
 
-#include "adxl362.h"
 #include "no_os_delay.h"
 #include "no_os_error.h"
-#include "no_os_gpio.h"
-#include "aducm3029_gpio.h"
 #include "no_os_irq.h"
 #include "irq_extra.h"
 #include "mqtt_client.h"
@@ -202,79 +199,7 @@ int init_and_connect_to_mqtt_broker(struct mqtt_desc **mqtt,
 	return SUCCESS;
 }
 
-int init_and_configure_adxl362(struct adxl362_dev **accel,
-			       struct gpio_desc **accel_int)
-{
-	struct adxl362_init_param	accel_init_param;
-	struct aducm_spi_init_param	spi_platform_init_param;
-	struct no_os_gpio_init_param	gpio_init_param;
-	int32_t				ret;
-	uint8_t				reg;
-
-	spi_platform_init_param = (struct aducm_spi_init_param) {
-		.master_mode = MASTER,
-		.continuous_mode = true,
-		.half_duplex = false,
-		.dma = false
-	};
-	accel_init_param.spi_init = (struct no_os_spi_init_param) {
-		.device_id = SPI_CONFIG_CHANNEL,
-		.max_speed_hz = SPI_CONFIG_MAX_SPEED,
-		.chip_select = SPI_CONFIG_CS,
-		.mode = NO_OS_SPI_MODE_0,
-		.platform_ops = &aducm_spi_ops,
-		.extra = &spi_platform_init_param
-	};
-
-	ret = adxl362_init(accel, accel_init_param);
-	if (NO_OS_IS_ERR_VALUE(ret))
-		PRINT_ERR_AND_RET("Error adxl362_init", ret);
-
-	adxl362_software_reset(*accel);
-	no_os_mdelay(100); /* Wait at least 0.5 ms */
-
-	/* Activity select set to referenced mode */
-	adxl362_setup_activity_detection(*accel, 1, ACCEL_CFG_ACT_TRESH,
-					 ACCEL_CFG_ACT_TIMER);
-
-	/* Activity select set to referenced mode */
-	adxl362_setup_inactivity_detection(*accel, 1, ACCEL_CFG_INACT_TRESH,
-					   ACCEL_CFG_INACT_TIMER);
-
-	/* Set Loop mode */
-	adxl362_get_register_value(*accel, &reg, ADXL362_REG_ACT_INACT_CTL, 1);
-	reg |= ADXL362_ACT_INACT_CTL_LINKLOOP(ADXL362_MODE_LOOP);
-	adxl362_set_register_value(*accel, reg, ADXL362_REG_ACT_INACT_CTL, 1);
-
-#if(ACCEL_CFG_INT_SEL == INTACC_PIN_1)
-	/* Map the awake status to INT1 pin */
-	adxl362_set_register_value(*accel, ADXL362_STATUS_AWAKE,
-				   ADXL362_REG_INTMAP1, 1);
-#elif(ACCEL_CFG_INT_SEL == INTACC_PIN_2)
-	/* Map the awake status to INT2 pin */
-	adxl362_set_register_value(*accel, ADXL362_STATUS_AWAKE,
-				   ADXL362_REG_INTMAP2, 1);
-#endif
-
-	/* Configure adxl interrupt gpio */
-	gpio_init_param = (struct no_os_gpio_init_param) {
-		.number = ACCEL_INT_GPIO_NB,
-		.platform_ops = &aducm_gpio_ops,
-		.extra = NULL
-	};
-	ret = no_os_gpio_get(accel_int, &gpio_init_param);
-	if (NO_OS_IS_ERR_VALUE(ret))
-		PRINT_ERR_AND_RET("Error gpio_get", ret);
-
-	ret = no_os_gpio_direction_input(*accel_int);
-	if (NO_OS_IS_ERR_VALUE(ret))
-		PRINT_ERR_AND_RET("Error gpio_direction_input", ret);
-
-	printf("Adxl362 Configured\n");
-	return SUCCESS;
-}
-
-int32_t read_and_send(struct mqtt_desc *mqtt, struct adxl362_dev *accel)
+int32_t read_and_send(struct mqtt_desc *mqtt)
 {
 	struct mqtt_message	msg;
 	uint8_t			buff[100];
@@ -284,13 +209,8 @@ int32_t read_and_send(struct mqtt_desc *mqtt, struct adxl362_dev *accel)
 	float			z;
 	float			t;
 
-	/* Read x, y and z in g values */
-	adxl362_get_g_xyz(accel, &x, &y, &z);
-	/* Read temperature */
-	t = adxl362_read_temperature(accel);
 	/* Serialize data */
-	len = sprintf(buff, "X: %.2f -- Y: %.2f -- Z: %.2f -- Temp: %.2f",
-		      x, y, z, t);
+	len = sprintf(buff, "X:adsd -- Y: dsadsad -- Z: dasdad -- Temp: dasda");
 	/* Send data to mqtt broker */
 	msg = (struct mqtt_message) {
 		.qos = MQTT_QOS0,
@@ -305,11 +225,7 @@ int main(int argc, char *argv[])
 {
 	struct wifi_desc	*wifi;
 	struct mqtt_desc	*mqtt;
-	struct adxl362_dev 	*accel;
-	struct no_os_gpio_desc	*accel_int;
 	int32_t			ret;
-	uint8_t			value;
-	uint8_t			old_value;
 
 	ret = platform_init();
 	if (NO_OS_IS_ERR_VALUE(ret))
@@ -323,24 +239,9 @@ int main(int argc, char *argv[])
 	if (NO_OS_IS_ERR_VALUE(ret))
 		PRINT_ERR_AND_RET("Error init_and_connect_to_mqtt_broker", ret);
 
-	ret = init_and_configure_adxl362(&accel, &accel_int);
-	if (NO_OS_IS_ERR_VALUE(ret))
-		PRINT_ERR_AND_RET("Error init_and_configure_adxl362", ret);
-
-	/* Start measurment */
-	adxl362_set_power_mode(accel, 1);
-
-	old_value = NO_OS_GPIO_LOW;
 	while (true) {
-		/* Wait until new measurement is ready */
-		do {
-			ret = no_os_gpio_get_value(accel_int, &value);
-			if (NO_OS_IS_ERR_VALUE(ret))
-				PRINT_ERR_AND_RET("Error read_and_send", ret);
-		} while (value != old_value);
-		old_value = value;
 
-		ret = read_and_send(mqtt, accel);
+		ret = read_and_send(mqtt);
 		if (NO_OS_IS_ERR_VALUE(ret))
 			PRINT_ERR_AND_RET("Error read_and_send", ret);
 		printf("Data sent to broker\n");
