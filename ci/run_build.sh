@@ -8,7 +8,8 @@ sudo apt-get update
 . ./ci/lib.sh
 
 build_cppcheck() {
-    export CPPCHECK_OPTIONS="-i ./projects/ADuCM3029_ArrowConnect_Greenhouse/src"
+    export CPPCHECK_OPTIONS="-i ./projects/ADuCM3029_ArrowConnect_Greenhouse/src \
+                             -i startup_ADuCM3029.c"
     . ./build/cppcheck.sh 
 }
 
