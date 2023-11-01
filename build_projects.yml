@@ -14,7 +14,10 @@ variables:
 
 jobs:
 - job: Projects
-  pool: LocalPool
+  pool:
+    name: Default
+    demands:
+      - agent.name -equals no-OS
   steps:
   - checkout: self
     fetchDepth: 50
