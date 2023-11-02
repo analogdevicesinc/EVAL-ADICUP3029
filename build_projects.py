@@ -103,8 +103,20 @@ def build_noos_project(build_file, project, project_dir, export_dir, build_dir):
 		print(TGREEN + "DONE" + TWHITE)
 	fp.close()
 
+def config_file_read():
+	try:
+		with open(os.path.expanduser('~') + '/configure_hdl_new.txt') as configure_file:
+			lines = configure_file.readlines()
+			environment_path_files = lines[1].rstrip()
+	except OSError:
+		print("Configuration file needed")
+		exit()
+
+	return environment_path_files
+
 def main():
-	shell_source(("~/.aducm3029_environment.sh"))
+	environment_path_files = config_file_read()
+	shell_source(environment_path_files + "aducm3029_environment.sh")
 	(adicup_location, export_dir) = parse_input()
 	projets = os.path.join(adicup_location,'projects')
 	run_cmd("test -d {0} || mkdir -p {0}".format(export_dir))
